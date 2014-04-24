@@ -12,11 +12,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import fi.ni.InverseLinksList;
 import fi.ni.ifc2x3.IfcRoot;
 import fi.ni.vo.Link;
 import fi.ni.vo.ValuePair;
@@ -33,15 +31,11 @@ public class Thing {
     // int pointed_count=0;
     Set<Thing> pointing_nodes = new HashSet<Thing>();
     public boolean is_grounded = false;
-    public String grounding_name=null;
-    public GroundingPath grounding_path=null;
     
     boolean literal_msg_done=false;
     
-    LinkedList<GroundingPath> incoming_groundLinks_lists = new LinkedList<GroundingPath>();
     int min_path_score=Integer.MAX_VALUE;
     long last_paths_crc=Long.MAX_VALUE;  // to test the change
-    Set<Long>  linkcrcs = new HashSet<Long>();
     int distance_from_element_tree=100;
     
     public internals i =new internals(this);;
@@ -54,92 +48,9 @@ public class Thing {
 		this.host = host;
 	    }
 
-	    public GroundingPath drum_getGroudingPath()
-	    {
-		if(grounding_path!=null)
-		    return grounding_path;
-		if(incoming_groundLinks_lists.size()==0)
-	          return null;
-		if(incoming_groundLinks_lists.size()==1)
-		{
-		        incoming_groundLinks_lists.get(0).same_score_count=1;
-		        if(!incoming_groundLinks_lists.get(0).disabled)
-			return incoming_groundLinks_lists.get(0);
-		}
-		
-		int min_score=Integer.MAX_VALUE;
-		int same_score_count=0;
-		GroundingPath result=null;
-		for(int n=0;n<incoming_groundLinks_lists.size();n++)
-		{
-		    GroundingPath tmplist=incoming_groundLinks_lists.get(n);
-		    if(!tmplist.disabled)
-		    {
-		     if(tmplist.score==min_score)
-		     {
-		        same_score_count++;
-		     }	   
-		     else if(tmplist.score<min_score)
-		     {
-			min_score=tmplist.score;
-			same_score_count=1;
-			result=tmplist;
-		     }
-		    }
-		    
-		}
-	        if(result==null)
-	            return null;
-		
-	        // The winners same count.. the others can have zero values
-	        result.same_score_count=same_score_count;
-	        grounding_path=result;
-		return result;
-	    }
-	
-	    public long drum_getpathsCRC()
-	    {
-		long ret=0;
-		for(int n=0;n<incoming_groundLinks_lists.size();n++)
-		{
-		    GroundingPath tl=incoming_groundLinks_lists.get(n);
-		    ret+=tl.getCRC32();
-		}
-	       return ret;
-	    }
-	    
-
 	    private boolean ready = true;
 	    private boolean touched = false;
 
-	    public void printOutIncomingLinks()
-	    {
-		GroundingPath gpath=drum_getGroudingPath();
-		if(gpath!=null)
-		if(gpath.same_score_count>1)
-		{
-		if(incoming_groundLinks_lists.size()==0)
-		    return;
-		System.out.println("---------------------------------------------------------");
-		System.out.println(host.line_number+": min score:"+host.min_path_score+" grounded:"+host.is_grounded+" by: "+drum_getGroudingPath().grounded_by.line_number);
-		for(int n=0;n<incoming_groundLinks_lists.size();n++)
-		{
-		    GroundingPath tmplist=incoming_groundLinks_lists.get(n);
-		    Thing gb=tmplist.grounded_by;
-		    System.out.print(gb.line_number+" s:"+tmplist.score+" same:"+tmplist.same_score_count);
-		    Thing lstart=gb;
-		    for(int i=0;i<tmplist.getList().size();i++)
-		    {
-			Link l=tmplist.getList().get(i);
-			Thing lend=l.getTheOtherEnd(lstart);
-			System.out.print(" "+lstart.line_number+"->"+l.property+"("+l.isTheWay(lstart)+")"+"->"+lend.line_number);	
-			lstart=lend;
-		    }
-		    System.out.println();
-		}
-		}
-	       
-	    }
 	    
 	    public String drum_getName()
 	    {
