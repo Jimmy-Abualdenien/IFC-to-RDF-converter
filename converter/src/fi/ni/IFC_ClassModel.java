@@ -265,7 +265,10 @@ public class IFC_ClassModel {
 			toRet.append(subject + " ifc:"
 					+ ExpressReader.formatProperty(vp.getName()));
 			if (Thing.class.isInstance(vp.getValue())) {
-				toRet.append("???" + deduceSubject((Thing) vp.getValue()) + ".\n");
+				toRet.append(" " + deduceSubject((Thing) vp.getValue()) + ".\n"); // Modified
+																				  // 13rd
+																				  // May
+																				  // 2013
 				continue;
 			}
 			toRet.append("  \"" + vp.getValue() + "\"");

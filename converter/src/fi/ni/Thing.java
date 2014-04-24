@@ -12,9 +12,11 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import fi.ni.InverseLinksList;
 import fi.ni.ifc2x3.IfcRoot;
 import fi.ni.vo.Link;
 import fi.ni.vo.ValuePair;
@@ -27,16 +29,6 @@ public class Thing {
     String thing_uri;
     public Long line_number;
     BigInteger global_id_value;
-
-    // int pointed_count=0;
-    Set<Thing> pointing_nodes = new HashSet<Thing>();
-    public boolean is_grounded = false;
-    
-    boolean literal_msg_done=false;
-    
-    int min_path_score=Integer.MAX_VALUE;
-    long last_paths_crc=Long.MAX_VALUE;  // to test the change
-    int distance_from_element_tree=100;
     
     public internals i =new internals(this);;
     public class internals
@@ -47,6 +39,8 @@ public class Thing {
 		super();
 		this.host = host;
 	    }
+
+	
 
 	    private boolean ready = true;
 	    private boolean touched = false;
@@ -135,7 +129,47 @@ public class Thing {
 		return ret;
 	    }
 
-	    @SuppressWarnings("unchecked")
+	    public List<ValuePair> drum_getNumberedListParameterAttributes() {
+		List<ValuePair> ret = new ArrayList<ValuePair>();
+		ret.add(new ValuePair("line_number", line_number));
+		Method method[] = host.getClass().getMethods();
+		for (int j = 0; j < method.length; j++) {
+		    try {
+			if (method[j].getName().startsWith("get")) {
+			    Object o = method[j].invoke(host);
+			    if (List.class.isInstance(o)) {
+				for (int n = 0; n < ((List<Object>) o).size(); n++) {
+				    Object o1 = ((List<Object>) o).get(n);
+				    if (String.class.isInstance(o1))
+					ret.add(new ValuePair(method[j].getName().substring(3)+n, o1));
+				    if (Double.class.isInstance(o1))
+					ret.add(new ValuePair(method[j].getName().substring(3)+n, o1));
+				    if (Long.class.isInstance(o1))
+					ret.add(new ValuePair(method[j].getName().substring(3)+n, o1));
+				    if (Date.class.isInstance(o1))
+					ret.add(new ValuePair(method[j].getName().substring(3)+n, o1));
+
+				}
+			    } else {
+				if (String.class.isInstance(o))
+				    ret.add(new ValuePair(method[j].getName().substring(3), o));
+				if (Double.class.isInstance(o))
+				    ret.add(new ValuePair(method[j].getName().substring(3), o));
+				if (Long.class.isInstance(o))
+				    ret.add(new ValuePair(method[j].getName().substring(3), o));
+				if (Date.class.isInstance(o))
+				    ret.add(new ValuePair(method[j].getName().substring(3), o));
+			    }
+
+			}
+		    } catch (Exception e) {
+			e.printStackTrace();
+		    }
+
+		}
+		return ret;
+	    }
+
 	    public List<ValuePair> drum_getParameterAttributeValues() {
 		List<ValuePair> ret = new ArrayList<ValuePair>();
 		ret.add(new ValuePair("line_number", line_number));
@@ -145,6 +179,8 @@ public class Thing {
 			if (method[j].getName().startsWith("get")) {
 			    Object o = method[j].invoke(host);
 			    if (List.class.isInstance(o))
+				ret.add(new ValuePair(method[j].getName().substring(3), o));
+			    if (Thing.class.isInstance(o))    // Modified 13rd May 2013
 				ret.add(new ValuePair(method[j].getName().substring(3), o));
 			    if (String.class.isInstance(o))
 				ret.add(new ValuePair(method[j].getName().substring(3), o));
@@ -435,5 +471,6 @@ public class Thing {
 	    return this.getClass().getSimpleName() + "(" + line_number + ")";
     }
 
+ 
     
 }
