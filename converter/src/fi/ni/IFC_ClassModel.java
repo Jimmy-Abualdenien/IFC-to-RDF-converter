@@ -65,8 +65,6 @@ import fi.ni.vo.ValuePair;
  *          Unported License. http://creativecommons.org/licenses/by/3.0/
  */
 public class IFC_ClassModel {
-
-	GroundingPathRegistry grounding_paths = new GroundingPathRegistry();
 	
 	/** The ifc_filename. */
 	final String ifc_filename;
