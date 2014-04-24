@@ -203,6 +203,26 @@ public class IFC_ClassModel {
 		}
 	}
 
+	public void listRDF(BufferedWriter out, String path) throws IOException {
+		try {
+			out.write("@prefix : <" + path + ">.\n");
+			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
+			out.write("@prefix ifc: <" + Namespace.IFC + "> .\n");
+			out.write("@prefix xsd: <" + Namespace.XSD + "> .\n");
+			out.write("\n");
+			
+			for (Map.Entry<Long, Thing> entry : object_buffer.entrySet()) {
+				Thing gobject = entry.getValue();
+				String triples = generateTriples(gobject);
+				out.write(triples);
+			}
+
+		} finally {
+			if(out!=null) out.close();
+		}
+	}
+
+	
 	private String deduceSubject(Thing pointer) {
 		String subject;
 		if (IfcRoot.class.isInstance(pointer)) {

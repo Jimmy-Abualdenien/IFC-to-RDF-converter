@@ -63,33 +63,6 @@ public class Link {
 	    return false;
     }
 
-    public String toString() {
-	String retval = "";
-	String t1_pad = "";
-	String t2_pad = "";
-	if (IfcRoot.class.isInstance(t1))
-	    t1_pad = "_";
-	if (IfcRoot.class.isInstance(t2))
-	    t2_pad = "_";
-	if (t1.is_grounded)
-	    t1_pad = ".";
-	if (t2.is_grounded)
-	    t2_pad = ".";
-	
-	
-
-	// return " "+t1_pad+t1.line_number+t1_pad + "-"+property+"-" +
-	// t2_pad+t2.line_number+t2_pad+" ";
-	// return
-	// " i"+t1.line_number+"("+t1_pad+t1.getClass().getSimpleName() +
-	// ")\t"+property+"\ti" +
-	// t2.line_number+"("+t2_pad+t2.getClass().getSimpleName()+") ";
-	// //CCMAPTools
-	retval += " i" + t1.line_number +""+ t1.getClass().getSimpleName() + "  -> i" + t2.line_number + t2.getClass().getSimpleName() + " [arrowsize=1.0, color=black, label=\"" + property + "\", labelangle=-25, \r\n" + "            labeldistance=0.3, labelfontsize=10, arrowtail=diamond\r\n"
-		+ "         ];\r\n";
-	return retval;
-    }
-
     public String neatString() {
 	String retval = "";
 	retval += " " + t1.line_number +"."+ t1.getClass().getSimpleName() + "  -" +property+"- "+
