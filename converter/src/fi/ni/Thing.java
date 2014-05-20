@@ -170,6 +170,7 @@ public class Thing {
 		return ret;
 	    }
 
+	    @SuppressWarnings("unchecked")
 	    public List<ValuePair> drum_getParameterAttributeValues() {
 		List<ValuePair> ret = new ArrayList<ValuePair>();
 		ret.add(new ValuePair("line_number", line_number));
@@ -178,6 +179,10 @@ public class Thing {
 		    try {
 			if (method[j].getName().startsWith("get")) {
 			    Object o = method[j].invoke(host);
+			    // Use these lines, if you want to remove the reverse links from the model:
+			    
+			    //if(InverseLinksList.class.isInstance(o))  // Modified 20th May 2014
+			    //	continue;
 			    if (List.class.isInstance(o))
 				ret.add(new ValuePair(method[j].getName().substring(3), o));
 			    if (Thing.class.isInstance(o))    // Modified 13rd May 2013
@@ -471,6 +476,11 @@ public class Thing {
 	    return this.getClass().getSimpleName() + "(" + line_number + ")";
     }
 
- 
+    public String toGWHTML() {
+	if (IfcRoot.class.isInstance(this))
+	    return this.getClass().getSimpleName() + "<font POINT-SIZE=\"6\">(" + ((IfcRoot) this).getGlobalId() + ")</font>";
+	else
+	    return this.getClass().getSimpleName() + "(" + line_number + ")";
+    }
     
 }

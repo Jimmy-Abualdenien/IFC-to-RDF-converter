@@ -13,6 +13,12 @@ import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
+/*
+ * @author Jyrki Oraskari
+ * @license This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+ * http://creativecommons.org/licenses/by/3.0/
+ */
+
 public class IFC2Jena {
 
 	OntModel model;
