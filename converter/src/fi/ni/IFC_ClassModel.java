@@ -28,23 +28,15 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 import java.util.Stack;
-import java.util.zip.CRC32;
 
-import org.Tree;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbcp.BasicDataSource;
 
-import fi.ni.ifc2x3.IfcOwnerHistory;
 import fi.ni.ifc2x3.IfcProject;
 import fi.ni.ifc2x3.IfcRoot;
 import fi.ni.rdf.Namespace;
@@ -52,10 +44,9 @@ import fi.ni.rdf.VirtConfig;
 import fi.ni.vo.AttributeVO;
 import fi.ni.vo.EntityVO;
 import fi.ni.vo.IFC_X3_VO;
-import fi.ni.vo.Link;
-import fi.ni.vo.Triple;
 import fi.ni.vo.TypeVO;
 import fi.ni.vo.ValuePair;
+import guidcompressor.GuidCompressor;
 
 /**
  * The Class IFC_ClassModel.
@@ -226,10 +217,7 @@ public class IFC_ClassModel {
 	private String deduceSubject(Thing pointer) {
 		String subject;
 		if (IfcRoot.class.isInstance(pointer)) {
-			byte bytecode[] = IFC_Base64.decode(((IfcRoot) pointer)
-					.getGlobalId());
-			String hex = new String(Hex.encodeHex(bytecode));
-			subject = ":GUID" + hex;
+			subject =":guid" + GuidCompressor.uncompressGuidString(((IfcRoot) pointer).getGlobalId());
 		} else {
 			subject = "_:" + this.ifc_model_name + "_iref_"
 					+ pointer.i.drum_getLine_number();
@@ -714,10 +702,7 @@ public class IFC_ClassModel {
 						String subject = filter_illegal_chars(":"
 								+ ifc_filename + "_i" + vo.getLine_num());
 						if (vo.getGid() != null) {
-							byte bytecode[] = IFC_Base64
-									.decode(filter_extras(vo.getGid()));
-							String hex = new String(Hex.encodeHex(bytecode));
-							subject = ":GID" + hex;
+							subject = ":guid" + GuidCompressor.uncompressGuidString(filter_extras(vo.getGid()));
 						}
 						for (int i = 0; i < li.size(); i++) {
 							IFC_X3_VO ivo = li.get(i);
