@@ -183,6 +183,23 @@ public class Thing {
 			    
 			    //if(InverseLinksList.class.isInstance(o))  // Modified 20th May 2014
 			    //	continue;
+			    if (IfcSet.class.isInstance(o)) {  // Modified 21st May 2014
+					for (int n = 0; n < ((List<Object>) o).size(); n++) {
+					    Object o1 = ((List<Object>) o).get(n);
+					    if (List.class.isInstance(o1))
+							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+						if (Thing.class.isInstance(o1))    
+							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+						if (String.class.isInstance(o1))
+							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+						if (Double.class.isInstance(o1))
+							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+						if (Long.class.isInstance(o1))
+							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+						if (Date.class.isInstance(o1))
+							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+					}
+			    }
 			    if (List.class.isInstance(o))
 				ret.add(new ValuePair(method[j].getName().substring(3), o));
 			    if (Thing.class.isInstance(o))    // Modified 13rd May 2013
