@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1467,7 +1467,12 @@ public class ExpressReader {
 				br.close();
 			}
 
-		} catch (IOException e) {
+		}
+		catch (FileNotFoundException fe) {
+		    System.err.println("The IFC Express file IFC2X3_Final.exp is missing.");
+		    System.exit(1);
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
