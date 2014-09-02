@@ -1494,19 +1494,19 @@ public class ExpressReader {
 		// er.outputIFCClasses();
 		//er.outputJavaClasses();
 
-		FileWriter fw = new FileWriter("out\\IFC2X3.owl");
+		FileWriter fw = new FileWriter("out\\IFC2X3_TC1.n3");
 		
 		BufferedWriter out = new BufferedWriter(fw);
 		// er.outputRDFS(out);
 		er.outputOWL(out);
 		
-		/*
+		
 		try {
 			out.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		*/
+		out.close();
 
 	}
 
