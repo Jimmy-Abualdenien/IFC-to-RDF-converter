@@ -1564,6 +1564,7 @@ public class ExpressReader {
 
 	public static void main(String[] args) throws IOException {
 		ExpressReader er = new ExpressReader("c:\\2014\\IFC2X3_Final.exp");
+//		ExpressReader er = new ExpressReader("samples\\IFC2X3_TC1.exp");
 		//er.outputIFCClasses();
 		er.outputJavaClasses();
 
@@ -1571,7 +1572,7 @@ public class ExpressReader {
 		
 		BufferedWriter out = new BufferedWriter(fw);
 		er.outputRDFS(out);
-		er.outputOWL(out);*/
+		er.outputOWL(out);
 		
 		
 		try {
