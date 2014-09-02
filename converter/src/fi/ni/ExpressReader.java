@@ -41,8 +41,29 @@ import fi.ni.vo.TypeVO;
  *  
  *  
  * @author Jyrki Oraskari
- * @license This work is licensed under a Creative Commons Attribution 3.0 Unported License.
- * http://creativecommons.org/licenses/by/3.0/
+ */
+/*
+The MIT License (MIT)
+
+Copyright (c) 2014 Jyrki Oraskari
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
  */
 
 public class ExpressReader {
@@ -467,8 +488,23 @@ public class ExpressReader {
 			out.write("/*\n");
 			out.write(" * IFC Java class for String valued unknown interface type\n");
 			out.write(" * @author Jyrki Oraskari\n");
-			out.write(" * @license This work is licensed under a Creative Commons Attribution 3.0 Unported License.\n");
-			out.write(" * http://creativecommons.org/licenses/by/3.0/ \n");
+		    out.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n");
+		    out.write("of this software and associated documentation files (the \"Software\"), to deal\n");
+		    out.write("in the Software without restriction, including without limitation the rights\n");
+		    out.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
+		    out.write("copies of the Software, and to permit persons to whom the Software is\n");
+		    out.write("furnished to do so, subject to the following conditions:\n");
+		    out.write("\n");
+		    out.write("The above copyright notice and this permission notice shall be included in all\n");
+		    out.write("copies or substantial portions of the Software.\n");
+		    out.write("\n");
+		    out.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
+		    out.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
+		    out.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
+		    out.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
+		    out.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
+		    out.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n");
+		    out.write("SOFTWARE.\n");
 			out.write(" */\n");
 			out.write("\n");
 
@@ -510,8 +546,27 @@ public class ExpressReader {
 				out.write("/*\n");
 				out.write(" * IFC type select 2 Java interface\n");
 				out.write(" * @author Jyrki Oraskari\n");
-				out.write(" * @license This work is licensed under a Creative Commons Attribution 3.0 Unported License.\n");
-				out.write(" * http://creativecommons.org/licenses/by/3.0/ \n");
+				out.write("The MIT License (MIT)\n");
+			    out.write("\n");
+			    out.write("Copyright (c) 2014 Jyrki Oraskari\n");
+			    out.write("\n");
+			    out.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n");
+			    out.write("of this software and associated documentation files (the \"Software\"), to deal\n");
+			    out.write("in the Software without restriction, including without limitation the rights\n");
+			    out.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
+			    out.write("copies of the Software, and to permit persons to whom the Software is\n");
+			    out.write("furnished to do so, subject to the following conditions:\n");
+			    out.write("\n");
+			    out.write("The above copyright notice and this permission notice shall be included in all\n");
+			    out.write("copies or substantial portions of the Software.\n");
+			    out.write("\n");
+			    out.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
+			    out.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
+			    out.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
+			    out.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
+			    out.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
+			    out.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n");
+			    out.write("SOFTWARE.\n");
 				out.write(" */\n");
 				out.write("\n");
 
@@ -546,9 +601,27 @@ public class ExpressReader {
 				out.write("\n");
 				out.write("/*\n");
 				out.write(" * IFC Java class\n");
-				out.write(" * @author Jyrki Oraskari\n");
-				out.write(" * @license This work is licensed under a Creative Commons Attribution 3.0 Unported License.\n");
-				out.write(" * http://creativecommons.org/licenses/by/3.0/ \n");
+				out.write("The MIT License (MIT)\n");
+			    out.write("\n");
+			    out.write("Copyright (c) 2014 Jyrki Oraskari\n");
+			    out.write("\n");
+			    out.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n");
+			    out.write("of this software and associated documentation files (the \"Software\"), to deal\n");
+			    out.write("in the Software without restriction, including without limitation the rights\n");
+			    out.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
+			    out.write("copies of the Software, and to permit persons to whom the Software is\n");
+			    out.write("furnished to do so, subject to the following conditions:\n");
+			    out.write("\n");
+			    out.write("The above copyright notice and this permission notice shall be included in all\n");
+			    out.write("copies or substantial portions of the Software.\n");
+			    out.write("\n");
+			    out.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
+			    out.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
+			    out.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
+			    out.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
+			    out.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
+			    out.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n");
+			    out.write("SOFTWARE.\n");
 				out.write(" */\n");
 				out.write("\n");
 
@@ -1490,15 +1563,15 @@ public class ExpressReader {
 	}
 
 	public static void main(String[] args) throws IOException {
-		ExpressReader er = new ExpressReader("samples\\IFC2X3_TC1.exp");
-		// er.outputIFCClasses();
-		//er.outputJavaClasses();
+		ExpressReader er = new ExpressReader("c:\\2014\\IFC2X3_Final.exp");
+		//er.outputIFCClasses();
+		er.outputJavaClasses();
 
 		FileWriter fw = new FileWriter("out\\IFC2X3_TC1.n3");
 		
 		BufferedWriter out = new BufferedWriter(fw);
-		// er.outputRDFS(out);
-		er.outputOWL(out);
+		er.outputRDFS(out);
+		er.outputOWL(out);*/
 		
 		
 		try {
