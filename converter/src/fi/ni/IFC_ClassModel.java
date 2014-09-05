@@ -166,6 +166,7 @@ public class IFC_ClassModel {
 		BufferedWriter out = null;
 		Connection c = null;
 		String prefix_query = "PREFIX : <" + path + "> "
+				+ "PREFIX instances: <http://drum.cs.hut.fi/instances#> "
 				+ "PREFIX owl: <" + Namespace.OWL + "> "
 				+ "PREFIX ifc: <" + Namespace.IFC + "> "
 				+ "PREFIX xsd: <" + Namespace.XSD + "> "
@@ -175,6 +176,7 @@ public class IFC_ClassModel {
 			//Setup file output
 			out = new BufferedWriter(new FileWriter(outputFileName));
 			out.write("@prefix : <" + path + ">.\n");
+			out.write("@prefix instances: <http://drum.cs.hut.fi/instances#>. \n");
 			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
 			out.write("@prefix ifc: <" + Namespace.IFC + "> .\n");
 			out.write("@prefix xsd: <" + Namespace.XSD + "> .\n");
@@ -219,6 +221,7 @@ public class IFC_ClassModel {
 	public void listRDF(BufferedWriter out, String path) throws IOException {
 		try {
 			out.write("@prefix : <" + path + ">.\n");
+			out.write("@prefix instances: <http://drum.cs.hut.fi/instances#>. \n");
 			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
 			out.write("@prefix ifc: <" + Namespace.IFC + "> .\n");
 			out.write("@prefix xsd: <" + Namespace.XSD + "> .\n");
@@ -238,12 +241,12 @@ public class IFC_ClassModel {
 	
 	private String deduceSubject(Thing pointer) {
 		String subject;
-		if (IfcRoot.class.isInstance(pointer)) {
+		/*if (IfcRoot.class.isInstance(pointer)) {
 			subject =":guid" + GuidCompressor.uncompressGuidString(((IfcRoot) pointer).getGlobalId());
-		} else {
-			subject = "_:" + this.ifc_model_name + "_iref_"
+		} else {*/
+			subject = "instances:" + this.ifc_model_name + "_iref_"
 					+ pointer.i.drum_getLine_number();
-		}
+		//}
 		return subject;
 
 	}
@@ -254,10 +257,10 @@ public class IFC_ClassModel {
 		StringBuffer toRet = new StringBuffer();
 
 		String subject = deduceSubject(pointer);
-		if (IfcRoot.class.isInstance(pointer)) {
-			toRet.append(subject + " owl:sameAs _:" + this.ifc_model_name
+		/*if (IfcRoot.class.isInstance(pointer)) {
+			toRet.append(subject + " owl:sameAs instances:" + this.ifc_model_name
 					+ "_iref_" + pointer.i.drum_getLine_number() + ".\n");
-		}
+		}*/
 		toRet.append(subject + " a ifc:" + pointer.getClass().getSimpleName()
 				+ ".\n");
 

@@ -58,11 +58,11 @@ public class IFC_Converter {
 		
 	}
 	
-	public static void convert(String express_file, String ifc_file, String output_file, String model_name, String path, VirtConfig virt) {
+	public static void convert(String express_file, String ifc_file, String output_file, String model_version_name, String path, VirtConfig virt) {
 
 		long t0 = System.currentTimeMillis();
 		ExpressReader er = new ExpressReader(express_file);
-		IFC_ClassModel model = new IFC_ClassModel(ifc_file, er.getEntities(), er.getTypes(), model_name);
+		IFC_ClassModel model = new IFC_ClassModel(ifc_file, er.getEntities(), er.getTypes(), model_version_name);
 				
 		try {
 			model.listRDF(output_file, path, virt);
@@ -79,7 +79,7 @@ public class IFC_Converter {
 
 	public static void main(String[] args) {
 		if(args.length != 4 && !(args.length == 2 && args[0].startsWith("-json")))
-		 	System.out.println("Usage:  java IFC_Converter express_filename ifc_filename output_filename model_name \nExample: java IFC_Converter c:\\jo\\IFC2X3_TC1.exp C:\\jo\\sample.ifc c:\\jo\\output_rdf.txt sample");
+		 	System.out.println("Usage:  java IFC_Converter express_filename ifc_filename output_filename model__version_name \nExample: java IFC_Converter c:\\jo\\IFC2X3_TC1.exp C:\\jo\\sample.ifc c:\\jo\\output_rdf.txt sample_version");
 		else {
 			if(args.length == 4) {
 				convert(args[0], args[1], args[2], args[3], DEFAULT_PATH, null);

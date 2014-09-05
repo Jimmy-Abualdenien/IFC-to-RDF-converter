@@ -1,0 +1,26 @@
+ISO-10303-21;
+HEADER;
+FILE_DESCRIPTION (('ViewDefinition [None, 
+  None]'), '2;1');
+FILE_NAME ('tiny.ifc', '2014-01-05T13:22:56', 
+  ('Architect'), ('Demonstration'), 
+  'Manual', 
+  'Manual', 'The authorising person');
+FILE_SCHEMA (('IFC2X3'));
+ENDSEC;
+
+DATA;
+#1 = IFCPROJECT('0YvctVUKr0kugbFTf52O8L', #2, 'Default Project', 
+     'Description of Default Project', $, $, $, (#20), #7);
+#2 = IFCOWNERHISTORY(#3, #6, $, .ADDED., $, $, $, 1222222222);
+#3 = IFCPERSONANDORGANIZATION(#4, #5, $);
+#4 = IFCPERSON('ID001', 'Familyname', 'First Name', $, $, $, $, $);
+#5 = IFCORGANIZATION($, 'TNO', 'TNO Building Innovation', $, $);
+#6 = IFCAPPLICATION(#5, '0.10', 'Test Application', 'TA 1001');
+#7 = IFCUNITASSIGNMENT((#8));
+#8 = IFCSIUNIT(*, .LENGTHUNIT., $, .METRE.);
+#20 = IFCGEOMETRICREPRESENTATIONCONTEXT($, 'Model', 3, 1.000E-5, #21, $);
+#21 = IFCAXIS2PLACEMENT3D(#22, $, $);
+#22 = IFCCARTESIANPOINT((1., 1., 1.));
+ENDSEC;
+END-ISO-10303-21;
