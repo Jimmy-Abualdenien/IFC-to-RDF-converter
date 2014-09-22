@@ -11,7 +11,6 @@ public class Namespace {
 	public static final String DCT = "http://purl.org/dc/terms/";
 	
 	
-	public static final String IFC = "http://drum.cs.hut.fi/ontology/ifc2x3#";
-	
+	public static String IFC = "http://buildingsmart.org/ontology/ifc2x3#";
 	
 }
