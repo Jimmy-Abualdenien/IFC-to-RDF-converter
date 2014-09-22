@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.buildingsmart.InverseLinksList;
-import org.buildingsmart.ifc2x3.IfcRoot;
 import org.buildingsmart.vo.Link;
 import org.buildingsmart.vo.ValuePair;
 
@@ -57,17 +56,7 @@ public class Thing {
 
 	    private boolean ready = true;
 	    private boolean touched = false;
-
-	    
-	    public String drum_getName()
-	    {
-		if(IfcRoot.class.isInstance(this))
-		    return ((IfcRoot)host).getGlobalId();
-		else
-		    return line_number.toString();
-		
-	    }
-	    
+	   	    
 	    public BigInteger drum_getGlobal_id_value() {
 		return global_id_value;
 	    }
@@ -500,16 +489,16 @@ public class Thing {
     
     @Override
     public String toString() {
-	if (IfcRoot.class.isInstance(this))
-	    return this.getClass().getSimpleName() + "(" + ((IfcRoot) this).getGlobalId() + ")";
-	else
+//	if (IfcRoot.class.isInstance(this))
+//	    return this.getClass().getSimpleName() + "(" + ((IfcRoot) this).getGlobalId() + ")";
+//	else
 	    return this.getClass().getSimpleName() + "(" + line_number + ")";
     }
 
     public String toGWHTML() {
-	if (IfcRoot.class.isInstance(this))
-	    return this.getClass().getSimpleName() + "<font POINT-SIZE=\"6\">(" + ((IfcRoot) this).getGlobalId() + ")</font>";
-	else
+//	if (IfcRoot.class.isInstance(this))
+//	    return this.getClass().getSimpleName() + "<font POINT-SIZE=\"6\">(" + ((IfcRoot) this).getGlobalId() + ")</font>";
+//	else
 	    return this.getClass().getSimpleName() + "(" + line_number + ")";
     }
     

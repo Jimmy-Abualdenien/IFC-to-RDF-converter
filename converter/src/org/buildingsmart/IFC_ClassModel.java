@@ -2,17 +2,32 @@
  * IFC_ClassModel is a class to parse any IFC STEP coded file.
  * - creates RDF of the internal representation
  * - creates internal java class representation of the IFC file
- * - outputs explanation of IFC model differences
- * - calculates crc32 for a subtree of an element
- * - returns nearest matching element based on similarity measure
  * - returns tree of the building elements
  * 
  * @author Jyrki Oraskari
- * 
- * @license This work is licensed under a Creative Commons Attribution 3.0
- * Unported License.
- * http://creativecommons.org/licenses/by/3.0/
+ * @author of modifications Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  */
+
+/*
+ * The GNU Affero General Public License
+ * 
+ * Copyright (c) 2014 Jyrki Oraskari (original)
+ * Copyright (c) 2014 Pieter Pauwels (modifications)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package org.buildingsmart;
 
 import java.io.BufferedReader;
@@ -20,15 +35,19 @@ import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -37,79 +56,38 @@ import java.util.Stack;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbcp.BasicDataSource;
 
-import org.buildingsmart.ifc2x3.IfcProject;
-import org.buildingsmart.ifc2x3.IfcRoot;
 import fi.ni.rdf.Namespace;
-import fi.ni.rdf.VirtConfig;
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFC_X3_VO;
 import org.buildingsmart.vo.TypeVO;
 import org.buildingsmart.vo.ValuePair;
+
+import com.hp.hpl.jena.rdf.model.InfModel;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 import guidcompressor.GuidCompressor;
 
-/**
- * The Class IFC_ClassModel.
- * 
- * @author Jyrki Oraskari
- */
-
-/*
-The GNU Affero General Public License
-
-Copyright (c) 2014 Jyrki Oraskari
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
 public class IFC_ClassModel {
 	
-	/** The ifc_filename. */
 	final String ifc_filename;
-
 	final String ifc_model_name;
-
-	/** The linemap. */
 	private Map<Long, IFC_X3_VO> linemap = new HashMap<Long, IFC_X3_VO>();
-
-	/** The entities. */
 	final Map<String, EntityVO> entities;
-
-	/** The types. */
 	final Map<String, TypeVO> types;
-
-	/** The object_buffer. */
 	public final Map<Long, Thing> object_buffer = new HashMap<Long, Thing>(); // line_number,
-
-	/** The gid_map. */
 	public final Map<String, Thing> gid_map = new HashMap<String, Thing>(); // GID,
-	// Thing
-	/** The root. */
-	IfcProject root; // Thing
-
-	/**
-	 * Gets the linemap.
-	 * 
-	 * @return the linemap
-	 */
-	public Map<Long, IFC_X3_VO> getLinemap() {
-		return linemap;
-	}
-
+	private Thing root;
 	public boolean has_duplicate_guids = false;
 
 	/**
-	 * Instantiates a new iF c_ class model.
+	 * Instantiates a new IFC_ClassModel.
 	 * 
 	 * @param model_file
 	 *            the name of the IFC file to be read in
@@ -131,19 +109,26 @@ public class IFC_ClassModel {
 
 		for (Map.Entry<Long, Thing> entry : object_buffer.entrySet()) {
 			Thing gobject = entry.getValue();
-			if (IfcRoot.class.isInstance(gobject)) {
-				IfcRoot t = (IfcRoot) gobject;
-				Thing tmp = gid_map.put(t.getGlobalId(), t);
-				if (tmp != null) {
-					has_duplicate_guids = true;
-					System.err.println("Duplicate GUID:" + tmp.line_number
-							+ " - " + t.line_number);
-				}
 
-			}
-			if (IfcProject.class.isInstance(gobject)) {
-				root = (IfcProject) gobject;
-			}
+			Class c = gobject.getClass();
+			
+			if (c.getSimpleName().equalsIgnoreCase("IfcProject"))
+				root = (Thing) gobject;
+				
+//			if (IfcRoot.class.isInstance(gobject)) {
+//				IfcRoot t = (IfcRoot) gobject;
+//				Thing tmp = gid_map.put(t.getGlobalId(), t);
+//				if (tmp != null) {
+//					has_duplicate_guids = true;
+//					System.err.println("Duplicate GUID:" + tmp.line_number
+//							+ " - " + t.line_number);
+//				}
+//
+//			}
+//				
+//			if (IfcProject.class.isInstance(gobject)) {
+//				root = (IfcProject) gobject;
+//			}
 		}
 		// Save memory
 		linemap.clear();
@@ -156,67 +141,10 @@ public class IFC_ClassModel {
 
 	// ==============================================================================================================================
 
-	public void listRDF(String outputFileName, String path, VirtConfig virt) throws IOException, SQLException {
-
-		BufferedWriter out = null;
-		Connection c = null;
-		String prefix_query = "PREFIX : <" + path + "> "
-				+ "PREFIX instances: <http://drum.cs.hut.fi/instances#> "
-				+ "PREFIX owl: <" + Namespace.OWL + "> "
-				+ "PREFIX ifc: <" + Namespace.IFC + "> "
-				+ "PREFIX xsd: <" + Namespace.XSD + "> "
-				+ "INSERT IN GRAPH <" + path + "> { ";
-		
-		try {
-			//Setup file output
-			out = new BufferedWriter(new FileWriter(outputFileName));
-			out.write("@prefix : <" + path + ">.\n");
-			out.write("@prefix instances: <http://drum.cs.hut.fi/instances#>. \n");
-			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
-			out.write("@prefix ifc: <" + Namespace.IFC + "> .\n");
-			out.write("@prefix xsd: <" + Namespace.XSD + "> .\n");
-			out.write("\n");
-			
-			//If necessary, setup virtuoso connection
-			if(virt != null){
-				BasicDataSource dataSource = new BasicDataSource();
-				dataSource.setUsername(virt.user);
-				dataSource.setPassword(virt.password);
-				dataSource.setUrl(virt.jdbc_uri);
-				dataSource.setMaxActive(100);
-				dataSource.setDriverClassName("virtuoso.jdbc4.Driver");
-				c = dataSource.getConnection();
-			}
-
-			for (Map.Entry<Long, Thing> entry : object_buffer.entrySet()) {
-				Thing gobject = entry.getValue();
-				String triples = generateTriples(gobject);
-				out.write(triples);
-				
-				if(virt != null){
-					Statement stmt = c.createStatement();
-					StringBuilder queryString = new StringBuilder();
-					queryString.append(prefix_query);
-					queryString.append(triples);
-					queryString.append("}");
-					boolean more = stmt.execute("sparql " + queryString.toString());
-					if (!more) {
-						System.err.println("INSERT failed.");
-					}
-					if(stmt != null) stmt.close();
-				}
-			}
-
-		} finally {
-			if(out!=null) out.close();
-			if(c!=null) c.close();
-		}
-	}
-
 	public void listRDF(BufferedWriter out, String path) throws IOException {
 		try {
 			out.write("@prefix : <" + path + ">.\n");
-			out.write("@prefix instances: <http://drum.cs.hut.fi/instances#>. \n");
+			out.write("@prefix instances: <" + path + ">. \n");
 			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
 			out.write("@prefix ifc: <" + Namespace.IFC + "> .\n");
 			out.write("@prefix xsd: <" + Namespace.XSD + "> .\n");
@@ -1140,24 +1068,22 @@ public class IFC_ClassModel {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
-
-	/**
-	 * Gets the object_buffer.
-	 * 
-	 * @return the object_buffer
-	 */
+	
 	public Map<Long, Thing> getObject_buffer() {
 		return object_buffer;
 	}
 
-	public IfcProject getRoot() {
+	public Thing getRoot() {
 		return root;
 	}
 
-	public void setRoot(IfcProject root) {
+	public void setRoot(Thing root) {
 		this.root = root;
+	}
+
+	public Map<Long, IFC_X3_VO> getLinemap() {
+		return linemap;
 	}
 
 }
