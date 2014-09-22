@@ -28,45 +28,36 @@ import org.buildingsmart.vo.PropertyVO;
 import org.buildingsmart.vo.TypeVO;
 
 /*
- * ExpressIFC_ClassReader reads EXPPRESS file11 specification of the IFC files and creates 
+ * ExpressReader reads EXPRESS file11 specification of the IFC files and creates 
  * an internal representation of it.
  * 
  * The usage:
- * ExpressIFC_ClassReader er = new ExpressIFC_ClassReader(file name);
+ * ExpressReader er = new ExpressReader(file name);
  * 
- * - outputRDFS(BufferedWriter x) outputs RDFS of the read class hierarchy.
- * - outputOWL(BufferedWriter x) outputs OWL description of the read class hierarchy.
- * - outputIFCClasses() summarizes the model
- * - outputJavaClasses() outputs java classes of the model as files to the specified directory
- *  
  *  - getEntities() - gives map of Entities in IFC
  *  - getTypes()    - gives map of Types in IFC
- *  
- *  
+ *   
  * @author Jyrki Oraskari
+ * @author of modifications Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  */
+
 /*
-The MIT License (MIT)
-
-Copyright (c) 2014 Jyrki Oraskari
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+ * The GNU Affero General Public License
+ * 
+ * Copyright (c) 2014 Jyrki Oraskari (original)
+ * Copyright (c) 2014 Pieter Pauwels (modifications)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
  */
 
 public class ExpressReader {
