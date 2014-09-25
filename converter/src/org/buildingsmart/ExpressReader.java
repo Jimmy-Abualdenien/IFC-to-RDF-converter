@@ -10,10 +10,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -24,6 +26,8 @@ import fi.ni.rdf.Namespace;
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.InverseVO;
+import org.buildingsmart.vo.NamedIndividualVO;
+import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.PropertyVO;
 import org.buildingsmart.vo.TypeVO;
 
@@ -72,6 +76,7 @@ public class ExpressReader {
 	
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
+	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();;
 	private Map<String, String> interfaces = new HashMap<String, String>();
 	private Map<String, AttributeVO> attributes = new HashMap<String, AttributeVO>();
 //	private Map<String, PropertyVO> properties = new HashMap<String, PropertyVO>();	
@@ -107,13 +112,13 @@ public class ExpressReader {
 		ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");//"samples\\"+outputschema+".exp");
 		er.readSpec();
 		er.buildExpressStructure();
-		er.printIFCClassesInLog();
+//		er.printIFCClassesInLog();
 		
-		JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities, er.interfaces, er.types, er.interface_aliases);
-		jw.outputJavaClasses();
+//		JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities, er.interfaces, er.types, er.interface_aliases);
+//		jw.outputJavaClasses();
 
-		OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities, er.types, er.siblings);
-		ow.outputRDFS();
+		OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities, er.types, er.siblings, er.enumIndividuals);
+//		ow.outputRDFS();
 		ow.outputOWL();
 		//FileWriter fw = new FileWriter("out\\"+outputschema+".n3");
 		
@@ -182,6 +187,8 @@ public class ExpressReader {
 	
 	private void generateInterfaces() throws IOException{
 		logger.write("Generating interfaces" + "\r\n");
+		ArrayList<String> doublegeneratednamedindividuals = new ArrayList<String>(); 
+		HashMap<String,NamedIndividualVO> alreadygeneratednamedindividuals = new HashMap<String, NamedIndividualVO>();
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
 			TypeVO vo = entry.getValue();
 			logger.write("found : " + vo.toString() + "\r\n");
@@ -196,6 +203,24 @@ public class ExpressReader {
 				else{
 					logger.write("No entityVO element found for " + vo.getSelected_entities().get(n) + " ( " + vo.getName() + " ) --> type referenced by SELECT type" + "\r\n");
 				}
+			}
+			for(int n = 0;  n < vo.getEnum_entities().size(); n++) {
+				if(!doublegeneratednamedindividuals.contains(vo.getEnum_entities().get(n))){
+					if(alreadygeneratednamedindividuals.containsKey(vo.getEnum_entities().get(n))){
+						doublegeneratednamedindividuals.add(vo.getEnum_entities().get(n));
+						NamedIndividualVO firstind = (NamedIndividualVO)alreadygeneratednamedindividuals.get(vo.getEnum_entities().get(n));
+						firstind.setNamedIndividual(firstind.getEnumName()+"_"+firstind.getOriginalNameOfIndividual());
+						enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
+					}
+					else
+					{
+						NamedIndividualVO ind = new NamedIndividualVO(vo.getName(), vo.getEnum_entities().get(n));
+						enumIndividuals.add(ind);
+						alreadygeneratednamedindividuals.put(vo.getEnum_entities().get(n), ind);
+					}
+				}
+				else
+					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
 			}
 		}
 		logger.write("interfaces generated" + "\r\n" + "\r\n");
@@ -390,6 +415,7 @@ public class ExpressReader {
 	private static final int TYPE_SELECT = 102;
 	private static final int TYPE_ENUMERATION = 103;
 	private static final int TYPE_ENUMERATION_OF = 104;
+	private static final int TYPE_LIST = 105;
 
 	private static final int ENTITY_STATE = 2;
 	private static final int ENTITY_READY = 201;
@@ -441,6 +467,7 @@ public class ExpressReader {
 				break;
 			}
 			if (txt.equalsIgnoreCase("END_SCHEMA;"))
+				break;
 				//System.out.println("end of schema");
 			break;
 
@@ -480,15 +507,39 @@ public class ExpressReader {
 
 			} else if (txt.equalsIgnoreCase("ENUMERATION")) {
 				state = TYPE_ENUMERATION;
-			} else {
+			}
+			else if(isAllUpper(txt)){
+				if(txt.startsWith("ARRAY") || txt.startsWith("SET") || txt.startsWith("LIST"))
+					state = TYPE_LIST;
+				else{
+					// primarytypes like REAL/INTEGER/STRING/...
+					new PrimaryTypeVO(txt);
+					state = INIT_STATE;
+				}
+				txt = formatClassName(txt);
+			}
+			else {
+				// references to TypeVOs
 				state = INIT_STATE;
 			}
-			//WARNING: the IfcLabel element is also considered as a "primaryType", seems to be wrong.
-			current_type.setPrimarytype(formatClassName(txt));
+			current_type.setPrimarytype(txt);
+			break;
+			
+		case TYPE_LIST:
+			//LIST [3:4] OF INTEGER
+			//ARRAY [1:2] OF REAL;
+			//SET [1:?] OF IfcPropertySetDefinition;
+			if (!txt.endsWith(";")) {
+				if (current_type != null)
+					current_type.setPrimarytype(current_type.getPrimarytype() + " " + txt);
+			} else {
+				if (current_type != null)
+					current_type.setPrimarytype(current_type.getPrimarytype() + " " + txt);
+				state = INIT_STATE;
+			}
 			break;
 
 		case TYPE_SELECT:
-
 			if (txt.endsWith(";")) {
 				String txt_t = formatClassName(txt);
 				if (current_type != null)
@@ -788,6 +839,15 @@ public class ExpressReader {
 		while (st.hasMoreTokens()) {
 			state_machine(st.nextToken());
 		}
+	}
+	
+	public static boolean isAllUpper(String s) {
+	    for(char c : s.toCharArray()) {
+	       if(Character.isLetter(c) && Character.isLowerCase(c)) {
+	           return false;
+	        }
+	    }
+	    return true;
 	}
 	
 	//ACCESSORS	
