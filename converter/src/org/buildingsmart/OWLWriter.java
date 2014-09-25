@@ -359,15 +359,30 @@ public class OWLWriter {
 			//Write classes
 			out.write("# writing entity class\n");
 			out.write("ifc:" + evo.getName() + "\n");
-			out.write("\ta owl:Class.\n");
+			out.write("\ta owl:Class ;\n");
 			if (evo.getSuperclass() != null)
 				out.write("\trdfs:subClassOf ifc:" + evo.getSuperclass()
-						+ ";\n");
+						+ " ;\n");
+			if(evo.isAbstractSuperclass()){
+				out.write("\towl:equivalentClass [" + "\n");
+				out.write("\t\ta owl:Class ;" + "\n");
+				out.write("\t\towl:unionOf ( ");
+				Set l = evo.getSubClassList();
+				for (Iterator<String> lit = l.iterator(); lit.hasNext(); ) {
+					String x = lit.next();
+					if ( ! lit.hasNext())
+						out.write("ifc:" + x);
+					else
+						out.write("ifc:" + x + ", ");
+				}
+				out.write(" ) ." + "\n");
+				out.write("\t\t] ;" + "\n");
+			}
 
 			//Writing disjointness
 			out.write("# writing disjoint\n");
 			if (sibtxt.length() > 0)
-				out.write("\towl:disjointWith " + sibtxt.toString() + ";\n");
+				out.write("\towl:disjointWith " + sibtxt.toString() + " ;\n");
 
 			//Writing properties
 			out.write("# writing properties\n");

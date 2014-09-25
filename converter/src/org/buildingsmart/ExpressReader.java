@@ -594,6 +594,7 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("SUPERTYPE")) {
 				state = ENTITY_SUPERTYPE;
 			} else if (txt.equalsIgnoreCase("ABSTRACT")) {
+				current_entity.setAbstractSuperclass(true);
 				state = ENTITY_SUPERTYPE;
 			} else if (txt.equalsIgnoreCase("INVERSE")) {
 				state = ENTITY_INVERSE_STATE;
@@ -675,16 +676,20 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
 			} else {
-				if (txt.contains(";"))
+				if (txt.contains(";")){
+					current_entity.setSubClassList(current_sibling_set);
+					state = ENTITY_STATE;					
+				}
+				if (txt.contains(")")){
+					current_entity.setSubClassList(current_sibling_set);
 					state = ENTITY_STATE;
-				if (txt.contains(")"))
-					state = ENTITY_STATE;
+				}
 				String sibstr = filter_extras(txt);
 				current_sibling_set.add(sibstr);
 				@SuppressWarnings("rawtypes")
 				Set s = this.siblings.get(sibstr);
 				if (s != null)
-					System.err.println("DUBLICATE: " + sibstr);
+					System.err.println("DUPLICATE: " + sibstr);
 				else
 					this.siblings.put(sibstr, current_sibling_set);
 			}

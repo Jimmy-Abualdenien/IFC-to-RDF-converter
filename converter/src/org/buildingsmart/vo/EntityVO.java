@@ -1,9 +1,11 @@
 package org.buildingsmart.vo;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /*
 The GNU Affero General Public License
@@ -32,6 +34,10 @@ public class EntityVO {
 
 	private List<AttributeVO> derived_attribute_list = new LinkedList<AttributeVO>();
 	private List<InverseVO> derived_inverse_list = new LinkedList<InverseVO>();
+	
+	private String superclass;
+	private boolean abstractsuperclass = false;
+	private Set<String> subClassList = new HashSet<String>();
 
 	public List<InverseVO> getDerived_inverse_list() {
 		return derived_inverse_list;
@@ -57,8 +63,6 @@ public class EntityVO {
 		this.derived_attribute_list = derived_list;
 	}
 
-	String superclass;
-
 	public EntityVO(String name) {
 		super();
 		this.name = name;
@@ -79,9 +83,17 @@ public class EntityVO {
 	public String getSuperclass() {
 		return superclass;
 	}
-
+	
 	public void setSuperclass(String superclass) {
 		this.superclass = superclass;
+	}	
+
+	public void setAbstractSuperclass(boolean abstractsuperclass){
+		this.abstractsuperclass = abstractsuperclass;
+	}
+
+	public boolean isAbstractSuperclass(){
+		return abstractsuperclass;
 	}
 
 	public String getName() {
@@ -106,6 +118,21 @@ public class EntityVO {
 				+ ", inverses=" + inverses + ", interfaces=" + interfaces
 				+ ", derived_attribute_list=" + derived_attribute_list
 				+ ", derived_inverse_list=" + derived_inverse_list
-				+ ", superclass=" + superclass + "]";
+				+ ", superclass=" + superclass 
+				+ ", abstractsuperclass=" + abstractsuperclass + "]";
+	}
+
+	/**
+	 * @return the subClassList
+	 */
+	public Set<String> getSubClassList() {
+		return subClassList;
+	}
+
+	/**
+	 * @param subClassList the subClassList to set
+	 */
+	public void setSubClassList(Set<String> subClassList) {
+		this.subClassList = subClassList;
 	}
 }
