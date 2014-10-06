@@ -21,22 +21,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 public class AttributeVO {
 	private String name;
+	private String originalName;
+	private EntityVO domain;
+	
+	private boolean set = false;
+	private boolean list = false;
+	private int minCard = -1;
+	private int maxCard = -1;
+	private boolean optional = false;
+	
+	
 	private TypeVO type;
 	boolean unique = false;
 	private boolean reverse_pointer; // defined in another class
 	boolean isOne2One = false;
 
 	private InverseVO points_from;
-	private boolean set = false;
-	private boolean list = false;
 
-	public AttributeVO(String name, TypeVO type, boolean is_set, boolean is_list) {
+	public AttributeVO(String name, TypeVO type, boolean is_set, boolean is_list, int minCard, int maxCard, boolean is_optional) {
 		super();
 		this.name = name;
 		this.type = type;
 		this.reverse_pointer = false;
 		this.set = is_set;
 		this.list = is_list;
+		this.setMinCard(minCard);
+		this.setMaxCard(maxCard);
+		this.setOptional(is_optional);
 	}
 
 	public boolean isSet() {
@@ -55,12 +66,44 @@ public class AttributeVO {
 		this.list = list;
 	}
 
+	public int getMinCard() {
+		return minCard;
+	}
+
+	public void setMinCard(int minCard) {
+		this.minCard = minCard;
+	}
+
+	public int getMaxCard() {
+		return maxCard;
+	}
+
+	public void setMaxCard(int maxCard) {
+		this.maxCard = maxCard;
+	}
+
+	public boolean isOptional() {
+		return optional;
+	}
+
+	public void setOptional(boolean optional) {
+		this.optional = optional;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getOriginalName() {
+		return originalName;
+	}
+
+	public void setOriginalName(String originalName) {
+		this.originalName = originalName;
 	}
 
 	public TypeVO getType() {
@@ -101,6 +144,14 @@ public class AttributeVO {
 
 	public void setOne2One(boolean isOne2One) {
 		this.isOne2One = isOne2One;
+	}
+
+	public EntityVO getDomain() {
+		return domain;
+	}
+
+	public void setDomain(EntityVO domain) {
+		this.domain = domain;
 	}
 
 	@Override

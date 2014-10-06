@@ -1,16 +1,15 @@
 package org.buildingsmart.vo;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /*
 The GNU Affero General Public License
 
 Copyright (c) 2014 Jyrki Oraskari
+Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -30,7 +29,7 @@ public class EntityVO {
 	private String name;
 	private List<AttributeVO> attributes = new LinkedList<AttributeVO>();
 	private List<InverseVO> inverses = new LinkedList<InverseVO>();
-	private List<String> interfaces = new LinkedList<String>();
+//	private List<String> interfaces = new LinkedList<String>();
 
 	private List<AttributeVO> derived_attribute_list = new LinkedList<AttributeVO>();
 	private List<InverseVO> derived_inverse_list = new LinkedList<InverseVO>();
@@ -104,18 +103,19 @@ public class EntityVO {
 		this.name = name;
 	}
 
-	public List<String> getInterfaces() {
-		return interfaces;
-	}
-
-	public void setInterfaces(List<String> interfaces) {
-		this.interfaces = interfaces;
-	}
+//	public List<String> getInterfaces() {
+//		return interfaces;
+//	}
+//
+//	public void setInterfaces(List<String> interfaces) {
+//		this.interfaces = interfaces;
+//	}
 
 	@Override
 	public String toString() {
 		return "EntityVO [name=" + name + ", attributes=" + attributes
-				+ ", inverses=" + inverses + ", interfaces=" + interfaces
+				+ ", inverses=" + inverses 
+//				+ ", interfaces=" + interfaces
 				+ ", derived_attribute_list=" + derived_attribute_list
 				+ ", derived_inverse_list=" + derived_inverse_list
 				+ ", superclass=" + superclass 

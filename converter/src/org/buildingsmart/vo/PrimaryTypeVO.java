@@ -19,11 +19,9 @@ public class PrimaryTypeVO {
 			this.pTypeName = pTypeName;
 			listOfPrimaryTypes.add(this);
 		}
-	}
+	}	
 	
-	
-	
-	private static PrimaryTypeVO getPrimaryTypeVO(String PTypeName){
+	public static PrimaryTypeVO getPrimaryTypeVO(String PTypeName){
 		for (PrimaryTypeVO pt : listOfPrimaryTypes){
 			if (pt.pTypeName.equalsIgnoreCase(PTypeName)) return pt;
 		}
@@ -41,8 +39,8 @@ public class PrimaryTypeVO {
 		else if(pTypeName.equalsIgnoreCase("INTEGER")) return "integer";
 		else if(pTypeName.equalsIgnoreCase("NUMBER")) return "integer";
 		else if(pTypeName.equalsIgnoreCase("STRING")) return "string";
-		else if(pTypeName.equalsIgnoreCase("STRING(22)")) return "string";
-		else if(pTypeName.equalsIgnoreCase("STRING(255)")) return "string";
+		else if(pTypeName.equalsIgnoreCase("STRING22")) return "string";
+		else if(pTypeName.equalsIgnoreCase("STRING255")) return "string";
 		else if(pTypeName.equalsIgnoreCase("LOGICAL")) return "boolean";
 		return "XSDTYPE";
 	}

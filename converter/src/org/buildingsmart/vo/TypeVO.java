@@ -25,8 +25,9 @@ import java.util.List;
 public class TypeVO {
 	private String name;
 	private String primarytype;
-	private List<String> selected_entities = new LinkedList<String>();
+	private List<String> select_entities = new LinkedList<String>();
 	private List<String> enum_entities = new LinkedList<String>();
+	private int[] listCardinalities = new int[2];
 
 	public TypeVO(String name) {
 		super();
@@ -48,12 +49,12 @@ public class TypeVO {
 		this.name = name;
 	}
 
-	public List<String> getSelected_entities() {
-		return selected_entities;
+	public List<String> getSelect_entities() {
+		return select_entities;
 	}
 
-	public void setSelected_entities(List<String> selected_entities) {
-		this.selected_entities = selected_entities;
+	public void setSelect_entities(List<String> select_entities) {
+		this.select_entities = select_entities;
 	}
 
 	public String getPrimarytype() {
@@ -72,9 +73,16 @@ public class TypeVO {
 		this.enum_entities = enum_entities;
 	}
 
-	@Override
-	public String toString() {
-	    return "TypeVO [name=" + name + ", primarytype=" + primarytype + ", selected_entities=" + selected_entities + ", enum_entities=" + enum_entities + "]";
+	public int[] getListCardinalities() {
+		return listCardinalities;
 	}
 
+	public void setListCardinalities(int[] listCardinalities) {
+		this.listCardinalities = listCardinalities;
+	}
+
+	@Override
+	public String toString() {
+	    return "TypeVO [name=" + name + ", primarytype=" + primarytype + ", select_entities=" + select_entities + ", enum_entities=" + enum_entities + "]";
+	}
 }

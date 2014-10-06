@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 package org.buildingsmart.vo;
 
 public class NamedIndividualVO {
+	
 	private String enumName;
 	private String namedIndividual;
 	private String originalNameOfIndividual;
