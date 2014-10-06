@@ -31,6 +31,7 @@ public class PropertyVO {
 	private boolean isList = false;
 	private int minCardinality = -1;
 	private int maxCardinality = -1;
+	private PropertyVO inverseProperty = null;
 	
 	private List<String> range_selectEntities = null;
 	private String range=null;
@@ -136,6 +137,14 @@ public class PropertyVO {
 
 	public void setMaxCardinality(int maxCardinality) {
 		this.maxCardinality = maxCardinality;
+	}
+
+	public PropertyVO getInverseProperty() {
+		return inverseProperty;
+	}
+
+	public void setInverseProp(PropertyVO inverseProperty) {
+		this.inverseProperty = inverseProperty;
 	}
 	
 	

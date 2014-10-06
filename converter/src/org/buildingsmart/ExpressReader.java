@@ -48,7 +48,7 @@ import org.buildingsmart.vo.TypeVO;
  * The GNU Affero General Public License
  * 
  * Copyright (c) 2014 Jyrki Oraskari (original)
-Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
+ * Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -107,7 +107,7 @@ public class ExpressReader {
 
             logger = new BufferedWriter(new FileWriter(logFile));            
         
-		ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");//"samples\\"+outputschema+".exp");
+		ExpressReader er = new ExpressReader("IFC4RC4","samples\\IFC4RC4.exp");//"samples\\"+outputschema+".exp");
 		er.readSpec();
 		er.buildExpressStructure();
 		er.rearrangeAttributes();
@@ -180,18 +180,36 @@ public class ExpressReader {
 				
 				properties.put(prop.getName(),prop);				
 			}
+			
 			//inverses TODO
-//			for (int n = 0; n < evo.getInverses().size(); n++) {			
-//				String property = formatProperty(evo.getInverses().get(n)
-//						.getName());
-//				PropertyVO t = properties.get(property);
-//				if (t == null) {
-//					t = new PropertyVO(property, true, true, evo
-//							.getInverses().get(n).getIfc_class());
-//					properties.put(property, t);
-//				}
-//				t.addIfcClass(evo.getName());
-//			}
+			for (int n = 0; n < evo.getInverses().size(); n++) {
+				InverseVO inv = evo.getInverses().get(n);
+				String property = formatProperty(inv.getName());			
+				System.out.println("parsing inverse property : " + property);
+				
+				PropertyVO t = properties.get(property);
+				if (t == null) {
+					System.out.println("Making new property : "+property);
+					t = new PropertyVO();
+					t.setName(property); // not the correct name? Inverse property?
+					t.setList(true); //TODO not always a list
+					//t.setIdentity(true); //former isIdentity property
+					t.setRange(evo.getInverses().get(n).getClassRange());
+					t.setDomain(evo);
+					PropertyVO inverseOfInv = properties.get(inv.getInverseOfProperty());
+					if(inverseOfInv!=null){
+						t.setInverseProp(inverseOfInv);
+						inverseOfInv.setInverseProp(t);
+					}
+					else{
+						System.out.println("Warning: inverses not added for " + t.getName());
+					}
+					//t.addIfcClass(evo.getName());
+					//property, true, true, evo
+						//	.getInverses().get(n).getIfc_class());
+					properties.put(property, t);
+				}
+			}
 		}		
 	}
 	
@@ -396,8 +414,8 @@ public class ExpressReader {
 
 		for (int n = 0; n < evo.getInverses().size(); n++) {
 			AttributeVO avo = attributes.get(evo.getInverses().get(n)
-					.getIfc_class()
-					+ "#" + evo.getInverses().get(n).getProperty());
+					.getClassRange()
+					+ "#" + evo.getInverses().get(n).getInverseOfProperty());
 			logger.write("found attributeVO : " + avo.toString() + "\r\n");
 			boolean unique = false;
 			if (avo != null) {
@@ -410,10 +428,11 @@ public class ExpressReader {
 					unique = true;
 				avo.setReverse_pointer(true);
 				avo.setPoints_from(evo.getInverses().get(n));
-			} else
-				System.err.println("reverse not found:"
-						+ evo.getInverses().get(n).getIfc_class() + "#"
-						+ evo.getInverses().get(n).getProperty());
+			} 
+//				else
+//				System.err.println("reverse not found:"
+//						+ evo.getInverses().get(n).getIfc_class() + "#"
+//						+ evo.getInverses().get(n).getProperty());
 			evo.getInverses().get(n).setUnique(unique);
 			top.getDerived_inverse_list().add(evo.getInverses().get(n));
 		}
@@ -554,8 +573,8 @@ public class ExpressReader {
 	private int state = INIT_STATE;
 	private EntityVO current_entity = null;
 	private String tmp_inverse_name;
-	private String tmp_inverse_ifc_class;
-	private String tmp_inverse_ifc_property;
+	private String tmp_inverse_classnamerange;
+	private String tmp_inverse_inverseprop;
 	private boolean tmp_inverse_is_one_valued = false;
 
 	private String tmp_entity_name;
@@ -857,9 +876,8 @@ public class ExpressReader {
 				state = INIT_STATE;
 			} else if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
-			} else if (txt.equalsIgnoreCase(":")) { // the name of the
-				// inverse
-				// attribute
+			} else if (txt.equalsIgnoreCase(":")) { 
+				// the name of the inverse attribute
 				state = ENTITY_INVERSE_SET_OF;
 			} else
 				tmp_inverse_name = ExpressReader.formatProperty(txt);
@@ -880,7 +898,7 @@ public class ExpressReader {
 				if (txt.equals("[1:1]"))
 					tmp_inverse_is_one_valued = true;
 
-				tmp_inverse_ifc_class = txt;// ExpressReader.formatClassName(txt);
+				tmp_inverse_classnamerange = txt;// ExpressReader.formatClassName(txt);
 			}
 			break;
 			
@@ -891,11 +909,11 @@ public class ExpressReader {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.contains(";")) {
 
-				tmp_inverse_ifc_property = ExpressReader.formatProperty(txt
+				tmp_inverse_inverseprop = ExpressReader.formatProperty(txt
 						.substring(0, txt.length() - 1));
 				current_entity.getInverses().add(
-						new InverseVO(tmp_inverse_name, tmp_inverse_ifc_class,
-								tmp_inverse_ifc_property, is_set,
+						new InverseVO(tmp_inverse_name, tmp_inverse_classnamerange,
+								tmp_inverse_inverseprop, is_set,
 								tmp_inverse_is_one_valued));
 				state = ENTITY_INVERSE_STATE;
 			}

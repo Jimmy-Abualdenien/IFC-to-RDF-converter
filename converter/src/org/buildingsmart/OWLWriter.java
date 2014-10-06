@@ -357,6 +357,10 @@ public class OWLWriter {
 					out.write(tmp);
 					return;
 				}
+				else {
+					//A lot of inverse properties found here
+					System.out.println("other type of LIST property found : "+property.getName());
+					}
 			} else {
 				if (property.getType() == PropertyVO.propertyType.TypeVO
 						|| property.getType() == PropertyVO.propertyType.EntityVO) {
@@ -404,6 +408,7 @@ public class OWLWriter {
 					out.write(tmp);
 					return;
 				}
+				else {System.out.println("other type of property found : "+property.getName());}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -531,17 +536,26 @@ public class OWLWriter {
 			
 			out.write(" .\r\n");
 
-//			out.write("# writing inverses\r\n");
+			
+			//inverses TODO
+			for (int n = 0; n < evo.getInverses().size(); n++) {
+				String property = ExpressReader.formatProperty(evo.getInverses().get(n)
+						.getName());			
+				System.out.println("parsing inverse property : " + property);
+				
+				//Write out RDF statement describing the inverse property
+			}
+			
 //			for (int n = 0; n < evo.getInverses().size(); n++) {
 //
-//				out.write("# inverse found\r\n");
+//				out.write("# TODO inverse found\r\n");
 //				
 //				String property = ExpressReader.formatProperty(evo.getInverses().get(n)
 //						.getName());
 //				PropertyVO t = properties.get(property);
 //				if (t == null) {
 //					t = new PropertyVO(property, true, true, evo
-//							.getInverses().get(n).getIfc_class());
+//							.getInverses().get(n).getClassRange());
 //					properties.put(property, t);
 //				}
 //				t.addIfcClass(evo.getName());
