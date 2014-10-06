@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import softhema.system.toolkits.ToolkitString;
 import fi.ni.rdf.Namespace;
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
@@ -49,7 +48,7 @@ import org.buildingsmart.vo.TypeVO;
  * The GNU Affero General Public License
  * 
  * Copyright (c) 2014 Jyrki Oraskari (original)
- * Copyright (c) 2014 Pieter Pauwels (modifications)
+Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -71,17 +70,16 @@ public class ExpressReader {
 	
 	private static BufferedWriter logger = null;
 	
-	private int id_function_tmp = 0;
-	private int id_rule_tmp = 0;
-	
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
 	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();;
-	private Map<String, String> interfaces = new HashMap<String, String>();
+	//private Map<String, String> interfaces = new HashMap<String, String>();
 	private Map<String, AttributeVO> attributes = new HashMap<String, AttributeVO>();
-//	private Map<String, PropertyVO> properties = new HashMap<String, PropertyVO>();	
+	private Map<String, PropertyVO> properties = new HashMap<String, PropertyVO>();	
 	private Map<String, Set<String>> siblings = new HashMap<String, Set<String>>();
-	private Map<String, String> interface_aliases = new HashMap<String, String>();
+	//private Map<String, String> interface_aliases = new HashMap<String, String>();
+	
+	private ArrayList<TypeVO> selectTypesToExpand_temp = new ArrayList<TypeVO>(); 
 	
 	public ExpressReader(String expressSchemaName, String fileName) {
 		Namespace.IFC = "http://buildingsmart.org/ontology/"+expressSchemaName+"#";
@@ -92,9 +90,9 @@ public class ExpressReader {
 		File theDir = new File("src\\org\\buildingsmart\\"+expressSchemaName);
 		if (!theDir.exists())
 			theDir.mkdir();
-		File theDirInt = new File("src\\org\\buildingsmart\\"+expressSchemaName+"\\interfaces");
-		if (!theDirInt.exists())
-			theDirInt.mkdir();
+//		File theDirInt = new File("src\\org\\buildingsmart\\"+expressSchemaName+"\\interfaces");
+//		if (!theDirInt.exists())
+//			theDirInt.mkdir();
 	}
 
 	public static void main(String[] args) throws IOException {		
@@ -112,12 +110,15 @@ public class ExpressReader {
 		ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");//"samples\\"+outputschema+".exp");
 		er.readSpec();
 		er.buildExpressStructure();
+		er.rearrangeAttributes();
+		er.rearrangeProperties();
+		er.unpackSelectTypes();
 //		er.printIFCClassesInLog();
 		
 //		JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities, er.interfaces, er.types, er.interface_aliases);
 //		jw.outputJavaClasses();
 
-		OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities, er.types, er.siblings, er.enumIndividuals);
+		OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities, er.types, er.siblings, er.enumIndividuals, er.properties);
 //		ow.outputRDFS();
 		ow.outputOWL();
 		//FileWriter fw = new FileWriter("out\\"+outputschema+".n3");
@@ -145,13 +146,131 @@ public class ExpressReader {
         }
 	}
 	
+	private void rearrangeProperties() {
+		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, EntityVO> pairs = it.next();
+			EntityVO evo = pairs.getValue();
+			for (int n = 0; n < evo.getAttributes().size(); n++) {
+				AttributeVO attr = evo.getAttributes().get(n);
+				TypeVO type = attr.getType();
+				String type_primaryType = attr.getType().getPrimarytype();
+				String type_name = attr.getType().getName();
+				
+				PropertyVO prop = new PropertyVO();
+				prop.setName(attr.getName());
+				prop.setOriginalName(attr.getOriginalName());
+				prop.setDomain(attr.getDomain());
+				prop.setList(attr.isList());
+				prop.setRange(type_name);
+				prop.setMinCardinality(attr.getMinCard());
+				prop.setMaxCardinality(attr.getMaxCard());
+				
+				//TODO: check whether we do not have a list of selects
+				if(type_primaryType.equalsIgnoreCase("enumeration")) prop.setType(PropertyVO.propertyType.TypeVO);
+				else if (type_primaryType.equalsIgnoreCase("select")){
+					prop.setType(PropertyVO.propertyType.Select);
+					prop.setSelectEntities(type.getSelect_entities());					
+				}
+				else if (type_primaryType.equalsIgnoreCase("class")) prop.setType(PropertyVO.propertyType.EntityVO);					
+				else if(PrimaryTypeVO.getPrimaryTypeVO(type_primaryType) != null) prop.setType(PropertyVO.propertyType.TypeVO);
+				else {prop.setType(PropertyVO.propertyType.TypeVO);
+				//System.out.println("Found an alternative range type : "+ type_primaryType);
+				}
+				
+				properties.put(prop.getName(),prop);				
+			}
+			//inverses TODO
+//			for (int n = 0; n < evo.getInverses().size(); n++) {			
+//				String property = formatProperty(evo.getInverses().get(n)
+//						.getName());
+//				PropertyVO t = properties.get(property);
+//				if (t == null) {
+//					t = new PropertyVO(property, true, true, evo
+//							.getInverses().get(n).getIfc_class());
+//					properties.put(property, t);
+//				}
+//				t.addIfcClass(evo.getName());
+//			}
+		}		
+	}
+	
+	private void rearrangeAttributes() throws IOException{
+		logger.write("Generating list of attributes for : " + attributes.size() + "attributes \r\n");
+		ArrayList<String> doublegeneratedattributes = new ArrayList<String>(); 
+		HashMap<String,AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
+		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, EntityVO> pairs = iter.next();
+			EntityVO evo = pairs.getValue();
+			for (int n = 0; n < evo.getAttributes().size(); n++) {
+				AttributeVO attr = evo.getAttributes().get(n);
+				attr.setDomain(evo);
+				
+				if(!doublegeneratedattributes.contains(attr.getName())){
+					if(alreadygeneratedattributes.containsKey(attr.getName())){
+						doublegeneratedattributes.add(attr.getName());
+						AttributeVO firstattr = (AttributeVO)alreadygeneratedattributes.get(attr.getName());
+						firstattr.setOriginalName(firstattr.getName());
+						firstattr.setName(firstattr.getDomain().getName() + "_" + firstattr.getName());
+						attr.setOriginalName(attr.getName());
+						attr.setName(attr.getDomain().getName() + "_" + attr.getName());
+					}
+					else
+					{
+						//no name change
+						alreadygeneratedattributes.put(attr.getName(), attr);
+						attr.setOriginalName(attr.getName());
+					}
+				}
+				else
+				{
+					attr.setOriginalName(attr.getName());
+					attr.setName(evo.getName() + "_" + attr.getName());
+					//enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
+				}
+				//write outcome
+				//logger.write(evo.getName() +" - " + attr.getName() + " - " + attr.getType().getName()  + " --- isSet: " + attr.isSet() + " - isList: " + attr.isList() + "\r\n");
+			}			
+		}
+//		Iterator<Entry<String, EntityVO>> iter1 = entities.entrySet().iterator();
+//		while (iter1.hasNext()) {
+//			Entry<String, EntityVO> pairs = iter1.next();
+//			EntityVO evo = pairs.getValue();
+//			for (int n = 0; n < evo.getAttributes().size(); n++) {
+//				AttributeVO attr = evo.getAttributes().get(n);
+//				logger.write(evo.getName() +" - " + attr.getName() + " - " + attr.getType().getName()  + " --- isSet: " + attr.isSet() + " - isList: " + attr.isList() + "\r\n");
+//			}			
+//		}
+	}
+	
+	private void unpackSelectTypes(){
+		//if a select type is referred to by another select type -> replace it by the elements of the latter!
+		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
+			TypeVO vo = entry.getValue();
+			for (int n = 0; n < vo.getSelect_entities().size(); n++) {
+				String selectEnt = vo.getSelect_entities().get(n);				
+				for(int i = 0; i<selectTypesToExpand_temp.size();i++){
+					if(selectTypesToExpand_temp.get(i).getName().equalsIgnoreCase(selectEnt)){
+//						System.out.println("selecttype found in temp : " + selectEnt);
+						vo.getSelect_entities().remove(n);
+						for(String sel : selectTypesToExpand_temp.get(i).getSelect_entities())
+							vo.getSelect_entities().add(sel);
+//						current_type.setPrimarytype(formatClassName(txt));
+//						System.out.println("setPrimarytype"+txt);
+//						interface_aliases.put(current_type.getName(),
+//								vo.getName());
+////						vo.getSelect_entities().remove(n);
+//						current_type = vo;
+//						break;
+					}
+				}
+			}
+		}
+	}
+	
 	//CONVERTING
-	private void readSpec() {
-		// Primitive types:
-		types.put("REAL", new TypeVO("REAL"));
-		types.put("INTEGER", new TypeVO("INTEGER"));
-		types.put("STRING", new TypeVO("STRING"));
-		
+	private void readSpec() {		
 		try {
 			//parsing file
 			FileInputStream fstream = new FileInputStream(expressFile);
@@ -179,29 +298,29 @@ public class ExpressReader {
 	}
 	
 	private void buildExpressStructure() throws IOException{
-		generateInterfaces();
+		generateNamedIndividuals();
 		generate_derived_attribute_list();
 		generate_derived_inverse_list();	
 		iterate();
 	}
 	
-	private void generateInterfaces() throws IOException{
-		logger.write("Generating interfaces" + "\r\n");
+	private void generateNamedIndividuals() throws IOException{
+		logger.write("Generating named individuals" + "\r\n");
 		ArrayList<String> doublegeneratednamedindividuals = new ArrayList<String>(); 
 		HashMap<String,NamedIndividualVO> alreadygeneratednamedindividuals = new HashMap<String, NamedIndividualVO>();
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
 			TypeVO vo = entry.getValue();
 			logger.write("found : " + vo.toString() + "\r\n");
 			// List of all TYPE:SELECT -entries
-			for (int n = 0; n < vo.getSelected_entities().size(); n++) {
-				EntityVO evo = entities.get(vo.getSelected_entities().get(n));
+			for (int n = 0; n < vo.getSelect_entities().size(); n++) {
+				EntityVO evo = entities.get(vo.getSelect_entities().get(n));
 				if (evo != null) {
 					logger.write("EntityVO element found for " + vo.getName() + " : " + evo.getName() + "\r\n");
-					evo.getInterfaces().add(vo.getName());
-					interfaces.put(formatClassName(vo.getName()), vo.getName());
+//					evo.getInterfaces().add(vo.getName());
+//					interfaces.put(formatClassName(vo.getName()), vo.getName());
 				}
 				else{
-					logger.write("No entityVO element found for " + vo.getSelected_entities().get(n) + " ( " + vo.getName() + " ) --> type referenced by SELECT type" + "\r\n");
+					logger.write("No entityVO element found for " + vo.getSelect_entities().get(n) + " ( " + vo.getName() + " ) --> the SELECT type refers to another Type" + "\r\n");
 				}
 			}
 			for(int n = 0;  n < vo.getEnum_entities().size(); n++) {
@@ -223,7 +342,7 @@ public class ExpressReader {
 					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
 			}
 		}
-		logger.write("interfaces generated" + "\r\n" + "\r\n");
+		logger.write("Named individuals generated" + "\r\n" + "\r\n");
 	}
 	
 	private void generate_derived_attribute_list() throws IOException {
@@ -330,7 +449,6 @@ public class ExpressReader {
 			logger.write("   " + evo.getName() + " , "
 					+ evo.getAttributes().get(n) + "\r\n");
 		}
-
 	}
 	
 	private void printIFCClassesInLog() throws IOException {
@@ -447,6 +565,9 @@ public class ExpressReader {
 
 	private boolean is_set = false;
 	private boolean is_list = false;
+	private int tmp_mincard = -1; //cardinality of the targeted list, not of the property
+	private int tmp_maxcard = -1; //cardinality of the targeted list, not of the property
+	private boolean is_optional = false;
 
 	private void state_machine(String txt) {
 		
@@ -457,18 +578,13 @@ public class ExpressReader {
 			if (txt.equalsIgnoreCase("ENTITY"))
 				state = ENTITY_NAME_STATE;
 			if (txt.equalsIgnoreCase("FUNCTION")){
-				id_function_tmp++;
-				//System.out.println("FUNCTION : " + id_function_tmp);
 				break;
 			}
 			if (txt.equalsIgnoreCase("RULE")){
-				id_rule_tmp++;
-				//System.out.println("RULE : " + id_rule_tmp);
 				break;
 			}
 			if (txt.equalsIgnoreCase("END_SCHEMA;"))
 				break;
-				//System.out.println("end of schema");
 			break;
 
 		//1. TYPE
@@ -488,22 +604,31 @@ public class ExpressReader {
 		case TYPE_SWITCH:
 			if (txt.equalsIgnoreCase("SELECT")) {
 				state = TYPE_SELECT;
+				selectTypesToExpand_temp.add(current_type);
+				current_type.setPrimarytype(formatClassName(txt));
 
-				for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
-					TypeVO vo = entry.getValue();
-					// List of all TYPE:SELECT -entries
-					for (int n = 0; n < vo.getSelected_entities().size(); n++) {
-						if (current_type.getName().equalsIgnoreCase(
-								vo.getSelected_entities().get(n))) {
-							current_type.setPrimarytype(formatClassName(txt));
-							interface_aliases.put(current_type.getName(),
-									vo.getName());
-							vo.getSelected_entities().remove(n);
-							current_type = vo;
-							break;
-						}
-					}
-				}
+				//check if we are not missing anything here -> this was commented without checking consequences
+				
+//				ArrayList<String> doublegeneratedattributes = new ArrayList<String>(); 
+//				HashMap<String,AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
+//				for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
+//					TypeVO vo = entry.getValue();
+//					// List of all TYPE:SELECT -entries
+//					for (int n = 0; n < vo.getSelect_entities().size(); n++) {
+//						if (current_type.getName().equalsIgnoreCase(
+//								vo.getSelect_entities().get(n))) {
+//							//We encounter a case where a select is mentioned within another select
+//							System.out.println("SELECT type "+ current_type.getName() +" referenced by "+vo.getSelect_entities().get(n));
+//							current_type.setPrimarytype(formatClassName(txt));
+//							System.out.println("setPrimarytype"+txt);
+//							interface_aliases.put(current_type.getName(),
+//									vo.getName());
+////							vo.getSelect_entities().remove(n);
+//							current_type = vo;
+//							break;
+//						}
+//					}
+//				}
 
 			} else if (txt.equalsIgnoreCase("ENUMERATION")) {
 				state = TYPE_ENUMERATION;
@@ -513,13 +638,14 @@ public class ExpressReader {
 					state = TYPE_LIST;
 				else{
 					// primarytypes like REAL/INTEGER/STRING/...
-					new PrimaryTypeVO(txt);
+					new PrimaryTypeVO(formatClassName(txt));
 					state = INIT_STATE;
 				}
 				txt = formatClassName(txt);
 			}
 			else {
 				// references to TypeVOs
+				if(txt.endsWith(";")) txt = txt.substring(0,txt.length()-1);
 				state = INIT_STATE;
 			}
 			current_type.setPrimarytype(txt);
@@ -529,6 +655,21 @@ public class ExpressReader {
 			//LIST [3:4] OF INTEGER
 			//ARRAY [1:2] OF REAL;
 			//SET [1:?] OF IfcPropertySetDefinition;
+//			if (txt.endsWith("]")&&txt.startsWith("[")){
+//				//[3:4] or similar parsed
+//				String[] tempCards = txt.split(":");
+//				String mincard = txt.split(":")[0].substring(1);
+//				String maxcard = txt.split(":")[1].substring(0, tempCards[1].length()-1);
+//				int minc = -1;
+//				int maxc = -1;
+//				if(!mincard.equalsIgnoreCase("?"))
+//					minc = Integer.parseInt(mincard);
+//				if(!maxcard.equalsIgnoreCase("?"))
+//					maxc = Integer.parseInt(maxcard);
+//				current_type.setListCardinalities(new int[]{minc,maxc});
+//				current_type.setListCardinalities(new int[]{(int)tempCards[0].substring(1), (int)tempCards[1].substring(0, tempCards[1].length()-1)});
+//			}
+//			else 
 			if (!txt.endsWith(";")) {
 				if (current_type != null)
 					current_type.setPrimarytype(current_type.getPrimarytype() + " " + txt);
@@ -541,14 +682,14 @@ public class ExpressReader {
 
 		case TYPE_SELECT:
 			if (txt.endsWith(";")) {
-				String txt_t = formatClassName(txt);
+				String txt_t = filter_extras(txt);//formatClassName(txt);
 				if (current_type != null)
-					current_type.getSelected_entities().add(txt_t);
+					current_type.getSelect_entities().add(txt_t);
 				state = INIT_STATE;
 			} else {
-				String txt_t = formatClassName(txt);
+				String txt_t = filter_extras(txt);//formatClassName(txt);
 				if (current_type != null)
-					current_type.getSelected_entities().add(txt_t);
+					current_type.getSelect_entities().add(txt_t);
 			}
 			break;
 
@@ -619,11 +760,22 @@ public class ExpressReader {
 		case ENTITY_READY:
 			if (txt.equalsIgnoreCase("END_ENTITY;")) {
 				state = INIT_STATE;
+			} else if (txt.equalsIgnoreCase("OPTIONAL")) {
+				is_optional = true;
 			} else if (txt.equalsIgnoreCase("SET")) {
 				is_set = true;
 			} else if (txt.equalsIgnoreCase("LIST")) {
 				is_set = true;
 				is_list = true;
+			} else if(txt.endsWith("]")&&txt.startsWith("[")){
+//				//[3:4] or similar parsed
+				String[] tempCards = txt.split(":");
+				String mincard = txt.split(":")[0].substring(1);
+				String maxcard = txt.split(":")[1].substring(0, tempCards[1].length()-1);
+				if(!mincard.equalsIgnoreCase("?"))
+					tmp_mincard = Integer.parseInt(mincard);
+				if(!maxcard.equalsIgnoreCase("?"))
+					tmp_maxcard = Integer.parseInt(maxcard);
 			} else if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.contains(";")) {
@@ -636,7 +788,7 @@ public class ExpressReader {
 				}
 				current_entity.getAttributes()
 						.add(new AttributeVO(tmp_entity_name, type, is_set,
-								is_list));
+								is_list,tmp_mincard,tmp_maxcard,is_optional));
 				state = ENTITY_STATE;
 			}
 			break;	
