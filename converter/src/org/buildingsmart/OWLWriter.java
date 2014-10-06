@@ -90,8 +90,8 @@ public class OWLWriter {
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
 			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\t\t\ta owl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
-			+ "\t\t\t\t\ta owl:onProperty olo:item \r\n" + "\t\t\t\t] ; \r\n"
+			+ "\t\t\t\t\towl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
+			+ "\t\t\t\t\towl:onProperty olo:item \r\n" + "\t\t\t\t] ; \r\n"
 			+ "\t\t\t] ; \r\n" + "\t\t\towl:onProperty olo:slot \r\n"
 			+ "\t\t] ; \r\n" + "\t] ; \r\n"
 			+ "\ta owl:ObjectProperty .\r\n\r\n";
@@ -108,8 +108,8 @@ public class OWLWriter {
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
 			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\t\t\ta owl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
-			+ "\t\t\t\t\ta owl:onProperty olo:item \r\n"
+			+ "\t\t\t\t\towl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
+			+ "\t\t\t\t\towl:onProperty olo:item \r\n"
 			+ "\t\t\t\t] ; \r\n"
 			+ "\t\t\t] ; \r\n"
 			+ "\t\t\towl:onProperty olo:slot \r\n"
@@ -120,7 +120,7 @@ public class OWLWriter {
 	static final String select_property = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n" + "\trdfs:range [ \r\n"
 			+ "\t\ta owl:Class ; \r\n"
-			+ "\t\ta owl:unionOf ( <_SELECTVALUES_> ) ; \r\n" + "\t] ;\r\n"
+			+ "\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n" + "\t] ;\r\n"
 			+ "\ta owl:ObjectProperty .\r\n\r\n";
 
 	static final String select_property_list = "ifc:<_NAME_>\r\n"
@@ -141,10 +141,10 @@ public class OWLWriter {
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
 			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\t\t\ta owl:allValuesFrom [ \r\n"
+			+ "\t\t\t\t\towl:allValuesFrom [ \r\n"
 			+ "\t\t\t\t\t\ta owl:Class ; \r\n"
-			+ "\t\t\t\t\t\ta owl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
-			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\ta owl:onProperty olo:item \r\n"
+			+ "\t\t\t\t\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
+			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\towl:onProperty olo:item \r\n"
 			+ "\t\t\t\t] ; \r\n" + "\t\t\t] ; \r\n"
 			+ "\t\t\towl:onProperty olo:slot \r\n" + "\t\t] ; \r\n"
 			+ "\t] ; \r\n" + "\ta owl:ObjectProperty .\r\n\r\n";
@@ -158,10 +158,10 @@ public class OWLWriter {
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
 			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\t\t\ta owl:allValuesFrom [ \r\n"
+			+ "\t\t\t\t\towl:allValuesFrom [ \r\n"
 			+ "\t\t\t\t\t\ta owl:Class ; \r\n"
-			+ "\t\t\t\t\t\ta owl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
-			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\ta owl:onProperty olo:item \r\n"
+			+ "\t\t\t\t\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
+			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\towl:onProperty olo:item \r\n"
 			+ "\t\t\t\t] ; \r\n" + "\t\t\t] ; \r\n"
 			+ "\t\t\towl:onProperty olo:slot \r\n" + "\t\t] ; \r\n"
 			+ "\t] ; \r\n" + "\ta owl:ObjectProperty .\r\n\r\n";
@@ -325,7 +325,7 @@ public class OWLWriter {
 				// numbers
 				String sv = "";
 				for (String s : property.getSelectEntities()) { 
-					sv += "ifc:" + s + ", ";
+					sv += "ifc:" + s + " ";
 				}
 				if(sv.length()>2){
 				sv = sv.substring(0, sv.length() - 2);
@@ -396,7 +396,7 @@ public class OWLWriter {
 					|| property.getSelectEntities().size() > 0) {
 				String sv = "";
 				for (String s : property.getSelectEntities()) {
-					sv += "ifc:" + s + ", ";
+					sv += "ifc:" + s + " ";
 				}
 				if (sv.length() >= 2) {
 					sv = sv.substring(0, sv.length() - 2);
@@ -494,10 +494,10 @@ public class OWLWriter {
 					if (!lit.hasNext())
 						out.write("ifc:" + x);
 					else
-						out.write("ifc:" + x + ", ");
+						out.write("ifc:" + x + " ");
 				}
-				out.write(" ) ." + "\r\n");
-				out.write("\t\t]");
+				out.write(" )" + "\r\n");
+				out.write("\t]");
 			}
 
 			// Writing disjointness
@@ -604,7 +604,7 @@ public class OWLWriter {
 								+ getNamedIndividual(
 										tvo.getEnum_entities().get(i),
 										tvo.getName()).getNamedIndividual()
-								+ ", ");// -> owl:oneOf (uniquely named
+								+ " ");// -> owl:oneOf (uniquely named
 										// individuals + label property)
 					else
 						out.write("ifc:"
@@ -641,7 +641,8 @@ public class OWLWriter {
 								+ "\"^^xsd:int \"" + endIndex + "\"^^xsd:int)"
 								+ "\r\n");
 						out.write("\t\t\t] ;" + "\r\n");
-						out.write("\t\towl:onProperty olo:length ;" + "\r\n");
+						out.write("\t\towl:onProperty olo:length" + "\r\n");
+						out.write("\t\t] ;" + "\r\n");
 					}
 					out.write("\trdfs:subClassOf [" + "\r\n");
 					out.write("\t\ta owl:Restriction ;" + "\r\n");
@@ -700,7 +701,7 @@ public class OWLWriter {
 				+ Namespace.OWL + "> .\r\n" + "@prefix rdfs: <"
 				+ Namespace.RDFS + "> .\r\n" + "@prefix list: <"
 				+ Namespace.LIST + "> .\r\n" + "@prefix dce: <" + Namespace.DCE
-				+ "> .\r\n" + "@prefix dct: <" + Namespace.DCT + "> .\r\n"
+				+ "> .\r\n" + "@prefix olo: <" + Namespace.OLO + "> .\r\n" + "@prefix dct: <" + Namespace.DCT + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
 				+ "ifc:\r\n" + "	a owl:Thing ;\r\n" + "	a owl:Ontology ;\r\n"
 				+ "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
