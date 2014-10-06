@@ -99,13 +99,13 @@ public class JAVAWriter {
 				else
 					out.write(evo.getName() + " extends Thing ");
 
-				if (evo.getInterfaces().size() > 0)
-					out.write("implements");
-				for (int n = 0; n < evo.getInterfaces().size(); n++) {
-					if (n > 0)
-						out.write(",");
-					out.write(" " + evo.getInterfaces().get(n));
-				}
+//				if (evo.getInterfaces().size() > 0)
+//					out.write("implements");
+//				for (int n = 0; n < evo.getInterfaces().size(); n++) {
+//					if (n > 0)
+//						out.write(",");
+//					out.write(" " + evo.getInterfaces().get(n));
+//				}
 
 				out.write("\n{\n");
 
