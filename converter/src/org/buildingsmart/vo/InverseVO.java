@@ -27,6 +27,7 @@ public class InverseVO {
 	private boolean set = false;
 	private boolean unique = false;
 	private boolean one_valued = false;
+	private PropertyVO associatedProperty = null;
 
 	public InverseVO(String name, String classRange, String inverseOfProperty,
 			boolean set, boolean one_valued) {
@@ -84,6 +85,14 @@ public class InverseVO {
 
 	public void setOne_valued(boolean one_valued) {
 		this.one_valued = one_valued;
+	}
+
+	public PropertyVO getAssociatedProperty() {
+		return associatedProperty;
+	}
+
+	public void setAssociatedProperty(PropertyVO associatedProperty) {
+		this.associatedProperty = associatedProperty;
 	}
 
 	@Override
