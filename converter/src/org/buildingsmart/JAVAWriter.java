@@ -116,7 +116,7 @@ public class JAVAWriter {
 					out.write(" // Getters and setters of inverse values\n\n");
 				for (int n = 0; n < evo.getInverses().size(); n++) {
 					out.write(" public InverseLinksList<"
-							+ evo.getInverses().get(n).getIfc_class()
+							+ evo.getInverses().get(n).getClassRange()
 							+ "> get"
 							+ formatGetterANDSetter(evo.getInverses().get(n)
 									.getName()) + "() {\n");
@@ -126,7 +126,7 @@ public class JAVAWriter {
 					out.write(" public void set"
 							+ formatGetterANDSetter(evo.getInverses().get(n)
 									.getName()) + "("
-							+ evo.getInverses().get(n).getIfc_class()
+							+ evo.getInverses().get(n).getClassRange()
 							+ " value){\n");
 					out.write("   this." + evo.getInverses().get(n).getName()
 							+ ".add(value);\n");
@@ -290,10 +290,10 @@ public class JAVAWriter {
 			out.write(" // The inverse attributes\n\n");
 		for (int n = 0; n < evo.getInverses().size(); n++) {
 			out.write(" InverseLinksList<"
-					+ evo.getInverses().get(n).getIfc_class() + "> "
+					+ evo.getInverses().get(n).getClassRange() + "> "
 					+ evo.getInverses().get(n).getName()
 					+ "= new InverseLinksList<"
-					+ evo.getInverses().get(n).getIfc_class() + ">();\n");
+					+ evo.getInverses().get(n).getClassRange() + ">();\n");
 
 		}
 		out.write("\n\n");
