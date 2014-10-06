@@ -107,11 +107,12 @@ public class ExpressReader {
 
             logger = new BufferedWriter(new FileWriter(logFile));            
         
-		ExpressReader er = new ExpressReader("IFC4RC4","samples\\IFC4RC4.exp");//"samples\\"+outputschema+".exp");
+		ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");//"IFC4RC4","samples\\IFC4RC4.exp");
 		er.readSpec();
 		er.buildExpressStructure();
 		er.rearrangeAttributes();
 		er.rearrangeProperties();
+		er.rearrangeInverses();
 		er.unpackSelectTypes();
 //		er.printIFCClassesInLog();
 		
@@ -180,37 +181,80 @@ public class ExpressReader {
 				
 				properties.put(prop.getName(),prop);				
 			}
-			
-			//inverses TODO
+		}		
+	}
+	
+	private void rearrangeInverses() {
+		ArrayList<String> doublegeneratedinverseprops = new ArrayList<String>(); 
+		HashMap<String,PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
+		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, EntityVO> pairs = it.next();
+			EntityVO evo = pairs.getValue();
+
 			for (int n = 0; n < evo.getInverses().size(); n++) {
 				InverseVO inv = evo.getInverses().get(n);
-				String property = formatProperty(inv.getName());			
-				System.out.println("parsing inverse property : " + property);
+				PropertyVO prop = new PropertyVO();
+				prop.setName(formatProperty(inv.getName()));
+				System.out.println("parsing inverse property : " + prop.getName());
+				prop.setDomain(evo);
+				prop.setRange(inv.getClassRange());
+				if(inv.isSet() == true && !inv.isOne_valued())
+					prop.setList(true);
+				else
+					prop.setList(false);
+
+				if(!doublegeneratedinverseprops.contains(prop.getName())){
+					if(alreadygeneratedinverseprops.containsKey(prop.getName())){
+						doublegeneratedinverseprops.add(prop.getName());
+						PropertyVO firstprop = (PropertyVO)alreadygeneratedinverseprops.get(prop.getName());
+						firstprop.setOriginalName(firstprop.getName());
+						firstprop.setName(firstprop.getDomain().getName() + "_" + firstprop.getName());
+						prop.setOriginalName(prop.getName());
+						prop.setName(evo.getName() + "_" + prop.getName());
+					}	
+					else
+					{
+						//no name change
+						alreadygeneratedinverseprops.put(prop.getName(), prop);
+						prop.setOriginalName(prop.getName());
+					}
+				}
+				else
+				{
+					prop.setOriginalName(prop.getName());
+					prop.setName(evo.getName() + "_" + prop.getName());
+				}
 				
-				PropertyVO t = properties.get(property);
-				if (t == null) {
-					System.out.println("Making new property : "+property);
-					t = new PropertyVO();
-					t.setName(property); // not the correct name? Inverse property?
-					t.setList(true); //TODO not always a list
-					//t.setIdentity(true); //former isIdentity property
-					t.setRange(evo.getInverses().get(n).getClassRange());
-					t.setDomain(evo);
-					PropertyVO inverseOfInv = properties.get(inv.getInverseOfProperty());
-					if(inverseOfInv!=null){
-						t.setInverseProp(inverseOfInv);
-						inverseOfInv.setInverseProp(t);
-					}
-					else{
-						System.out.println("Warning: inverses not added for " + t.getName());
-					}
-					//t.addIfcClass(evo.getName());
-					//property, true, true, evo
-						//	.getInverses().get(n).getIfc_class());
-					properties.put(property, t);
+				properties.put(prop.getName(), prop);
+
+				PropertyVO inverseOfInv = properties.get(inv
+						.getInverseOfProperty());
+				if(inverseOfInv == null){
+					inverseOfInv = properties.get(prop.getRange() +"_" + inv.getInverseOfProperty());
+				}
+				if (inverseOfInv != null) {
+					prop.setInverseProp(inverseOfInv);
+					inverseOfInv.setInverseProp(prop);
+
+					System.out
+							.println("Warning: inverses FOUND AND ADDED for "
+									+ prop.getDomain().getName()
+									+ " - "
+									+ prop.getName()
+									+ " - "
+									+ prop.getRange()
+									+ " || INVERSE OF "
+									+ inv.getInverseOfProperty());
+				} else {
+					inverseOfInv = properties.get(prop.getRange() +"_" + inv.getInverseOfProperty());
+					System.out.println("Warning: inverses not added for "
+							+ prop.getDomain().getName() + " - " + prop.getName()
+							+ " - " + prop.getRange() + " || INVERSE OF "
+							+ inv.getInverseOfProperty());
 				}
 			}
-		}		
+		}
 	}
 	
 	private void rearrangeAttributes() throws IOException{
@@ -671,24 +715,6 @@ public class ExpressReader {
 			break;
 			
 		case TYPE_LIST:
-			//LIST [3:4] OF INTEGER
-			//ARRAY [1:2] OF REAL;
-			//SET [1:?] OF IfcPropertySetDefinition;
-//			if (txt.endsWith("]")&&txt.startsWith("[")){
-//				//[3:4] or similar parsed
-//				String[] tempCards = txt.split(":");
-//				String mincard = txt.split(":")[0].substring(1);
-//				String maxcard = txt.split(":")[1].substring(0, tempCards[1].length()-1);
-//				int minc = -1;
-//				int maxc = -1;
-//				if(!mincard.equalsIgnoreCase("?"))
-//					minc = Integer.parseInt(mincard);
-//				if(!maxcard.equalsIgnoreCase("?"))
-//					maxc = Integer.parseInt(maxcard);
-//				current_type.setListCardinalities(new int[]{minc,maxc});
-//				current_type.setListCardinalities(new int[]{(int)tempCards[0].substring(1), (int)tempCards[1].substring(0, tempCards[1].length()-1)});
-//			}
-//			else 
 			if (!txt.endsWith(";")) {
 				if (current_type != null)
 					current_type.setPrimarytype(current_type.getPrimarytype() + " " + txt);
@@ -701,12 +727,12 @@ public class ExpressReader {
 
 		case TYPE_SELECT:
 			if (txt.endsWith(";")) {
-				String txt_t = filter_extras(txt);//formatClassName(txt);
+				String txt_t = filter_extras(txt);
 				if (current_type != null)
 					current_type.getSelect_entities().add(txt_t);
 				state = INIT_STATE;
 			} else {
-				String txt_t = filter_extras(txt);//formatClassName(txt);
+				String txt_t = filter_extras(txt);
 				if (current_type != null)
 					current_type.getSelect_entities().add(txt_t);
 			}
@@ -898,7 +924,7 @@ public class ExpressReader {
 				if (txt.equals("[1:1]"))
 					tmp_inverse_is_one_valued = true;
 
-				tmp_inverse_classnamerange = txt;// ExpressReader.formatClassName(txt);
+				tmp_inverse_classnamerange = txt;
 			}
 			break;
 			
