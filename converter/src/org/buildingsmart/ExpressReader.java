@@ -195,8 +195,9 @@ public class ExpressReader {
 			for (int n = 0; n < evo.getInverses().size(); n++) {
 				InverseVO inv = evo.getInverses().get(n);
 				PropertyVO prop = new PropertyVO();
+				inv.setAssociatedProperty(prop);
 				prop.setName(formatProperty(inv.getName()));
-				System.out.println("parsing inverse property : " + prop.getName());
+				//System.out.println("parsing inverse property : " + prop.getName());
 				prop.setDomain(evo);
 				prop.setRange(inv.getClassRange());
 				if(inv.isSet() == true && !inv.isOne_valued())
@@ -237,15 +238,15 @@ public class ExpressReader {
 					prop.setInverseProp(inverseOfInv);
 					inverseOfInv.setInverseProp(prop);
 
-					System.out
-							.println("Warning: inverses FOUND AND ADDED for "
-									+ prop.getDomain().getName()
-									+ " - "
-									+ prop.getName()
-									+ " - "
-									+ prop.getRange()
-									+ " || INVERSE OF "
-									+ inv.getInverseOfProperty());
+//					System.out
+//							.println("Warning: inverses FOUND AND ADDED for "
+//									+ prop.getDomain().getName()
+//									+ " - "
+//									+ prop.getName()
+//									+ " - "
+//									+ prop.getRange()
+//									+ " || INVERSE OF "
+//									+ inv.getInverseOfProperty());
 				} else {
 					inverseOfInv = properties.get(prop.getRange() +"_" + inv.getInverseOfProperty());
 					System.out.println("Warning: inverses not added for "
