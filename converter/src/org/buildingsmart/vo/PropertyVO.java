@@ -28,9 +28,12 @@ public class PropertyVO {
 	private EntityVO domain;
 	public enum propertyType{TypeVO,EntityVO,Select};
 	private propertyType type; 
+	private boolean optional = false;
+	
 	private boolean isList = false;
 	private int minCardinality = -1;
 	private int maxCardinality = -1;
+	
 	private PropertyVO inverseProperty = null;
 	
 	private List<String> range_selectEntities = null;
@@ -145,6 +148,14 @@ public class PropertyVO {
 
 	public void setInverseProp(PropertyVO inverseProperty) {
 		this.inverseProperty = inverseProperty;
+	}
+
+	public boolean isOptional() {
+		return optional;
+	}
+
+	public void setOptional(boolean optional) {
+		this.optional = optional;
 	}
 	
 	
