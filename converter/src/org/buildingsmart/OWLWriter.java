@@ -22,13 +22,13 @@ import softhema.system.toolkits.ToolkitString;
 import fi.ni.rdf.Namespace;
 
 /*
- * OWLWriter writes .n3 files representing OWL ontologies, thereby relying on the in-memory EXPRESS model that is parsed by the ExpressReader class.
+ * OWLWriter writes .ttl files representing OWL ontologies, thereby relying on the in-memory EXPRESS model that is parsed by the ExpressReader class.
  * 
  * The usage:
  * OWLWriter ow = new OWLWriter(expressSchemaName, entities, types, siblings);
  * 
- *  - outputOWL() - writes the OWL ontology in N3 files in appropriate 'schema' package
- *  - outputRDFS() - writes the RDFS ontology in N3 files
+ *  - outputOWL() - writes the OWL ontology in TTL files in appropriate 'schema' package
+ *  - outputRDFS() - writes the RDFS ontology in TTL files
  *   
  * @author Jyrki Oraskari
  * @author of modifications Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
@@ -62,10 +62,13 @@ public class OWLWriter {
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
 	private Map<String, Set<String>> siblings = new HashMap<String, Set<String>>();
 	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();
+	private List<String> listPropertiesOutput = new ArrayList<String>();
 	// private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
 	// private Map<String, String> interfaces = new HashMap<String, String>();
 	// private Map<String, String> interface_aliases = new HashMap<String,
 	// String>();
+
+
 
 	static final String simpleobject_property = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
@@ -202,17 +205,18 @@ public class OWLWriter {
 	public void outputOWL() {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter("out\\"
-					+ expressSchemaName + "_owl.n3"));
+					+ expressSchemaName + ".ttl"));
 			out.write("@prefix ifc: <" + Namespace.IFC + "> .\r\n");
 			out.write(getOwl_header());
 
-			writePrimaryTypes(out);
-			writeNamedIndividuals(out);
+//			writePrimaryTypes(out);
+//			writeNamedIndividuals(out);
+//			writeHelperClasses(out);
 
-//			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
-//					.iterator();
-//			writeTypesToOWL(it_type, out);
-//
+			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
+					.iterator();
+			writeTypesToOWL(it_type, out);
+
 //			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
 //					.iterator();
 //			writeEntitiesToOWL(it, out);
@@ -234,7 +238,7 @@ public class OWLWriter {
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter("out\\"
-					+ expressSchemaName + "_rdfs.n3"));
+					+ expressSchemaName + ".ttl"));
 			out.write("@prefix rdf:  <" + Namespace.RDF + "> .\r\n");
 			out.write("@prefix rdfs: <" + Namespace.RDFS + "> .\r\n");
 			out.write("@prefix owl: <" + Namespace.OWL + "> .\r\n");
@@ -440,11 +444,12 @@ public class OWLWriter {
 		for (PrimaryTypeVO pt : PrimaryTypeVO.getListOfPrimaryTypes()) {
 			out.write("ifc:" + pt.getPTypeName() + "\r\n");
 			out.write("\trdf:type owl:Class ;" + "\r\n");
-			out.write("\trdfs:subClassOf [ " + "\r\n");
-			out.write("\t\trdf:type owl:Restriction ;" + "\r\n");
-			out.write("\t\towl:allValuesFrom xsd:" + pt.getXSDType() + " ;"
+			out.write("\trdfs:subClassOf " + "\r\n");
+			out.write("\t\t[ " + "\r\n");
+			out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+			out.write("\t\t\towl:allValuesFrom xsd:" + pt.getXSDType() + " ;"
 					+ "\r\n");
-			out.write("\t\towl:onProperty ifc:has_" + pt.getXSDType() + "\r\n");
+			out.write("\t\t\towl:onProperty ifc:has_" + pt.getXSDType() + "\r\n");
 			out.write("\t\t] ." + "\r\n" + "\r\n");
 			
 			String key = pt.getXSDType();
@@ -464,9 +469,10 @@ public class OWLWriter {
 			out.write("\trdf:type owl:DatatypeProperty, owl:FunctionalProperty ;" + "\r\n");
 			out.write("\trdfs:label \"ifc:has_" + pairs.getKey() + "\" ;" + "\r\n");
 			out.write("\trdfs:range xsd:" + pairs.getKey() +" ;" + "\r\n");
-			out.write("\trdfs:domain [ " + "\r\n");
-			out.write("\t\trdf:type owl:Class ;" + "\r\n");
-			out.write("\t\towl:unionOf ( " + pairs.getValue() + " )" + "\r\n");
+			out.write("\trdfs:domain " + "\r\n");
+			out.write("\t\t[ " + "\r\n");
+			out.write("\t\t\trdf:type owl:Class ;" + "\r\n");
+			out.write("\t\t\towl:unionOf ( " + pairs.getValue() + " )" + "\r\n");
 			out.write("\t\t] ." + "\r\n" + "\r\n");
 	        it.remove(); // avoids a ConcurrentModificationException
 	    }
@@ -480,6 +486,49 @@ public class OWLWriter {
 			out.write("\trdfs:label \"" + ni.getOriginalNameOfIndividual()
 					+ "\" ." + "\r\n" + "\r\n");
 		}
+	}
+	
+	private void writeHelperClasses(BufferedWriter out) throws IOException {
+		// enumeration class
+		out.write("ifc:ENUMERATION"+ "\r\n");
+		out.write("\trdf:type owl:Class ." + "\r\n\r\n");
+		
+		// select class
+		out.write("ifc:SELECT"+ "\r\n");
+		out.write("\trdf:type owl:Class ." + "\r\n\r\n");
+		
+		// list class + associates properties etc.
+		out.write("ifc:List"+ "\r\n");
+		out.write("\trdf:type owl:Class ;"+ "\r\n");
+		out.write("\trdfs:subClassOf"+ "\r\n");
+		out.write("\t\t["+ "\r\n");
+		out.write("\t\t\trdf:type owl:Restriction ;"+ "\r\n");
+		out.write("\t\t\towl:onProperty ifc:isFollowedBy ;"+ "\r\n");
+		out.write("\t\t\towl:allValuesFrom ifc:List"+ "\r\n");
+		out.write("\t\t] ,"+ "\r\n");
+		out.write("\t\t["+ "\r\n");
+		out.write("\t\t\trdf:type owl:Restriction ;"+ "\r\n");
+		out.write("\t\t\towl:onProperty ifc:hasNext ;"+ "\r\n");
+		out.write("\t\t\towl:allValuesFrom ifc:List"+ "\r\n");
+		out.write("\t\t] ."+ "\r\n\r\n");
+		
+		out.write("ifc:hasListContent"+ "\r\n");
+		out.write("\trdf:type owl:ObjectProperty, owl:FunctionalProperty ;"+ "\r\n");
+		out.write("\trdfs:label \"hasListContent\" ;"+ "\r\n");
+		out.write("\trdfs:domain ifc:List ."+ "\r\n\r\n");
+		
+		out.write("ifc:hasNext"+ "\r\n");
+		out.write("\trdf:type owl:ObjectProperty, owl:FunctionalProperty ;"+ "\r\n");
+		out.write("\trdfs:label \"hasNext\" ;"+ "\r\n");
+		out.write("\trdfs:range ifc:List ;"+ "\r\n");
+		out.write("\trdfs:domain ifc:List ;"+ "\r\n");
+		out.write("\trdfs:subPropertyOf  ifc:isFollowedBy ."+ "\r\n\r\n");
+		
+		out.write("ifc:isFollowedBy"+ "\r\n");
+		out.write("\trdf:type owl:ObjectProperty, owl:FunctionalProperty ;"+ "\r\n");
+		out.write("\trdfs:label \"isFollowedBy\" ;"+ "\r\n");
+		out.write("\trdfs:range ifc:List ."+ "\r\n");
+		out.write("\trdfs:domain ifc:List ."+ "\r\n\r\n");
 	}
 
 	private void writeEntitiesToOWL(Iterator<Entry<String, EntityVO>> it,
@@ -620,95 +669,240 @@ public class OWLWriter {
 		while (it.hasNext()) {
 			Entry<String, TypeVO> pairs = it.next();
 			TypeVO tvo = pairs.getValue();
+//			if(!tvo.getPrimarytype().equalsIgnoreCase("SELECT"))
+//				continue;
 
 			if (tvo.getPrimarytype().equalsIgnoreCase("ENUMERATION")) {
-
-				// out.write("#TYPE " + tvo.getName() + " - " +
-				// tvo.getPrimarytype() + "\r\n");
 				out.write("ifc:" + tvo.getName() + "\r\n");
-				out.write("\ta owl:Class ;" + "\r\n");// -> owl:Class
-				out.write("\towl:oneOf (");
+				out.write("\trdf:type owl:Class ;" + "\r\n");
+				out.write("\towl:equivalentClass " + "\r\n");
+				out.write("\t\t[" + "\r\n");
+				out.write("\t\t\trdf:type owl:Class ;" + "\r\n");
+				out.write("\t\t\towl:oneOf "+"\r\n");
+				out.write("\t\t\t\t( " + "\r\n");
 				for (int i = 0; i < tvo.getEnum_entities().size(); i++) {
 					if (i != tvo.getEnum_entities().size() - 1)
-						out.write("ifc:"
+						out.write("\t\t\t\t\tifc:"
 								+ getNamedIndividual(
 										tvo.getEnum_entities().get(i),
 										tvo.getName()).getNamedIndividual()
-								+ " ");// -> owl:oneOf (uniquely named
+								+ " " + "\r\n");// -> owl:oneOf (uniquely named
 										// individuals + label property)
 					else
-						out.write("ifc:"
+						out.write("\t\t\t\t\tifc:"
 								+ getNamedIndividual(
 										tvo.getEnum_entities().get(i),
-										tvo.getName()).getNamedIndividual());
+										tvo.getName()).getNamedIndividual()+"\r\n");
 				}
-				out.write(") .\r\n\r\n");
+				out.write("\t\t\t\t) " + "\r\n");
+				out.write("\t\t] ; " + "\r\n");
+                out.write("\trdfs:subClassOf ifc:ENUMERATION ."+"\r\n\r\n");                
 			}
 
 			else if (tvo.getPrimarytype().equalsIgnoreCase("SELECT")) {
-				// ignored here
+				out.write("ifc:"+tvo.getName() + "\r\n");
+				out.write("\trdf:type owl:Class ;" + "\r\n");
+				out.write("\towl:equivalentClass" + "\r\n");
+				out.write("\t\t[" + "\r\n");
+				out.write("\t\t\trdf:type owl:Class ;" + "\r\n");
+				out.write("\t\t\towl:unionOf "+"\r\n");
+				out.write("\t\t\t\t( " + "\r\n");
+				List<String> selects = tvo.getSelect_entities();
+				for (int i = 0; i < selects.size(); i++) {
+						out.write("\t\t\t\t\tifc:"+ selects.get(i) + " " + "\r\n");
+				}
+				out.write("\t\t\t\t) " + "\r\n");
+				out.write("\t\t] ; " + "\r\n");
+                out.write("\trdfs:subClassOf ifc:SELECT ."+"\r\n\r\n");   
 			} else {
 				String type = tvo.getPrimarytype();
 				if (type.startsWith("ARRAY") || type.startsWith("SET")
 						|| type.startsWith("LIST")) {
 					// list
+					//previous conversion method -> not used any more
+					//WARNING: List, Array, and Set are handled identically
+//					String startIndex = type.substring(type.indexOf('[') + 1,
+//							type.indexOf('[') + 2);
+//					String endIndex = type.substring(type.indexOf(']') - 1,
+//							type.indexOf(']'));
+//					String[] cList = type.split(" ");
+//					String content = cList[cList.length - 1];
+//
+//					out.write("ifc:" + tvo.getName() + "\r\n");
+//					out.write("\ta owl:Class ;" + "\r\n");
+//					out.write("\trdfs:subClassOf olo:OrderedList ;" + "\r\n");
+//					if (!endIndex.equalsIgnoreCase("?")) {
+//						out.write("\trdfs:subClassOf [" + "\r\n");
+//						out.write("\t\ta owl:Restriction, owl:Class ;" + "\r\n");
+//						out.write("\t\towl:allValuesFrom [ " + "\r\n");
+//						out.write("\t\t\ta rdfs:Datatype ;" + "\r\n");
+//						out.write("\t\t\towl:oneOf (\"" + startIndex
+//								+ "\"^^xsd:int \"" + endIndex + "\"^^xsd:int)"
+//								+ "\r\n");
+//						out.write("\t\t\t] ;" + "\r\n");
+//						out.write("\t\towl:onProperty olo:length" + "\r\n");
+//						out.write("\t\t] ;" + "\r\n");
+//					}
+//					out.write("\trdfs:subClassOf [" + "\r\n");
+//					out.write("\t\ta owl:Restriction ;" + "\r\n");
+//					out.write("\t\towl:allValuesFrom ifc:" + tvo.getName()
+//							+ "_Slot ;" + "\r\n");
+//					out.write("\t\towl:onProperty olo:slot" + "\r\n");
+//					out.write("\t] ." + "\r\n" + "\r\n");
+//
+//					out.write("ifc:" + tvo.getName() + "_Slot a owl:Class ;"
+//							+ "\r\n");
+//					out.write("\trdfs:subClassOf olo:Slot ;" + "\r\n");
+//					out.write("\trdfs:subClassOf [" + "\r\n");
+//					out.write("\t\ta owl:Restriction ;" + "\r\n");
+//					out.write("\t\towl:allValuesFrom ifc:" + content + " ;\r\n");
+//					out.write("\t\towl:onProperty olo:item" + "\r\n");
+//					out.write("\t\t] ." + "\r\n" + "\r\n");
+					
 					String startIndex = type.substring(type.indexOf('[') + 1,
 							type.indexOf('[') + 2);
 					String endIndex = type.substring(type.indexOf(']') - 1,
 							type.indexOf(']'));
 					String[] cList = type.split(" ");
 					String content = cList[cList.length - 1];
-
+					
 					out.write("ifc:" + tvo.getName() + "\r\n");
-					out.write("\ta owl:Class ;" + "\r\n");
-					out.write("\trdfs:subClassOf olo:OrderedList ;" + "\r\n");
-					if (!endIndex.equalsIgnoreCase("?")) {
-						out.write("\trdfs:subClassOf [" + "\r\n");
-						out.write("\t\ta owl:Restriction, owl:Class ;" + "\r\n");
-						out.write("\t\towl:allValuesFrom [ " + "\r\n");
-						out.write("\t\t\ta rdfs:Datatype ;" + "\r\n");
-						out.write("\t\t\towl:oneOf (\"" + startIndex
-								+ "\"^^xsd:int \"" + endIndex + "\"^^xsd:int)"
-								+ "\r\n");
-						out.write("\t\t\t] ;" + "\r\n");
-						out.write("\t\towl:onProperty olo:length" + "\r\n");
-						out.write("\t\t] ;" + "\r\n");
+					out.write("\trdf:type owl:Class ;" + "\r\n");
+					if(content.endsWith(";"))
+						content = content.substring(0, content.length()-1);
+					out.write("\trdfs:subClassOf ifc:" + content + "_List ");
+					//check for cardinality restrictions and add if available
+					
+					boolean startIsInt = false;
+					try { 
+				        Integer.parseInt(startIndex); 
+				        startIsInt = true;
+				    } catch(NumberFormatException e) { 
+				    	startIsInt = false; 
+				    }
+					
+					boolean endIsInt = false;
+					try { 
+				        Integer.parseInt(endIndex); 
+				        endIsInt = true;
+				    } catch(NumberFormatException e) { 
+				    	endIsInt = false; 
+				    }
+							
+					if(startIsInt == false && endIsInt == false){
+						//[?:?]
+						//no cardinality restrictions
+						//nothing to add
 					}
-					out.write("\trdfs:subClassOf [" + "\r\n");
-					out.write("\t\ta owl:Restriction ;" + "\r\n");
-					out.write("\t\towl:allValuesFrom ifc:" + tvo.getName()
-							+ "_Slot ;" + "\r\n");
-					out.write("\t\towl:onProperty olo:slot" + "\r\n");
-					out.write("\t] ." + "\r\n" + "\r\n");
+					else if(startIsInt == false && endIsInt == true){
+						//[?:2]		
+						//This is not supposed to happen
+						System.out.println("WARNING - IMPOSSIBLE: found 'unlimited' mincardinality restriction combined with a bounded maxcardinality restriction for :" + tvo.getName());		
+					}
+					else if(startIsInt == true && endIsInt == false){
+						int start = Integer.parseInt(startIndex); 
+						//[2:?]
+						if(start > 1){
+							out.write(";" + "\r\n");
+							out.write("\trdfs:subClassOf" + "\r\n");
+							out.write("\t\t[" + "\r\n");
+							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+							out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
+							out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
+							out.write("\t\t\towl:minqualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t] ");
+						}
+					}
+					else {
+						int start = Integer.parseInt(startIndex); 
+						int end = Integer.parseInt(endIndex);
+						if(start == end){
+							//[3:3]				
+							//explicitly qualified cardinality
+							out.write(";" + "\r\n");
+							out.write("\trdfs:subClassOf" + "\r\n");
+							out.write("\t\t[" + "\r\n");
+							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+							out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
+							out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
+							out.write("\t\t\towl:qualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t] ");
+						}
+						else if(start < end){
+							//[1:2]				
+							//min-max qualified cardinality
 
-					out.write("ifc:" + tvo.getName() + "_Slot a owl:Class ;"
-							+ "\r\n");
-					out.write("\trdfs:subClassOf olo:Slot ;" + "\r\n");
-					out.write("\trdfs:subClassOf [" + "\r\n");
-					out.write("\t\ta owl:Restriction ;" + "\r\n");
-					out.write("\t\towl:allValuesFrom ifc:" + content + " ;\r\n");
-					out.write("\t\towl:onProperty olo:item" + "\r\n");
-					out.write("\t\t] ." + "\r\n" + "\r\n");
-				} else if (ExpressReader.isAllUpper(type)) {
-					// primaryType
-					out.write("ifc:" + tvo.getName() + "\r\n");
-					out.write("\ta owl:Class ;" + "\r\n");
-					out.write("\trdfs:subClassOf [ " + "\r\n");
-					out.write("\t\ta owl:Restriction ;" + "\r\n");
-					out.write("\t\towl:allValuesFrom ifc:"
-							+ tvo.getPrimarytype() + " ;" + "\r\n");
-					out.write("\t\towl:onProperty ifc:hasContent" + "\r\n");
-					out.write("\t\t] ." + "\r\n" + "\r\n");
+							if(end > 1){
+								out.write(";" + "\r\n");
+							out.write("\trdfs:subClassOf" + "\r\n");
+							out.write("\t\t[" + "\r\n");
+							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+							out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
+							out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
+							out.write("\t\t\towl:maxqualifiedCardinality \"" + (end-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t] ");							
+							}
+							if(start > 1){
+								out.write(";" + "\r\n");
+								out.write("\trdfs:subClassOf" + "\r\n");
+								out.write("\t\t[" + "\r\n");
+								out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+								out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
+								out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
+								out.write("\t\t\towl:minqualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+								out.write("\t\t] ");								
+							}							
+						}
+						else{
+							//This is not supposed to happen
+							System.out.println("WARNING - IMPOSSIBLE: found mincardinality restriction that is greater than maxcardinality restriuction for :" + tvo.getName());
+						}
+					}
+					out.write("." + "\r\n\r\n");
+						
+						
+					
+					if(listPropertiesOutput.contains(content)){
+						//property already contained in resulting OWL file (.TTL) -> no need to write additional property
+					}
+					else{
+						listPropertiesOutput.add(content);
+						
+						out.write("ifc:" + content + "_List" + "\r\n");
+						out.write("\trdf:type owl:Class ;" + "\r\n");
+						out.write("\trdfs:subClassOf ifc:List ;" + "\r\n");
+						out.write("\trdfs:subClassOf" + "\r\n");
+						out.write("\t\t[" + "\r\n");
+						out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+						out.write("\t\t\towl:onProperty ifc:hasListContent ;" + "\r\n");
+						out.write("\t\t\towl:allValuesFrom ifc:"+content + "\r\n");
+						out.write("\t\t] ;" + "\r\n");
+						out.write("\trdfs:subClassOf" + "\r\n");
+						out.write("\t\t[" + "\r\n");
+						out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+						out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
+						out.write("\t\t\towl:allValuesFrom ifc:"+content + "_List\r\n");
+						out.write("\t\t] ;" + "\r\n");
+						out.write("\trdfs:subClassOf" + "\r\n");
+						out.write("\t\t[" + "\r\n");
+						out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+						out.write("\t\t\towl:onProperty ifc:hasNext ;" + "\r\n");
+						out.write("\t\t\towl:allValuesFrom ifc:"+content + "_List\r\n");
+						out.write("\t\t] ." + "\r\n\r\n");						
+					}
+					
+					
+//				} else if (ExpressReader.isAllUpper(type)) {
+//					// primaryType
+//					// Note: these lines are converted identically as any other TypeVO (see below), so this else statement is unnecessary
+//					out.write("ifc:" + tvo.getName() + "\r\n");
+//					out.write("\trdf:type owl:Class ;" + "\r\n");
+//					out.write("\trdfs:subClassOf ifc:" + tvo.getPrimarytype() + " .\r\n\r\n");
 				} else {
 					// typeVO
 					out.write("ifc:" + tvo.getName() + "\r\n");
-					out.write("\ta owl:Class ;" + "\r\n");
-					out.write("\trdfs:subClassOf [ " + "\r\n");
-					out.write("\t\ta owl:Restriction ;" + "\r\n");
-					out.write("\t\towl:allValuesFrom ifc:"
-							+ tvo.getPrimarytype() + " ;" + "\r\n");
-					out.write("\t\towl:onProperty ifc:hasContent" + "\r\n");
-					out.write("\t\t] ." + "\r\n" + "\r\n");
+					out.write("\trdf:type owl:Class ;" + "\r\n");
+					out.write("\trdfs:subClassOf ifc:" + tvo.getPrimarytype() + " .\r\n\r\n");
 				}
 			}
 		}
