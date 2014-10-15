@@ -28,7 +28,6 @@ import fi.ni.rdf.Namespace;
  * OWLWriter ow = new OWLWriter(expressSchemaName, entities, types, siblings);
  * 
  *  - outputOWL() - writes the OWL ontology in TTL files in appropriate 'schema' package
- *  - outputRDFS() - writes the RDFS ontology in TTL files
  *   
  * @author Jyrki Oraskari
  * @author of modifications Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
@@ -63,128 +62,6 @@ public class OWLWriter {
 	private Map<String, Set<String>> siblings = new HashMap<String, Set<String>>();
 	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();
 	private List<String> listPropertiesOutput = new ArrayList<String>();
-	// private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
-	// private Map<String, String> interfaces = new HashMap<String, String>();
-	// private Map<String, String> interface_aliases = new HashMap<String,
-	// String>();
-
-
-
-	static final String simpleobject_property = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
-			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
-
-	static final String simpleobject_property_functional = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
-			+ "\trdf:type owl:ObjectProperty , owl:ObjectProperty .\r\n\r\n";
-
-	static final String simpleobject_property_list = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range [ \r\n"
-			+ "\t\trdf:type owl:Class ; \r\n"
-			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
-			+ "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\trdf:type owl:Restriction, owl:Class ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\trdf:type rdfs:Datatype ;\r\n"
-			+ "\t\t\t\towl:oneOf (<_LISTRANGEVALUES_>)\r\n"// "1"^^xsd:int
-															// "2"^^xsd:int
-			+ "\t\t\t] ;\r\n" + "\t\t\towl:onProperty olo:length \r\n"
-			+ "\t\t] ;\r\n" + "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\trdf:type owl:Class ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\t\t\towl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
-			+ "\t\t\t\t\towl:onProperty olo:item \r\n" + "\t\t\t\t] ; \r\n"
-			+ "\t\t\t] ; \r\n" + "\t\t\towl:onProperty olo:slot \r\n"
-			+ "\t\t] ; \r\n" + "\t] ; \r\n"
-			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
-
-	static final String simpleobject_property_list_unbounded = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range [ \r\n"
-			+ "\t\trdf:type owl:Class ; \r\n"
-			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
-			+ "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\trdf:type owl:Class ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\t\t\towl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
-			+ "\t\t\t\t\towl:onProperty olo:item \r\n"
-			+ "\t\t\t\t] ; \r\n"
-			+ "\t\t\t] ; \r\n"
-			+ "\t\t\towl:onProperty olo:slot \r\n"
-			+ "\t\t] ; \r\n"
-			+ "\t] ; \r\n"
-			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
-
-	static final String select_property = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n" + "\trdfs:range [ \r\n"
-			+ "\t\trdf:type owl:Class ; \r\n"
-			+ "\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n" + "\t] ;\r\n"
-			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
-
-	static final String select_property_list = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range [ \r\n"
-			+ "\t\trdf:type owl:Class ; \r\n"
-			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
-			+ "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\trdf:type owl:Restriction, owl:Class ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\trdf:type rdfs:Datatype ;\r\n"
-			+ "\t\t\t\towl:oneOf (<_LISTRANGEVALUES_>)\r\n"// "1"^^xsd:int
-															// "2"^^xsd:int
-			+ "\t\t\t] ;\r\n" + "\t\t\towl:onProperty olo:length \r\n"
-			+ "\t\t] ;\r\n" + "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\trdf:type owl:Class ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\t\t\trdf:type owl:Class ; \r\n"
-			+ "\t\t\t\t\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
-			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\towl:onProperty olo:item \r\n"
-			+ "\t\t\t\t] ; \r\n" + "\t\t\t] ; \r\n"
-			+ "\t\t\towl:onProperty olo:slot \r\n" + "\t\t] ; \r\n"
-			+ "\t] ; \r\n" + "\trdf:type owl:ObjectProperty .\r\n\r\n";
-
-	static final String select_property_list_unbounded = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n" + "\trdfs:range [ \r\n"
-			+ "\t\trdf:type owl:Class ; \r\n"
-			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
-			+ "\t\trdfs:subClassOf [ \r\n" + "\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\trdf:type owl:Class ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
-			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
-			+ "\t\t\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\t\t\trdf:type owl:Class ; \r\n"
-			+ "\t\t\t\t\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
-			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\towl:onProperty olo:item \r\n"
-			+ "\t\t\t\t] ; \r\n" + "\t\t\t] ; \r\n"
-			+ "\t\t\towl:onProperty olo:slot \r\n" + "\t\t] ; \r\n"
-			+ "\t] ; \r\n" + "\trdf:type owl:ObjectProperty .\r\n\r\n";
-
-	static final String inverse_property = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
-			+ "\towl:inverseOf <_INVERSEPROP_> ;\r\n"
-			+ "\trdf:type owl:ObjectProperty .\r\n";
-	
-	static final String inverse_property_list = "ifc:<_NAME_>\r\n"
-			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
-			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
-			+ "\towl:inverseOf <_INVERSEPROP_> ;\r\n"
-			+ "\trdf:type owl:ObjectProperty .\r\n";
 
 	public OWLWriter() {
 		// UNUSED
@@ -221,10 +98,10 @@ public class OWLWriter {
 					.iterator();
 			writeEntitiesToOWL(it, out);
 
-//			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
-//				PropertyVO property = entry.getValue();
-//				outputOWLproperty(out, property);
-//			}
+			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
+				PropertyVO property = entry.getValue();
+				outputOWLproperty(out, property);
+			}
 
 			out.close();
 
@@ -235,150 +112,61 @@ public class OWLWriter {
 
 	private void outputOWLproperty(BufferedWriter out, PropertyVO property) {
 		try {
-			if (property.isList()) {
-				String tmp = "";
-				tmp = prepareListPropertyStatement(tmp, property);
-				out.write(tmp);
+			if (property.isList()) {				
+				out.write("ifc:"+property.getName()+"\r\n");
+				out.write("\trdfs:label \""+property.getOriginalName()+"\" ;\r\n");
+				out.write("\trdfs:domain ifc:"+property.getDomain().getName()+" ;\r\n");
+				out.write("\trdfs:range ifc:"+property.getRange()+"_List ;\r\n");
+				if(property.getInverseProperty() != null)
+					out.write("\towl:inverseOf ifc:"+property.getInverseProperty().getName() +" ;\r\n");
+				out.write("\trdf:type owl:FunctionalProperty, owl:ObjectProperty .\r\n\r\n");
+				
+				if(listPropertiesOutput.contains(property.getRange())){
+					//property already contained in resulting OWL file (.TTL) -> no need to write additional property
+				}
+				else{
+					listPropertiesOutput.add(property.getRange());
+					
+					out.write("ifc:" + property.getRange() + "_List" + "\r\n");
+					out.write("\trdf:type owl:Class ;" + "\r\n");
+					out.write("\trdfs:subClassOf ifc:List ;" + "\r\n");
+					out.write("\trdfs:subClassOf" + "\r\n");
+					out.write("\t\t[" + "\r\n");
+					out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+					out.write("\t\t\towl:onProperty ifc:hasListContent ;" + "\r\n");
+					out.write("\t\t\towl:allValuesFrom ifc:"+property.getRange() + "\r\n");
+					out.write("\t\t] ;" + "\r\n");
+					out.write("\trdfs:subClassOf" + "\r\n");
+					out.write("\t\t[" + "\r\n");
+					out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+					out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
+					out.write("\t\t\towl:allValuesFrom ifc:"+property.getRange() + "_List\r\n");
+					out.write("\t\t] ;" + "\r\n");
+					out.write("\trdfs:subClassOf" + "\r\n");
+					out.write("\t\t[" + "\r\n");
+					out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+					out.write("\t\t\towl:onProperty ifc:hasNext ;" + "\r\n");
+					out.write("\t\t\towl:allValuesFrom ifc:"+property.getRange() + "_List\r\n");
+					out.write("\t\t] ." + "\r\n\r\n");						
+				}
+				
 				return;
+
 			} else {
-				String tmp = "";
-				tmp = prepareSimplePropertyStatement(tmp, property);
-				out.write(tmp);
+				out.write("ifc:"+property.getName()+"\r\n");
+				out.write("\trdfs:label \""+property.getOriginalName()+"\" ;\r\n");
+				out.write("\trdfs:domain ifc:"+property.getDomain().getName()+" ;\r\n");
+				out.write("\trdfs:range ifc:"+property.getRange()+" ;\r\n");
+				if(property.getInverseProperty() != null)
+					out.write("\towl:inverseOf ifc:"+property.getInverseProperty().getName() +" ;\r\n");
+				out.write("\trdf:type owl:FunctionalProperty, owl:ObjectProperty .\r\n\r\n");
 				return;
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-
-	private String prepareListPropertyStatement(String tmp, PropertyVO property){
-		if (property.getType() == PropertyVO.propertyType.TypeVO
-				|| property.getType() == PropertyVO.propertyType.EntityVO) {
-
-			if(property.getMaxCardinality()!=-1)
-				tmp = simpleobject_property_list;
-			else tmp = simpleobject_property_list_unbounded;
-			
-			tmp = preparePropertyListStatement(tmp, property);
-			
-			tmp = ToolkitString.strReplaceLike(tmp, "<_LISTVALUE_>",
-					property.getRange());
-			return tmp;
-		} else if (property.getType() == PropertyVO.propertyType.Select) {
-			if(property.getMaxCardinality()!=-1)
-				tmp = select_property_list;
-			else tmp = select_property_list_unbounded;
-			tmp = preparePropertyListStatement(tmp,property);
-							
-			if (property.getSelectEntities() != null || property.getSelectEntities().size() > 0) {
-				// numbers
-				String sv = "";
-				for (String s : property.getSelectEntities()) { 
-					sv += "ifc:" + s + " ";
-				}
-				if(sv.length()>2){
-				sv = sv.substring(0, sv.length() - 2);
-				tmp = ToolkitString.strReplaceLike(tmp,
-						"<_SELECTVALUES_>", sv);
-				}
-				else
-				tmp = ToolkitString
-						.strReplaceLike(tmp, "<_SELECTVALUES_>",
-								"Something went wrong here : " + property.getName() + " - " + property.getDomain().getName());
-			} else
-				tmp = ToolkitString
-						.strReplaceLike(tmp, "<_SELECTVALUES_>",
-								"Something went wrong here : " + property.getName() + " - " + property.getDomain().getName());
-			return tmp;
-		}
-		else if(property.getInverseProperty() != null){
-			//writing inverse property
-			tmp = inverse_property_list;
-			tmp = ToolkitString.strReplaceLike(tmp, "<_NAME_>",
-					property.getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_DOMAIN_>", property
-					.getDomain().getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_RANGE_>",
-					property.getRange());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_INVERSEPROP_>", "ifc:"+property.getInverseProperty().getName());
-			return tmp;
-		}
-		else {
-			//A lot of inverse properties found here
-			System.out.println("other type of LIST property found : "+property.getName());
-			return "Still todo!";
-		}
-	}
 	
-	private String preparePropertyListStatement(String tmp, PropertyVO property) {
-		tmp = ToolkitString.strReplaceLike(tmp, "<_NAME_>", property.getName());
-		tmp = ToolkitString.strReplaceLike(tmp, "<_DOMAIN_>", property
-				.getDomain().getName());
-
-		if (property.getMaxCardinality() != -1)
-			tmp = ToolkitString.strReplaceLike(tmp, "<_LISTRANGEVALUES_>", "\""
-					+ property.getMinCardinality() + "\"" + "^^xsd:int " + "\""
-					+ property.getMaxCardinality() + "\"" + "^^xsd:int");
-		return tmp;
-	}
-
-	private String prepareSimplePropertyStatement(String tmp,
-			PropertyVO property) {
-		if (property.getType() == PropertyVO.propertyType.TypeVO
-				|| property.getType() == PropertyVO.propertyType.EntityVO) {
-			tmp = simpleobject_property;
-			tmp = ToolkitString.strReplaceLike(tmp, "<_NAME_>",
-					property.getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_DOMAIN_>", property
-					.getDomain().getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_RANGE_>",
-					property.getRange());
-			return tmp;
-		} else if (property.getType() == PropertyVO.propertyType.Select) {
-			tmp = select_property;
-			tmp = ToolkitString.strReplaceLike(tmp, "<_NAME_>",
-					property.getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_DOMAIN_>", property
-					.getDomain().getName());
-
-			if (property.getSelectEntities() != null
-					|| property.getSelectEntities().size() > 0) {
-				String sv = "";
-				for (String s : property.getSelectEntities()) {
-					sv += "ifc:" + s + " ";
-				}
-				if (sv.length() >= 2) {
-					sv = sv.substring(0, sv.length() - 2);
-					tmp = ToolkitString.strReplaceLike(tmp, "<_SELECTVALUES_>",
-							sv);
-				} else {
-					tmp = ToolkitString.strReplaceLike(tmp, "<_SELECTVALUES_>",
-							"Something went wrong there");
-				}
-			} else
-				tmp = ToolkitString.strReplaceLike(tmp, "<_SELECTVALUES_>",
-						"Something went wrong there");
-			return tmp;
-		} 
-		else if(property.getInverseProperty() != null){
-			//writing inverse property
-			tmp = inverse_property;
-			tmp = ToolkitString.strReplaceLike(tmp, "<_NAME_>",
-					property.getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_DOMAIN_>", property
-					.getDomain().getName());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_RANGE_>",
-					property.getRange());
-			tmp = ToolkitString.strReplaceLike(tmp, "<_INVERSEPROP_>", "ifc:"+property.getInverseProperty().getName());
-			return tmp;
-		}
-		else {
-			System.out.println("other type of property found : "
-					+ property.getName());
-			return "Something went wrong here, not sure how to OWLIFY this: " + property.getName();
-		}
-	}
-
 	private void writePrimaryTypes(BufferedWriter out) throws IOException {
 		HashMap<String, String> hm = new HashMap<String, String>();
 		for (PrimaryTypeVO pt : PrimaryTypeVO.getListOfPrimaryTypes()) {
@@ -696,8 +484,6 @@ public class OWLWriter {
 		while (it.hasNext()) {
 			Entry<String, TypeVO> pairs = it.next();
 			TypeVO tvo = pairs.getValue();
-//			if(!tvo.getPrimarytype().equalsIgnoreCase("SELECT"))
-//				continue;
 
 			if (tvo.getPrimarytype().equalsIgnoreCase("ENUMERATION")) {
 				out.write("ifc:" + tvo.getName() + "\r\n");
@@ -744,48 +530,7 @@ public class OWLWriter {
 			} else {
 				String type = tvo.getPrimarytype();
 				if (type.startsWith("ARRAY") || type.startsWith("SET")
-						|| type.startsWith("LIST")) {
-					// list
-					//previous conversion method -> not used any more
-					//WARNING: List, Array, and Set are handled identically
-//					String startIndex = type.substring(type.indexOf('[') + 1,
-//							type.indexOf('[') + 2);
-//					String endIndex = type.substring(type.indexOf(']') - 1,
-//							type.indexOf(']'));
-//					String[] cList = type.split(" ");
-//					String content = cList[cList.length - 1];
-//
-//					out.write("ifc:" + tvo.getName() + "\r\n");
-//					out.write("\trdf:type owl:Class ;" + "\r\n");
-//					out.write("\trdfs:subClassOf olo:OrderedList ;" + "\r\n");
-//					if (!endIndex.equalsIgnoreCase("?")) {
-//						out.write("\trdfs:subClassOf [" + "\r\n");
-//						out.write("\t\trdf:type owl:Restriction, owl:Class ;" + "\r\n");
-//						out.write("\t\towl:allValuesFrom [ " + "\r\n");
-//						out.write("\t\t\trdf:type rdfs:Datatype ;" + "\r\n");
-//						out.write("\t\t\towl:oneOf (\"" + startIndex
-//								+ "\"^^xsd:int \"" + endIndex + "\"^^xsd:int)"
-//								+ "\r\n");
-//						out.write("\t\t\t] ;" + "\r\n");
-//						out.write("\t\towl:onProperty olo:length" + "\r\n");
-//						out.write("\t\t] ;" + "\r\n");
-//					}
-//					out.write("\trdfs:subClassOf [" + "\r\n");
-//					out.write("\t\trdf:type owl:Restriction ;" + "\r\n");
-//					out.write("\t\towl:allValuesFrom ifc:" + tvo.getName()
-//							+ "_Slot ;" + "\r\n");
-//					out.write("\t\towl:onProperty olo:slot" + "\r\n");
-//					out.write("\t] ." + "\r\n" + "\r\n");
-//
-//					out.write("ifc:" + tvo.getName() + "_Slot a owl:Class ;"
-//							+ "\r\n");
-//					out.write("\trdfs:subClassOf olo:Slot ;" + "\r\n");
-//					out.write("\trdfs:subClassOf [" + "\r\n");
-//					out.write("\t\trdf:type owl:Restriction ;" + "\r\n");
-//					out.write("\t\towl:allValuesFrom ifc:" + content + " ;\r\n");
-//					out.write("\t\towl:onProperty olo:item" + "\r\n");
-//					out.write("\t\t] ." + "\r\n" + "\r\n");
-					
+						|| type.startsWith("LIST")) {					
 					String startIndex = type.substring(type.indexOf('[') + 1,
 							type.indexOf('[') + 2);
 					String endIndex = type.substring(type.indexOf(']') - 1,
@@ -886,8 +631,6 @@ public class OWLWriter {
 						}
 					}
 					out.write("." + "\r\n\r\n");
-						
-						
 					
 					if(listPropertiesOutput.contains(content)){
 						//property already contained in resulting OWL file (.TTL) -> no need to write additional property
@@ -917,14 +660,6 @@ public class OWLWriter {
 						out.write("\t\t\towl:allValuesFrom ifc:"+content + "_List\r\n");
 						out.write("\t\t] ." + "\r\n\r\n");						
 					}
-					
-					
-//				} else if (ExpressReader.isAllUpper(type)) {
-//					// primaryType
-//					// Note: these lines are converted identically as any other TypeVO (see below), so this else statement is unnecessary
-//					out.write("ifc:" + tvo.getName() + "\r\n");
-//					out.write("\trdf:type owl:Class ;" + "\r\n");
-//					out.write("\trdfs:subClassOf ifc:" + tvo.getPrimarytype() + " .\r\n\r\n");
 				} else {
 					// typeVO
 					out.write("ifc:" + tvo.getName() + "\r\n");
@@ -951,9 +686,7 @@ public class OWLWriter {
 		s += "@prefix xsd: <" + Namespace.XSD + "> .\r\n" 
 				+ "@prefix owl: <" + Namespace.OWL + "> .\r\n" 
 				+ "@prefix rdfs: <" + Namespace.RDFS + "> .\r\n" 
-				//+ "@prefix list: <" + Namespace.LIST + "> .\r\n" 
 				//+ "@prefix dce: <" + Namespace.DCE + "> .\r\n" 
-				//+ "@prefix olo: <" + Namespace.OLO + "> .\r\n" 
 				//+ "@prefix dct: <" + Namespace.DCT + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
 				+ "ifc:\r\n" 

@@ -113,28 +113,14 @@ public class ExpressReader {
 		er.rearrangeAttributes();
 		er.rearrangeProperties();
 		er.rearrangeInverses();
-		er.unpackSelectTypes();
+//		er.unpackSelectTypes();
 //		er.printIFCClassesInLog();
 		
 //		JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities, er.interfaces, er.types, er.interface_aliases);
 //		jw.outputJavaClasses();
 
 		OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities, er.types, er.siblings, er.enumIndividuals, er.properties);
-//		ow.outputRDFS();
-		ow.outputOWL();
-		//FileWriter fw = new FileWriter("out\\"+outputschema+".n3");
-		
-		//BufferedWriter out = new BufferedWriter(fw);
-		//er.outputRDFS(out);
-		//er.outputOWL(out);
-		
-		
-//		try {
-//			out.flush();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//		out.close();		
+		ow.outputOWL();	
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,6 +152,7 @@ public class ExpressReader {
 				prop.setRange(type_name);
 				prop.setMinCardinality(attr.getMinCard());
 				prop.setMaxCardinality(attr.getMaxCard());
+				prop.setOptional(attr.isOptional());
 				
 				//TODO: check whether we do not have a list of selects
 				if(type_primaryType.equalsIgnoreCase("enumeration")) prop.setType(PropertyVO.propertyType.TypeVO);
