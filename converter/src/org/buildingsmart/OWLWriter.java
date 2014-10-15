@@ -70,44 +70,49 @@ public class OWLWriter {
 	static final String simpleobject_property = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
 			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
-			+ "\ta owl:ObjectProperty .\r\n\r\n";
+			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
+
+	static final String simpleobject_property_functional = "ifc:<_NAME_>\r\n"
+			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
+			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
+			+ "\trdf:type owl:ObjectProperty , owl:ObjectProperty .\r\n\r\n";
 
 	static final String simpleobject_property_list = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
 			+ "\trdfs:range [ \r\n"
-			+ "\t\ta owl:Class ; \r\n"
+			+ "\t\trdf:type owl:Class ; \r\n"
 			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
 			+ "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\ta owl:Restriction, owl:Class ; \r\n"
+			+ "\t\t\trdf:type owl:Restriction, owl:Class ; \r\n"
 			+ "\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\ta rdfs:Datatype ;\r\n"
+			+ "\t\t\t\trdf:type rdfs:Datatype ;\r\n"
 			+ "\t\t\t\towl:oneOf (<_LISTRANGEVALUES_>)\r\n"// "1"^^xsd:int
 															// "2"^^xsd:int
 			+ "\t\t\t] ;\r\n" + "\t\t\towl:onProperty olo:length \r\n"
 			+ "\t\t] ;\r\n" + "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\ta owl:Class ; \r\n"
+			+ "\t\t\trdf:type owl:Restriction ; \r\n"
+			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\trdf:type owl:Class ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
+			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
 			+ "\t\t\t\t\towl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
 			+ "\t\t\t\t\towl:onProperty olo:item \r\n" + "\t\t\t\t] ; \r\n"
 			+ "\t\t\t] ; \r\n" + "\t\t\towl:onProperty olo:slot \r\n"
 			+ "\t\t] ; \r\n" + "\t] ; \r\n"
-			+ "\ta owl:ObjectProperty .\r\n\r\n";
+			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
 
 	static final String simpleobject_property_list_unbounded = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
 			+ "\trdfs:range [ \r\n"
-			+ "\t\ta owl:Class ; \r\n"
+			+ "\t\trdf:type owl:Class ; \r\n"
 			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
 			+ "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\ta owl:Restriction ; \r\n"
+			+ "\t\t\trdf:type owl:Restriction ; \r\n"
 			+ "\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\ta owl:Class ; \r\n"
+			+ "\t\t\t\trdf:type owl:Class ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
+			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
 			+ "\t\t\t\t\towl:allValuesFrom ifc:<_LISTVALUE_> ; \r\n"
 			+ "\t\t\t\t\towl:onProperty olo:item \r\n"
 			+ "\t\t\t\t] ; \r\n"
@@ -115,68 +120,68 @@ public class OWLWriter {
 			+ "\t\t\towl:onProperty olo:slot \r\n"
 			+ "\t\t] ; \r\n"
 			+ "\t] ; \r\n"
-			+ "\ta owl:ObjectProperty .\r\n\r\n";
+			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
 
 	static final String select_property = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n" + "\trdfs:range [ \r\n"
-			+ "\t\ta owl:Class ; \r\n"
+			+ "\t\trdf:type owl:Class ; \r\n"
 			+ "\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n" + "\t] ;\r\n"
-			+ "\ta owl:ObjectProperty .\r\n\r\n";
+			+ "\trdf:type owl:ObjectProperty .\r\n\r\n";
 
 	static final String select_property_list = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
 			+ "\trdfs:range [ \r\n"
-			+ "\t\ta owl:Class ; \r\n"
+			+ "\t\trdf:type owl:Class ; \r\n"
 			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
 			+ "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\ta owl:Restriction, owl:Class ; \r\n"
+			+ "\t\t\trdf:type owl:Restriction, owl:Class ; \r\n"
 			+ "\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\ta rdfs:Datatype ;\r\n"
+			+ "\t\t\t\trdf:type rdfs:Datatype ;\r\n"
 			+ "\t\t\t\towl:oneOf (<_LISTRANGEVALUES_>)\r\n"// "1"^^xsd:int
 															// "2"^^xsd:int
 			+ "\t\t\t] ;\r\n" + "\t\t\towl:onProperty olo:length \r\n"
 			+ "\t\t] ;\r\n" + "\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\ta owl:Class ; \r\n"
+			+ "\t\t\trdf:type owl:Restriction ; \r\n"
+			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\trdf:type owl:Class ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
+			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
 			+ "\t\t\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\t\t\ta owl:Class ; \r\n"
+			+ "\t\t\t\t\t\trdf:type owl:Class ; \r\n"
 			+ "\t\t\t\t\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
 			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\towl:onProperty olo:item \r\n"
 			+ "\t\t\t\t] ; \r\n" + "\t\t\t] ; \r\n"
 			+ "\t\t\towl:onProperty olo:slot \r\n" + "\t\t] ; \r\n"
-			+ "\t] ; \r\n" + "\ta owl:ObjectProperty .\r\n\r\n";
+			+ "\t] ; \r\n" + "\trdf:type owl:ObjectProperty .\r\n\r\n";
 
 	static final String select_property_list_unbounded = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n" + "\trdfs:range [ \r\n"
-			+ "\t\ta owl:Class ; \r\n"
+			+ "\t\trdf:type owl:Class ; \r\n"
 			+ "\t\trdfs:subClassOf olo:OrderedList ; \r\n"
-			+ "\t\trdfs:subClassOf [ \r\n" + "\t\t\ta owl:Restriction ; \r\n"
-			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\ta owl:Class ; \r\n"
+			+ "\t\trdfs:subClassOf [ \r\n" + "\t\t\trdf:type owl:Restriction ; \r\n"
+			+ "\t\t\towl:allValuesFrom [ \r\n" + "\t\t\t\trdf:type owl:Class ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf olo:Slot ; \r\n"
 			+ "\t\t\t\trdfs:subClassOf [ \r\n"
-			+ "\t\t\t\t\ta owl:Restriction ; \r\n"
+			+ "\t\t\t\t\trdf:type owl:Restriction ; \r\n"
 			+ "\t\t\t\t\towl:allValuesFrom [ \r\n"
-			+ "\t\t\t\t\t\ta owl:Class ; \r\n"
+			+ "\t\t\t\t\t\trdf:type owl:Class ; \r\n"
 			+ "\t\t\t\t\t\towl:unionOf ( <_SELECTVALUES_> ) ; \r\n"
 			+ "\t\t\t\t\t] ; \r\n" + "\t\t\t\t\towl:onProperty olo:item \r\n"
 			+ "\t\t\t\t] ; \r\n" + "\t\t\t] ; \r\n"
 			+ "\t\t\towl:onProperty olo:slot \r\n" + "\t\t] ; \r\n"
-			+ "\t] ; \r\n" + "\ta owl:ObjectProperty .\r\n\r\n";
+			+ "\t] ; \r\n" + "\trdf:type owl:ObjectProperty .\r\n\r\n";
 
 	static final String inverse_property = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
 			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
 			+ "\towl:inverseOf <_INVERSEPROP_> ;\r\n"
-			+ "\ta owl:ObjectProperty .\r\n";
+			+ "\trdf:type owl:ObjectProperty .\r\n";
 	
 	static final String inverse_property_list = "ifc:<_NAME_>\r\n"
 			+ "\trdfs:domain ifc:<_DOMAIN_> ;\r\n"
 			+ "\trdfs:range ifc:<_RANGE_> ;\r\n"
 			+ "\towl:inverseOf <_INVERSEPROP_> ;\r\n"
-			+ "\ta owl:ObjectProperty .\r\n";
+			+ "\trdf:type owl:ObjectProperty .\r\n";
 
 	public OWLWriter() {
 		// UNUSED
@@ -204,18 +209,18 @@ public class OWLWriter {
 			writePrimaryTypes(out);
 			writeNamedIndividuals(out);
 
-			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
-					.iterator();
-			writeTypesToOWL(it_type, out);
-
-			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
-					.iterator();
-			writeEntitiesToOWL(it, out);
-
-			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
-				PropertyVO property = entry.getValue();
-				outputOWLproperty(out, property);
-			}
+//			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
+//					.iterator();
+//			writeTypesToOWL(it_type, out);
+//
+//			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
+//					.iterator();
+//			writeEntitiesToOWL(it, out);
+//
+//			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
+//				PropertyVO property = entry.getValue();
+//				outputOWLproperty(out, property);
+//			}
 
 			out.close();
 
@@ -431,24 +436,49 @@ public class OWLWriter {
 	}
 
 	private void writePrimaryTypes(BufferedWriter out) throws IOException {
+		HashMap<String, String> hm = new HashMap<String, String>();
 		for (PrimaryTypeVO pt : PrimaryTypeVO.getListOfPrimaryTypes()) {
 			out.write("ifc:" + pt.getPTypeName() + "\r\n");
-			out.write("\ta owl:Class ;" + "\r\n");
+			out.write("\trdf:type owl:Class ;" + "\r\n");
 			out.write("\trdfs:subClassOf [ " + "\r\n");
-			out.write("\t\ta owl:Restriction ;" + "\r\n");
+			out.write("\t\trdf:type owl:Restriction ;" + "\r\n");
 			out.write("\t\towl:allValuesFrom xsd:" + pt.getXSDType() + " ;"
 					+ "\r\n");
-			out.write("\t\towl:onProperty ifc:hasContent" + "\r\n");
+			out.write("\t\towl:onProperty ifc:has_" + pt.getXSDType() + "\r\n");
 			out.write("\t\t] ." + "\r\n" + "\r\n");
+			
+			String key = pt.getXSDType();
+			String val = hm.get(pt.getXSDType());
+			if(hm.containsKey(key)){
+				hm.remove(key);
+				hm.put(key, val+ " ifc:" + pt.getPTypeName());
+			}
+			else{
+				hm.put(key, "ifc:" + pt.getPTypeName());		
+			}
 		}
+		Iterator<Map.Entry<String,String>> it = hm.entrySet().iterator();
+	    while (it.hasNext()) {
+	        Map.Entry<String,String> pairs = (Map.Entry<String,String>)it.next();
+	        out.write("ifc:has_" + pairs.getKey() + "\r\n");
+			out.write("\trdf:type owl:DatatypeProperty, owl:FunctionalProperty ;" + "\r\n");
+			out.write("\trdfs:label \"ifc:has_" + pairs.getKey() + "\" ;" + "\r\n");
+			out.write("\trdfs:range xsd:" + pairs.getKey() +" ;" + "\r\n");
+			out.write("\trdfs:domain [ " + "\r\n");
+			out.write("\t\trdf:type owl:Class ;" + "\r\n");
+			out.write("\t\towl:unionOf ( " + pairs.getValue() + " )" + "\r\n");
+			out.write("\t\t] ." + "\r\n" + "\r\n");
+	        it.remove(); // avoids a ConcurrentModificationException
+	    }
 	}
-
+	
 	private void writeNamedIndividuals(BufferedWriter out) throws IOException {
 		for (NamedIndividualVO ni : enumIndividuals) {
 			out.write("ifc:" + ni.getNamedIndividual() + "\r\n");
-			out.write("\ta owl:NamedIndividual ;" + "\r\n");
+			out.write("\trdf:type owl:NamedIndividual ;" + "\r\n");
+			out.write("\trdf:type ifc:"+ni.getEnumName()+" ;" + "\r\n");
 			out.write("\trdfs:label \"" + ni.getOriginalNameOfIndividual()
-					+ "\"^^xsd:string ." + "\r\n" + "\r\n");
+					+ "\" ." + "\r\n" + "\r\n");
 		}
 	}
 
@@ -697,17 +727,22 @@ public class OWLWriter {
 
 	private String getOwl_header() {
 		String s = "";
-		s += "@prefix xsd: <" + Namespace.XSD + "> .\r\n" + "@prefix owl: <"
-				+ Namespace.OWL + "> .\r\n" + "@prefix rdfs: <"
-				+ Namespace.RDFS + "> .\r\n" + "@prefix list: <"
-				+ Namespace.LIST + "> .\r\n" + "@prefix dce: <" + Namespace.DCE
-				+ "> .\r\n" + "@prefix olo: <" + Namespace.OLO + "> .\r\n" + "@prefix dct: <" + Namespace.DCT + "> .\r\n"
+		s += "@prefix xsd: <" + Namespace.XSD + "> .\r\n" 
+				+ "@prefix owl: <" + Namespace.OWL + "> .\r\n" 
+				+ "@prefix rdfs: <" + Namespace.RDFS + "> .\r\n" 
+				//+ "@prefix list: <" + Namespace.LIST + "> .\r\n" 
+				//+ "@prefix dce: <" + Namespace.DCE + "> .\r\n" 
+				//+ "@prefix olo: <" + Namespace.OLO + "> .\r\n" 
+				//+ "@prefix dct: <" + Namespace.DCT + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
-				+ "ifc:\r\n" + "	a owl:Thing ;\r\n" + "	a owl:Ontology ;\r\n"
-				+ "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
-				+ "	dce:format \"\"\"OWL Full\"\"\"@en ;\r\n"
-				+ " 	dce:identifier \"\"\"ifc\"\"\"@en ;\r\n"
-				+ "	dce:language \"\"\"English\"\"\"@en .\r\n" + "\r\n";
+				+ "ifc:\r\n" 
+				+ "	rdf:type owl:Thing ;\r\n" 
+				+ "	rdf:type owl:Ontology ;\r\n"
+				//+ "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
+				//+ "	dce:format \"\"\"OWL Full\"\"\"@en ;\r\n"
+				//+ " dce:identifier \"\"\"ifc\"\"\"@en ;\r\n"
+				//+ "	dce:language \"\"\"English\"\"\"@en .\r\n" 
+				+ "\r\n";
 		return s;
 	}
 }
