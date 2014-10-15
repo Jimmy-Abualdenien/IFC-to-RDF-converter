@@ -196,23 +196,26 @@ public class ExpressReader {
 				InverseVO inv = evo.getInverses().get(n);
 				PropertyVO prop = new PropertyVO();
 				inv.setAssociatedProperty(prop);
-				prop.setName(formatProperty(inv.getName()));
+				prop.setName(formatProperty(inv.getName(),false)); //CHECK!!!
 				//System.out.println("parsing inverse property : " + prop.getName());
 				prop.setDomain(evo);
 				prop.setRange(inv.getClassRange());
-				if(inv.isSet() == true && !inv.isOne_valued())
+				if(inv.isSet() == true && inv.getMaxCard()!=1)
 					prop.setList(true);
 				else
 					prop.setList(false);
+				
+				prop.setMinCardinality(inv.getMinCard());
+				prop.setMaxCardinality(inv.getMaxCard());
 
 				if(!doublegeneratedinverseprops.contains(prop.getName())){
 					if(alreadygeneratedinverseprops.containsKey(prop.getName())){
 						doublegeneratedinverseprops.add(prop.getName());
 						PropertyVO firstprop = (PropertyVO)alreadygeneratedinverseprops.get(prop.getName());
 						firstprop.setOriginalName(firstprop.getName());
-						firstprop.setName(firstprop.getDomain().getName() + "_" + firstprop.getName());
+						firstprop.setName(firstprop.getName() + "_of_" + firstprop.getDomain().getName());
 						prop.setOriginalName(prop.getName());
-						prop.setName(evo.getName() + "_" + prop.getName());
+						prop.setName(prop.getName() + "_of_" + evo.getName());
 					}	
 					else
 					{
@@ -224,7 +227,7 @@ public class ExpressReader {
 				else
 				{
 					prop.setOriginalName(prop.getName());
-					prop.setName(evo.getName() + "_" + prop.getName());
+					prop.setName(prop.getName() + "_of_" + evo.getName());
 				}
 				
 				properties.put(prop.getName(), prop);
@@ -232,7 +235,7 @@ public class ExpressReader {
 				PropertyVO inverseOfInv = properties.get(inv
 						.getInverseOfProperty());
 				if(inverseOfInv == null){
-					inverseOfInv = properties.get(prop.getRange() +"_" + inv.getInverseOfProperty());
+					inverseOfInv = properties.get(inv.getInverseOfProperty() + "_of_" + prop.getRange());
 				}
 				if (inverseOfInv != null) {
 					prop.setInverseProp(inverseOfInv);
@@ -248,7 +251,7 @@ public class ExpressReader {
 //									+ " || INVERSE OF "
 //									+ inv.getInverseOfProperty());
 				} else {
-					inverseOfInv = properties.get(prop.getRange() +"_" + inv.getInverseOfProperty());
+					inverseOfInv = properties.get(inv.getInverseOfProperty() + "_of_" + prop.getRange());
 					System.out.println("Warning: inverses not added for "
 							+ prop.getDomain().getName() + " - " + prop.getName()
 							+ " - " + prop.getRange() + " || INVERSE OF "
@@ -275,9 +278,9 @@ public class ExpressReader {
 						doublegeneratedattributes.add(attr.getName());
 						AttributeVO firstattr = (AttributeVO)alreadygeneratedattributes.get(attr.getName());
 						firstattr.setOriginalName(firstattr.getName());
-						firstattr.setName(firstattr.getDomain().getName() + "_" + firstattr.getName());
+						firstattr.setName(firstattr.getName() + "_of_" + firstattr.getDomain().getName() );
 						attr.setOriginalName(attr.getName());
-						attr.setName(attr.getDomain().getName() + "_" + attr.getName());
+						attr.setName(attr.getName() + "_of_" + attr.getDomain().getName());
 					}
 					else
 					{
@@ -289,7 +292,7 @@ public class ExpressReader {
 				else
 				{
 					attr.setOriginalName(attr.getName());
-					attr.setName(evo.getName() + "_" + attr.getName());
+					attr.setName(attr.getName() + "_of_" + evo.getName());
 					//enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
 				}
 				//write outcome
@@ -391,8 +394,8 @@ public class ExpressReader {
 					if(alreadygeneratednamedindividuals.containsKey(vo.getEnum_entities().get(n))){
 						doublegeneratednamedindividuals.add(vo.getEnum_entities().get(n));
 						NamedIndividualVO firstind = (NamedIndividualVO)alreadygeneratednamedindividuals.get(vo.getEnum_entities().get(n));
-						firstind.setNamedIndividual(firstind.getEnumName()+"_"+firstind.getOriginalNameOfIndividual());
-						enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
+						firstind.setNamedIndividual(firstind.getOriginalNameOfIndividual() + "_of_" + firstind.getEnumName());
+						enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getEnum_entities().get(n) + "_of_" + vo.getName(), vo.getEnum_entities().get(n)));
 					}
 					else
 					{
@@ -402,7 +405,7 @@ public class ExpressReader {
 					}
 				}
 				else
-					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getName() + "_" + vo.getEnum_entities().get(n), vo.getEnum_entities().get(n)));
+					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo.getEnum_entities().get(n) + "_of_" + vo.getName(), vo.getEnum_entities().get(n)));
 			}
 		}
 		logger.write("Named individuals generated" + "\r\n" + "\r\n");
@@ -466,7 +469,7 @@ public class ExpressReader {
 			if (avo != null) {
 				InverseVO ivo = evo.getInverses().get(n);
 				logger.write("found inverseVO : " + ivo.toString() + "\r\n");
-				if (ivo.isOne_valued())
+				if (ivo.getMaxCard() == 1)
 					if (!avo.isSet())
 						avo.setOne2One(true);
 				if (avo.isUnique())
@@ -562,13 +565,15 @@ public class ExpressReader {
 		return filter_extras(s).toUpperCase();
 	}
 
-	static public String formatProperty(String s) {
+	static public String formatProperty(String s, boolean isList) {
 		if (s == null)
 			return null;
 
 		StringBuffer sb = new StringBuffer();
-		sb.append(Character.toLowerCase(s.charAt(0)));
+//		sb.append(Character.toLowerCase(s.charAt(0)));
+		sb.append(s.charAt(0));
 		sb.append(s.substring(1));
+		if(isList) sb.append("_List");
 		return sb.toString();
 	}
 
@@ -620,7 +625,9 @@ public class ExpressReader {
 	private String tmp_inverse_name;
 	private String tmp_inverse_classnamerange;
 	private String tmp_inverse_inverseprop;
-	private boolean tmp_inverse_is_one_valued = false;
+	private int tmp_inverse_mincard = -1; //cardinality of the targeted list, not of the property
+	private int tmp_inverse_maxcard = -1; //cardinality of the targeted list, not of the property
+//	private boolean tmp_inverse_is_one_valued = false;
 
 	private String tmp_entity_name;
 	private String tmp_entity_type;
@@ -776,6 +783,9 @@ public class ExpressReader {
 		case ENTITY_STATE:
 			is_set = false;
 			is_list = false;
+			is_optional = false;
+			tmp_mincard = -1;
+			tmp_maxcard = -1;
 			if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.equalsIgnoreCase("SUPERTYPE")) {
@@ -796,7 +806,10 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("END_ENTITY;")) {
 				state = INIT_STATE;
 			} else {
-				tmp_entity_name = ExpressReader.formatProperty(txt);
+				if(is_list == true) //TOCHECK!!!!!!!!!!!is_set == true || 
+					tmp_entity_name = ExpressReader.formatProperty(txt, true);
+				else
+					tmp_entity_name = ExpressReader.formatProperty(txt, false);
 				state = ENTITY_READY;
 			}
 			break;
@@ -896,6 +909,8 @@ public class ExpressReader {
 		//2.4 INVERSE
 		case ENTITY_INVERSE_STATE:
 			is_set = false;
+			tmp_inverse_mincard = -1;
+			tmp_inverse_maxcard = -1;
 			if (txt.equalsIgnoreCase("WHERE")) {
 				state = ENTITY_WHERE;
 			}
@@ -907,7 +922,7 @@ public class ExpressReader {
 				// the name of the inverse attribute
 				state = ENTITY_INVERSE_SET_OF;
 			} else
-				tmp_inverse_name = ExpressReader.formatProperty(txt);
+				tmp_inverse_name = ExpressReader.formatProperty(txt, false);
 			break;
 
 		case ENTITY_INVERSE_SET_OF:
@@ -920,10 +935,20 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("FOR")) {
 				state = ENTITY_INVERSE_FOR;
 			} else {
-				if (txt.equals("[0:1]"))
-					tmp_inverse_is_one_valued = true;
-				if (txt.equals("[1:1]"))
-					tmp_inverse_is_one_valued = true;
+				if(txt.startsWith("[") && txt.endsWith("]")){
+					String[] tempCards = txt.split(":");
+					String mincard = txt.split(":")[0].substring(1);
+					String maxcard = txt.split(":")[1].substring(0, tempCards[1].length()-1);
+					if(!mincard.equalsIgnoreCase("?"))
+						tmp_inverse_mincard = Integer.parseInt(mincard);
+					if(!maxcard.equalsIgnoreCase("?"))
+						tmp_inverse_maxcard = Integer.parseInt(maxcard);
+				}
+					
+//				if (txt.equals("[0:1]"))
+//					tmp_inverse_is_one_valued = true;
+//				if (txt.equals("[1:1]"))
+//					tmp_inverse_is_one_valued = true;
 
 				tmp_inverse_classnamerange = txt;
 			}
@@ -936,12 +961,13 @@ public class ExpressReader {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.contains(";")) {
 
-				tmp_inverse_inverseprop = ExpressReader.formatProperty(txt
-						.substring(0, txt.length() - 1));
+//				tmp_inverse_inverseprop = ExpressReader.formatProperty(txt
+//						.substring(0, txt.length() - 1));
+				tmp_inverse_inverseprop = txt.substring(0, txt.length() - 1);
 				current_entity.getInverses().add(
 						new InverseVO(tmp_inverse_name, tmp_inverse_classnamerange,
 								tmp_inverse_inverseprop, is_set,
-								tmp_inverse_is_one_valued));
+								tmp_inverse_mincard,tmp_inverse_maxcard));
 				state = ENTITY_INVERSE_STATE;
 			}
 			break;
@@ -968,8 +994,9 @@ public class ExpressReader {
 				state = ENTITY_SUBTYPE_STATE;
 			} else {
 				if (!txt.contains(",")) {
-					String unique_attribute = ExpressReader.formatProperty(txt
-							.substring(0, txt.length() - 1));
+//					String unique_attribute = ExpressReader.formatProperty(txt
+//							.substring(0, txt.length() - 1));
+					String unique_attribute = txt.substring(0, txt.length() - 1); //TOCHECK!!!!!!
 					// System.out.println("A "+current_entity.getName()+"."+unique_attribute);
 
 					for (int j = 0; j < current_entity.getAttributes().size(); j++) {
@@ -1008,6 +1035,8 @@ public class ExpressReader {
 				state = INIT_STATE;
 			} else if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
+			} else if (txt.equalsIgnoreCase("INVERSE")) {
+				state = ENTITY_INVERSE_STATE;
 			}
 			break;
 
