@@ -7,6 +7,7 @@ public class PrimaryTypeVO {
 
 	private String pTypeName;
 	private static List<PrimaryTypeVO> listOfPrimaryTypes = new ArrayList<PrimaryTypeVO>();
+	private String XSDType;
 	
 	public PrimaryTypeVO() {
 		//unused
@@ -17,6 +18,7 @@ public class PrimaryTypeVO {
 			pTypeName = pTypeName.substring(0, pTypeName.length()-1);
 		if(getPrimaryTypeVO(pTypeName)==null){
 			this.pTypeName = pTypeName;
+			this.setXSDType();
 			listOfPrimaryTypes.add(this);
 		}
 	}	
@@ -34,7 +36,7 @@ public class PrimaryTypeVO {
 	
 	public String getXSDType(){
 		if(pTypeName.equalsIgnoreCase("REAL")) return "double";
-		else if(pTypeName.equalsIgnoreCase("BINARY")) return "string";
+		else if(pTypeName.equalsIgnoreCase("BINARY")) return "hexBinary";
 		else if(pTypeName.equalsIgnoreCase("BOOLEAN")) return "boolean";
 		else if(pTypeName.equalsIgnoreCase("INTEGER")) return "integer";
 		else if(pTypeName.equalsIgnoreCase("NUMBER")) return "integer";
@@ -43,5 +45,18 @@ public class PrimaryTypeVO {
 		else if(pTypeName.equalsIgnoreCase("STRING255")) return "string";
 		else if(pTypeName.equalsIgnoreCase("LOGICAL")) return "boolean";
 		return "XSDTYPE";
+	}
+	
+	private void setXSDType(){
+			if(pTypeName.equalsIgnoreCase("REAL")) XSDType = "double";
+			else if(pTypeName.equalsIgnoreCase("BINARY")) XSDType = "hexBinary";
+			else if(pTypeName.equalsIgnoreCase("BOOLEAN")) XSDType = "boolean";
+			else if(pTypeName.equalsIgnoreCase("INTEGER")) XSDType = "integer";
+			else if(pTypeName.equalsIgnoreCase("NUMBER")) XSDType = "integer";
+			else if(pTypeName.equalsIgnoreCase("STRING")) XSDType = "string";
+			else if(pTypeName.equalsIgnoreCase("STRING22")) XSDType = "string";
+			else if(pTypeName.equalsIgnoreCase("STRING255")) XSDType = "string";
+			else if(pTypeName.equalsIgnoreCase("LOGICAL")) XSDType = "boolean";
+			else XSDType = "XSDTYPE";
 	}
 }
