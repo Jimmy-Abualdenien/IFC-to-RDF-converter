@@ -255,7 +255,7 @@ public class OWLWriter {
 		out.write("ifc:isFollowedBy"+ "\r\n");
 		out.write("\trdf:type owl:ObjectProperty, owl:FunctionalProperty ;"+ "\r\n");
 		out.write("\trdfs:label \"isFollowedBy\" ;"+ "\r\n");
-		out.write("\trdfs:range ifc:List ."+ "\r\n");
+		out.write("\trdfs:range ifc:List ;"+ "\r\n");
 		out.write("\trdfs:domain ifc:List ."+ "\r\n\r\n");
 	}
 
@@ -319,60 +319,67 @@ public class OWLWriter {
 			for (int n = 0; n < evo.getAttributes().size(); n++) {
 
 				AttributeVO attr = evo.getAttributes().get(n);
+				
+				out.write(" ;\r\n");
+				out.write("\trdfs:subClassOf" + "\r\n");//
+				out.write("\t\t[" + "\r\n");
+				out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
 				if (!attr.isList() && !attr.isSet()) {
-					out.write(" ;\r\n");
-					out.write("\trdfs:subClassOf" + "\r\n");//
-					out.write("\t\t[" + "\r\n");
-					out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
 					out.write("\t\t\towl:allValuesFrom ifc:"
 							+ attr.getType().getName() + " ; \r\n");
-					out.write("\t\t\towl:onProperty ifc:" + attr.getName()
-							+ "\r\n");
-					out.write("\t\t]");
-				} else {
-					out.write(" ;\r\n");
-					out.write("\trdfs:subClassOf" + "\r\n");//
-					out.write("\t\t[" + "\r\n");
-					out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
-					out.write("\t\t\towl:allValuesFrom ifc:"
-							+ attr.getType().getName() + " ; \r\n");
-					out.write("\t\t\towl:onProperty ifc:" + attr.getName()+"_List"
-							+ "\r\n");
-					out.write("\t\t]");
 				}
+				else{
+					out.write("\t\t\towl:allValuesFrom ifc:"
+							+ attr.getType().getName() + "_List" + " ; \r\n");
+				}
+				out.write("\t\t\towl:onProperty ifc:" + attr.getName()
+						+ "\r\n");
+				out.write("\t\t]");
 
 				if (attr.isUnique()) {
 					// this is ignored
 				}
 
+				// required property -> cardinality restrictions 1-1
+				out.write(" ;\r\n");
+				out.write("\t" + "rdfs:subClassOf " + "\r\n");
+				out.write("\t\t" + "[" + "\r\n");
+				out.write("\t\t\t" + "rdf:type owl:Restriction ;" + "\r\n");
 				if (!attr.isOptional()) {
-					// required property -> cardinality restrictions 1-1
-					out.write(" ;\r\n");
-					out.write("\t" + "rdfs:subClassOf " + "\r\n");
-					out.write("\t\t" + "[" + "\r\n");
-					out.write("\t\t\t" + "rdf:type owl:Restriction ;" + "\r\n");
-					out.write("\t\t\t" + "owl:qualifiedCardinality \"1\"^^xsd:nonNegativeInteger ;"
-							+ "\r\n");
-					out.write("\t\t\t" + "owl:onProperty ifc:" + attr.getName()
-							+ " ;\r\n");
-					out.write("\t\t\t" + "owl:onClass ifc:" + attr.getType().getName()
-							+ "\r\n");
-					out.write("\t\t" + "]");
+				out.write("\t\t\t" + "owl:qualifiedCardinality \"1\"^^xsd:nonNegativeInteger ;"
+						+ "\r\n");
 				}
 				else{
-					//unrequired property -> but the property can also appear only once max
-					out.write(" ;\r\n");
-					out.write("\t" + "rdfs:subClassOf " + "\r\n");
-					out.write("\t\t" + "[" + "\r\n");
-					out.write("\t\t\t" + "rdf:type owl:Restriction ;" + "\r\n");
 					out.write("\t\t\t" + "owl:maxQualifiedCardinality \"1\"^^xsd:nonNegativeInteger ;"
 							+ "\r\n");
-					out.write("\t\t\t" + "owl:onProperty ifc:" + attr.getName()
-							+ " ;\r\n");
+				}
+				out.write("\t\t\t" + "owl:onProperty ifc:" + attr.getName()
+						+ " ;\r\n");
+//				out.write("\t\t\t" + "owl:onClass ifc:" + attr.getType().getName()
+//						+ "\r\n");
+				if (!attr.isList() && !attr.isSet()) {
 					out.write("\t\t\t" + "owl:onClass ifc:" + attr.getType().getName()
 							+ "\r\n");
-					out.write("\t\t" + "]");					
 				}
+				else{
+					out.write("\t\t\t" + "owl:onClass ifc:" + attr.getType().getName() + "_List"
+							+ "\r\n");
+				}
+				out.write("\t\t" + "]");
+					
+//				}
+//				else{
+//					//unrequired property -> but the property can also appear only once max
+//					out.write(" ;\r\n");
+//					out.write("\t" + "rdfs:subClassOf " + "\r\n");
+//					out.write("\t\t" + "[" + "\r\n");
+//					out.write("\t\t\t" + "rdf:type owl:Restriction ;" + "\r\n");
+//					out.write("\t\t\t" + "owl:onProperty ifc:" + attr.getName()
+//							+ " ;\r\n");
+//					out.write("\t\t\t" + "owl:onClass ifc:" + attr.getType().getName()
+//							+ "\r\n");
+//					out.write("\t\t" + "]");					
+//				}
 			}
 
 			// write inverse properties
@@ -421,7 +428,7 @@ public class OWLWriter {
 						out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 						out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;" + "\r\n");
 						out.write("\t\t\towl:onClass ifc:"+prop.getRange()+" ;" + "\r\n");
-						out.write("\t\t\towl:minqualifiedCardinality \"" + start +"\"^^xsd:nonNegativeInteger" + "\r\n");
+						out.write("\t\t\towl:minQualifiedCardinality \"" + start +"\"^^xsd:nonNegativeInteger" + "\r\n");
 						out.write("\t\t]");
 					}
 				}
@@ -453,7 +460,7 @@ public class OWLWriter {
 							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 							out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;" + "\r\n");
 							out.write("\t\t\towl:onClass ifc:"+prop.getRange()+" ;" + "\r\n");
-							out.write("\t\t\towl:maxqualifiedCardinality \"" + end +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t\towl:maxQualifiedCardinality \"" + end +"\"^^xsd:nonNegativeInteger" + "\r\n");
 							out.write("\t\t]");						
 						}
 						if(start != 0){
@@ -463,7 +470,7 @@ public class OWLWriter {
 							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 							out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;" + "\r\n");
 							out.write("\t\t\towl:onClass ifc:"+prop.getRange()+" ;" + "\r\n");
-							out.write("\t\t\towl:minqualifiedCardinality \"" + start +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t\towl:minQualifiedCardinality \"" + start +"\"^^xsd:nonNegativeInteger" + "\r\n");
 							out.write("\t\t]");						
 						}	
 					}
@@ -581,7 +588,7 @@ public class OWLWriter {
 							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 							out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
 							out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
-							out.write("\t\t\towl:minqualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t\towl:minQualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
 							out.write("\t\t] ");
 						}
 					}
@@ -611,7 +618,7 @@ public class OWLWriter {
 							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 							out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
 							out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
-							out.write("\t\t\towl:maxqualifiedCardinality \"" + (end-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+							out.write("\t\t\towl:maxQualifiedCardinality \"" + (end-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
 							out.write("\t\t] ");							
 							}
 							if(start > 1){
@@ -621,7 +628,7 @@ public class OWLWriter {
 								out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 								out.write("\t\t\towl:onProperty ifc:isFollowedBy ;" + "\r\n");
 								out.write("\t\t\towl:onClass ifc:"+content+"_List ;" + "\r\n");
-								out.write("\t\t\towl:minqualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
+								out.write("\t\t\towl:minQualifiedCardinality \"" + (start-1) +"\"^^xsd:nonNegativeInteger" + "\r\n");
 								out.write("\t\t] ");								
 							}							
 						}
@@ -691,12 +698,12 @@ public class OWLWriter {
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
 				+ "ifc:\r\n" 
 				+ "	rdf:type owl:Thing ;\r\n" 
-				+ "	rdf:type owl:Ontology ;\r\n"
+				+ "	rdf:type owl:Ontology "//;\r\n"
 				//+ "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
 				//+ "	dce:format \"\"\"OWL Full\"\"\"@en ;\r\n"
 				//+ " dce:identifier \"\"\"ifc\"\"\"@en ;\r\n"
 				//+ "	dce:language \"\"\"English\"\"\"@en .\r\n" 
-				+ "\r\n";
+				+ ". \r\n\r\n";
 		return s;
 	}
 }
