@@ -34,6 +34,10 @@ public class PropertyVO {
 	private int minCardinality = -1;
 	private int maxCardinality = -1;
 	
+	private boolean listOfList = false;
+	private int minCardinality_listoflist = -1;
+	private int maxCardinality_listoflist = -1;
+	
 	private PropertyVO inverseProperty = null;
 	
 	private List<String> range_selectEntities = null;
@@ -42,7 +46,7 @@ public class PropertyVO {
 	
 //	List<String> ifcClasses = new ArrayList<String>();
 //	public boolean isEntity = false;
-	String rawtype;
+//	String rawtype;
 //	public boolean isEnumeration = false;
 //	List<String> enumeration_list = null;
 
@@ -110,6 +114,14 @@ public class PropertyVO {
 		this.isList = isList;
 	}
 
+	public boolean isListOfList() {
+		return listOfList;
+	}
+
+	public void setListOfList(boolean listOfList) {
+		this.listOfList = listOfList;
+	}
+
 	public List<String> getSelectEntities() {
 		return range_selectEntities;
 	}
@@ -140,6 +152,22 @@ public class PropertyVO {
 
 	public void setMaxCardinality(int maxCardinality) {
 		this.maxCardinality = maxCardinality;
+	}
+
+	public int getMinCardinality_listoflist() {
+		return minCardinality_listoflist;
+	}
+
+	public void setMinCardinality_listoflist(int minCardinality_listoflist) {
+		this.minCardinality_listoflist = minCardinality_listoflist;
+	}
+
+	public int getMaxCardinality_listoflist() {
+		return maxCardinality_listoflist;
+	}
+
+	public void setMaxCardinality_listoflist(int maxCardinality_listoflist) {
+		this.maxCardinality_listoflist = maxCardinality_listoflist;
 	}
 
 	public PropertyVO getInverseProperty() {

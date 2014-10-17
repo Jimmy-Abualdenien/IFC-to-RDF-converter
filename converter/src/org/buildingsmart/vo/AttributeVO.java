@@ -30,6 +30,10 @@ public class AttributeVO {
 	private int maxCard = -1;
 	private boolean optional = false;
 	
+	private boolean listOfList = false;
+	private int minCard_listoflist = -1;
+	private int maxCard_listoflist = -1;
+	
 	
 	private TypeVO type;
 	boolean unique = false;
@@ -37,8 +41,9 @@ public class AttributeVO {
 	boolean isOne2One = false;
 
 	private InverseVO points_from;
-
-	public AttributeVO(String name, TypeVO type, boolean is_set, boolean is_list, int minCard, int maxCard, boolean is_optional) {
+//	new AttributeVO(tmp_entity_name, type, is_set,
+//			is_list,is_listoflist,tmp_mincard,tmp_maxcard,tmp_listoflist_mincard,tmp_listoflist_maxcard,is_optional));
+	public AttributeVO(String name, TypeVO type, boolean is_set, boolean is_list, boolean is_listoflist, int minCard, int maxCard, int tmp_listoflist_mincard, int tmp_listoflist_maxcard, boolean is_optional) {
 		super();
 		this.name = name;
 		this.type = type;
@@ -48,6 +53,9 @@ public class AttributeVO {
 		this.setMinCard(minCard);
 		this.setMaxCard(maxCard);
 		this.setOptional(is_optional);
+		this.setListOfList(is_listoflist);
+		this.setMinCard_listoflist(tmp_listoflist_mincard);
+		this.setMaxCard_listoflist(tmp_listoflist_maxcard);
 	}
 
 	public boolean isSet() {
@@ -66,6 +74,14 @@ public class AttributeVO {
 		this.list = list;
 	}
 
+	public boolean isListOfList() {
+		return listOfList;
+	}
+
+	public void setListOfList(boolean listOfList) {
+		this.listOfList = listOfList;
+	}
+
 	public int getMinCard() {
 		return minCard;
 	}
@@ -80,6 +96,22 @@ public class AttributeVO {
 
 	public void setMaxCard(int maxCard) {
 		this.maxCard = maxCard;
+	}
+
+	public int getMinCard_listoflist() {
+		return minCard_listoflist;
+	}
+
+	public void setMinCard_listoflist(int minCard_listoflist) {
+		this.minCard_listoflist = minCard_listoflist;
+	}
+
+	public int getMaxCard_listoflist() {
+		return maxCard_listoflist;
+	}
+
+	public void setMaxCard_listoflist(int maxCard_listoflist) {
+		this.maxCard_listoflist = maxCard_listoflist;
 	}
 
 	public boolean isOptional() {

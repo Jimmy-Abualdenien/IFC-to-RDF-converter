@@ -139,7 +139,8 @@ public class ExpressReader {
 			Entry<String, EntityVO> pairs = it.next();
 			EntityVO evo = pairs.getValue();
 			for (int n = 0; n < evo.getAttributes().size(); n++) {
-				AttributeVO attr = evo.getAttributes().get(n);
+				AttributeVO attr = evo.getAttributes().get(n);				
+
 				TypeVO type = attr.getType();
 				String type_primaryType = attr.getType().getPrimarytype();
 				String type_name = attr.getType().getName();
@@ -149,9 +150,12 @@ public class ExpressReader {
 				prop.setOriginalName(attr.getOriginalName());
 				prop.setDomain(attr.getDomain());
 				prop.setList(attr.isList());
+				prop.setListOfList(attr.isListOfList());
 				prop.setRange(type_name);
 				prop.setMinCardinality(attr.getMinCard());
 				prop.setMaxCardinality(attr.getMaxCard());
+				prop.setMinCardinality_listoflist(attr.getMinCard_listoflist());
+				prop.setMaxCardinality_listoflist(attr.getMaxCard_listoflist());
 				prop.setOptional(attr.isOptional());
 				
 				//TODO: check whether we do not have a list of selects
@@ -166,7 +170,7 @@ public class ExpressReader {
 				//System.out.println("Found an alternative range type : "+ type_primaryType);
 				}
 				
-				properties.put(prop.getName(),prop);				
+				properties.put(prop.getName(),prop);	
 			}
 		}		
 	}
@@ -626,8 +630,14 @@ public class ExpressReader {
 	private int tmp_mincard = -1; //cardinality of the targeted list, not of the property
 	private int tmp_maxcard = -1; //cardinality of the targeted list, not of the property
 	private boolean is_optional = false;
+	
+	private boolean is_listoflist = false;
+	private int tmp_listoflist_mincard = -1;
+	private int tmp_listoflist_maxcard = -1;
 
 	private void state_machine(String txt) {
+		
+		
 		
 		switch (state) {
 		case INIT_STATE:
@@ -773,6 +783,10 @@ public class ExpressReader {
 			is_optional = false;
 			tmp_mincard = -1;
 			tmp_maxcard = -1;
+			is_listoflist = false;
+			tmp_listoflist_mincard = -1;
+			tmp_listoflist_maxcard = -1;
+			
 			if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.equalsIgnoreCase("SUPERTYPE")) {
@@ -793,7 +807,9 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("END_ENTITY;")) {
 				state = INIT_STATE;
 			} else {
-				if(is_list == true) //TOCHECK!!!!!!!!!!!is_set == true || 
+				if(is_listoflist == true)
+					tmp_entity_name = ExpressReader.formatProperty(ExpressReader.formatProperty(txt,true), true);
+				else if(is_list == true) //TOCHECK!!!!!!!!!!!is_set == true || 
 					tmp_entity_name = ExpressReader.formatProperty(txt, true);
 				else
 					tmp_entity_name = ExpressReader.formatProperty(txt, false);
@@ -812,16 +828,28 @@ public class ExpressReader {
 				is_set = true;
 			} else if (txt.equalsIgnoreCase("LIST")) {
 				is_set = true;
+				if(is_listoflist == true){
+					System.out.println("WARNING: LIST of LIST of LIST property found in EXPRESS for : " + tmp_entity_name + " - this is currently not supported by the converter!!");
+				}
+				if(is_list == true) is_listoflist = true;
 				is_list = true;
 			} else if(txt.endsWith("]")&&txt.startsWith("[")){
-//				//[3:4] or similar parsed
+//				//[3:4] or similar parsed				
 				String[] tempCards = txt.split(":");
 				String mincard = txt.split(":")[0].substring(1);
 				String maxcard = txt.split(":")[1].substring(0, tempCards[1].length()-1);
-				if(!mincard.equalsIgnoreCase("?"))
-					tmp_mincard = Integer.parseInt(mincard);
-				if(!maxcard.equalsIgnoreCase("?"))
-					tmp_maxcard = Integer.parseInt(maxcard);
+				if(is_listoflist == true){	
+					if(!mincard.equalsIgnoreCase("?"))
+						tmp_listoflist_mincard = Integer.parseInt(mincard);
+					if(!maxcard.equalsIgnoreCase("?"))
+						tmp_listoflist_maxcard = Integer.parseInt(maxcard);
+				}
+				else{		
+					if(!mincard.equalsIgnoreCase("?"))
+						tmp_mincard = Integer.parseInt(mincard);
+					if(!maxcard.equalsIgnoreCase("?"))
+						tmp_maxcard = Integer.parseInt(maxcard);
+				}
 			} else if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.contains(";")) {
@@ -834,7 +862,7 @@ public class ExpressReader {
 				}
 				current_entity.getAttributes()
 						.add(new AttributeVO(tmp_entity_name, type, is_set,
-								is_list,tmp_mincard,tmp_maxcard,is_optional));
+								is_list,is_listoflist,tmp_mincard,tmp_maxcard,tmp_listoflist_mincard,tmp_listoflist_maxcard,is_optional));
 				state = ENTITY_STATE;
 			}
 			break;	
