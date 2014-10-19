@@ -149,6 +149,7 @@ public class ExpressReader {
 				prop.setName(attr.getName());
 				prop.setOriginalName(attr.getOriginalName());
 				prop.setDomain(attr.getDomain());
+				prop.setSet(attr.isSet());
 				prop.setList(attr.isList());
 				prop.setListOfList(attr.isListOfList());
 				prop.setRange(type_name);
@@ -809,7 +810,7 @@ public class ExpressReader {
 			} else {
 				if(is_listoflist == true)
 					tmp_entity_name = ExpressReader.formatProperty(ExpressReader.formatProperty(txt,true), true);
-				else if(is_list == true) //TOCHECK!!!!!!!!!!!is_set == true || 
+				else if(is_list == true && is_set==false)
 					tmp_entity_name = ExpressReader.formatProperty(txt, true);
 				else
 					tmp_entity_name = ExpressReader.formatProperty(txt, false);
@@ -827,7 +828,6 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("SET")) {
 				is_set = true;
 			} else if (txt.equalsIgnoreCase("LIST")) {
-				is_set = true;
 				if(is_listoflist == true){
 					System.out.println("WARNING: LIST of LIST of LIST property found in EXPRESS for : " + tmp_entity_name + " - this is currently not supported by the converter!!");
 				}
