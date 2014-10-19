@@ -29,7 +29,8 @@ public class PropertyVO {
 	public enum propertyType{TypeVO,EntityVO,Select};
 	private propertyType type; 
 	private boolean optional = false;
-	
+
+	private boolean isSet = false;
 	private boolean isList = false;
 	private int minCardinality = -1;
 	private int maxCardinality = -1;
@@ -106,6 +107,14 @@ public class PropertyVO {
 		this.type = type;
 	}
 	
+	public boolean isSet() {
+		return isSet;
+	}
+
+	public void setSet(boolean isSet) {
+		this.isSet = isSet;
+	}
+
 	public boolean isList() {
 		return isList;
 	}
