@@ -18,7 +18,6 @@ import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.PropertyVO;
 import org.buildingsmart.vo.TypeVO;
 
-import softhema.system.toolkits.ToolkitString;
 import fi.ni.rdf.Namespace;
 
 /*
@@ -363,7 +362,7 @@ public class OWLWriter {
 			// Writing abstractness
 			if (evo.isAbstractSuperclass()) {
 				out.write(" ;\r\n");
-				out.write("\towl:equivalentClass " + "\r\n");
+				out.write("\trdfs:subClassOf " + "\r\n");
 				out.write("\t\t[" + "\r\n");
 				out.write("\t\t\trdf:type owl:Class ;" + "\r\n");
 				out.write("\t\t\towl:unionOf" + "\r\n");
