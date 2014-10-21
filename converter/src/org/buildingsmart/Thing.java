@@ -45,20 +45,17 @@ public class Thing {
 		return line_number;
 	}
 
-
 	public void setLine_number(Long line_number) {
 		this.line_number = line_number;
 	}
 
-
 	public internals getI() {
 		return i;
-	}
-    
+	}    
 
-	public void setI(internals i) {
-		this.i = i;
-	}
+//	public void setI(internals i) {
+//		this.i = i;
+//	}
 	
     public class internals
     {
