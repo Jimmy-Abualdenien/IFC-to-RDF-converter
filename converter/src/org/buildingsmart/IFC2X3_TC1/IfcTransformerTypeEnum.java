@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTransformerTypeEnum
+public class IfcTransformerTypeEnum extends Thing
 {
 	public enum IfcTransformerTypeEnum_value{CURRENT, FREQUENCY, VOLTAGE, USERDEFINED, NOTDEFINED};
 	private IfcTransformerTypeEnum_value value;
+
+	public IfcTransformerTypeEnum_value getIfcTransformerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTransformerTypeEnum(IfcTransformerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

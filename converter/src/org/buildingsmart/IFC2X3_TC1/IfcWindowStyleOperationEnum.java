@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWindowStyleOperationEnum
+public class IfcWindowStyleOperationEnum extends Thing
 {
 	public enum IfcWindowStyleOperationEnum_value{SINGLE_PANEL, DOUBLE_PANEL_VERTICAL, DOUBLE_PANEL_HORIZONTAL, TRIPLE_PANEL_VERTICAL, TRIPLE_PANEL_BOTTOM, TRIPLE_PANEL_TOP, TRIPLE_PANEL_LEFT, TRIPLE_PANEL_RIGHT, TRIPLE_PANEL_HORIZONTAL, USERDEFINED, NOTDEFINED};
 	private IfcWindowStyleOperationEnum_value value;
+
+	public IfcWindowStyleOperationEnum_value getIfcWindowStyleOperationEnum() {
+		return value;
+	}
+
+	public void setIfcWindowStyleOperationEnum(IfcWindowStyleOperationEnum_value value){
+		this.value=value;
+	}
+
 }

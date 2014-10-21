@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCompressorTypeEnum
+public class IfcCompressorTypeEnum extends Thing
 {
 	public enum IfcCompressorTypeEnum_value{DYNAMIC, RECIPROCATING, ROTARY, SCROLL, TROCHOIDAL, SINGLESTAGE, BOOSTER, OPENTYPE, HERMETIC, SEMIHERMETIC, WELDEDSHELLHERMETIC, ROLLINGPISTON, ROTARYVANE, SINGLESCREW, TWINSCREW, USERDEFINED, NOTDEFINED};
 	private IfcCompressorTypeEnum_value value;
+
+	public IfcCompressorTypeEnum_value getIfcCompressorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCompressorTypeEnum(IfcCompressorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

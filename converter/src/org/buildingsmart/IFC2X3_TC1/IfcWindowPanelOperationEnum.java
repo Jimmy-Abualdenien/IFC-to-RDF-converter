@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWindowPanelOperationEnum
+public class IfcWindowPanelOperationEnum extends Thing
 {
 	public enum IfcWindowPanelOperationEnum_value{SIDEHUNGRIGHTHAND, SIDEHUNGLEFTHAND, TILTANDTURNRIGHTHAND, TILTANDTURNLEFTHAND, TOPHUNG, BOTTOMHUNG, PIVOTHORIZONTAL, PIVOTVERTICAL, SLIDINGHORIZONTAL, SLIDINGVERTICAL, REMOVABLECASEMENT, FIXEDCASEMENT, OTHEROPERATION, NOTDEFINED};
 	private IfcWindowPanelOperationEnum_value value;
+
+	public IfcWindowPanelOperationEnum_value getIfcWindowPanelOperationEnum() {
+		return value;
+	}
+
+	public void setIfcWindowPanelOperationEnum(IfcWindowPanelOperationEnum_value value){
+		this.value=value;
+	}
+
 }

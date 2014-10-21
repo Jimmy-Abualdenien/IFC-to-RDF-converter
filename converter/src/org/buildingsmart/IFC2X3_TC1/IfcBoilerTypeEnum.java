@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBoilerTypeEnum
+public class IfcBoilerTypeEnum extends Thing
 {
 	public enum IfcBoilerTypeEnum_value{WATER, STEAM, USERDEFINED, NOTDEFINED};
 	private IfcBoilerTypeEnum_value value;
+
+	public IfcBoilerTypeEnum_value getIfcBoilerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcBoilerTypeEnum(IfcBoilerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

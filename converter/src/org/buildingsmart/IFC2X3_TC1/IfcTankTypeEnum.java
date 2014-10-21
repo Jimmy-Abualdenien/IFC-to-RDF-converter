@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTankTypeEnum
+public class IfcTankTypeEnum extends Thing
 {
 	public enum IfcTankTypeEnum_value{PREFORMED, SECTIONAL, EXPANSION, PRESSUREVESSEL, USERDEFINED, NOTDEFINED};
 	private IfcTankTypeEnum_value value;
+
+	public IfcTankTypeEnum_value getIfcTankTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTankTypeEnum(IfcTankTypeEnum_value value){
+		this.value=value;
+	}
+
 }

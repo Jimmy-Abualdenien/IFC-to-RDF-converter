@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBuildingElementProxyTypeEnum
+public class IfcBuildingElementProxyTypeEnum extends Thing
 {
 	public enum IfcBuildingElementProxyTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcBuildingElementProxyTypeEnum_value value;
+
+	public IfcBuildingElementProxyTypeEnum_value getIfcBuildingElementProxyTypeEnum() {
+		return value;
+	}
+
+	public void setIfcBuildingElementProxyTypeEnum(IfcBuildingElementProxyTypeEnum_value value){
+		this.value=value;
+	}
+
 }

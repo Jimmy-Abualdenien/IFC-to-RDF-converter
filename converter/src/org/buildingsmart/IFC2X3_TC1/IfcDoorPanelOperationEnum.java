@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDoorPanelOperationEnum
+public class IfcDoorPanelOperationEnum extends Thing
 {
 	public enum IfcDoorPanelOperationEnum_value{SWINGING, DOUBLE_ACTING, SLIDING, FOLDING, REVOLVING, ROLLINGUP, USERDEFINED, NOTDEFINED};
 	private IfcDoorPanelOperationEnum_value value;
+
+	public IfcDoorPanelOperationEnum_value getIfcDoorPanelOperationEnum() {
+		return value;
+	}
+
+	public void setIfcDoorPanelOperationEnum(IfcDoorPanelOperationEnum_value value){
+		this.value=value;
+	}
+
 }

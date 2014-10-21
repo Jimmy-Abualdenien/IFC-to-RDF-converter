@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDuctFittingTypeEnum
+public class IfcDuctFittingTypeEnum extends Thing
 {
 	public enum IfcDuctFittingTypeEnum_value{BEND, CONNECTOR, ENTRY, EXIT, JUNCTION, OBSTRUCTION, TRANSITION, USERDEFINED, NOTDEFINED};
 	private IfcDuctFittingTypeEnum_value value;
+
+	public IfcDuctFittingTypeEnum_value getIfcDuctFittingTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDuctFittingTypeEnum(IfcDuctFittingTypeEnum_value value){
+		this.value=value;
+	}
+
 }

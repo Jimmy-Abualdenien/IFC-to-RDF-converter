@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTubeBundleTypeEnum
+public class IfcTubeBundleTypeEnum extends Thing
 {
 	public enum IfcTubeBundleTypeEnum_value{FINNED, USERDEFINED, NOTDEFINED};
 	private IfcTubeBundleTypeEnum_value value;
+
+	public IfcTubeBundleTypeEnum_value getIfcTubeBundleTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTubeBundleTypeEnum(IfcTubeBundleTypeEnum_value value){
+		this.value=value;
+	}
+
 }

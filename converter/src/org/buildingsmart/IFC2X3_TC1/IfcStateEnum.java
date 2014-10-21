@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStateEnum
+public class IfcStateEnum extends Thing
 {
 	public enum IfcStateEnum_value{READWRITE, READONLY, LOCKED, READWRITELOCKED, READONLYLOCKED};
 	private IfcStateEnum_value value;
+
+	public IfcStateEnum_value getIfcStateEnum() {
+		return value;
+	}
+
+	public void setIfcStateEnum(IfcStateEnum_value value){
+		this.value=value;
+	}
+
 }

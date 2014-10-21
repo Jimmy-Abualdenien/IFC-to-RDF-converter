@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMemberTypeEnum
+public class IfcMemberTypeEnum extends Thing
 {
 	public enum IfcMemberTypeEnum_value{BRACE, CHORD, COLLAR, MEMBER, MULLION, PLATE, POST, PURLIN, RAFTER, STRINGER, STRUT, STUD, USERDEFINED, NOTDEFINED};
 	private IfcMemberTypeEnum_value value;
+
+	public IfcMemberTypeEnum_value getIfcMemberTypeEnum() {
+		return value;
+	}
+
+	public void setIfcMemberTypeEnum(IfcMemberTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWallTypeEnum
+public class IfcWallTypeEnum extends Thing
 {
 	public enum IfcWallTypeEnum_value{STANDARD, POLYGONAL, SHEAR, ELEMENTEDWALL, PLUMBINGWALL, USERDEFINED, NOTDEFINED};
 	private IfcWallTypeEnum_value value;
+
+	public IfcWallTypeEnum_value getIfcWallTypeEnum() {
+		return value;
+	}
+
+	public void setIfcWallTypeEnum(IfcWallTypeEnum_value value){
+		this.value=value;
+	}
+
 }

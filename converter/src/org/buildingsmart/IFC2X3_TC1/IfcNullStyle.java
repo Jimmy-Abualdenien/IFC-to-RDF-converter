@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcNullStyle implements IfcPresentationStyleSelect
+public class IfcNullStyle extends Thing implements IfcPresentationStyleSelect
 {
 	public enum IfcNullStyle_value{NULL};
 	private IfcNullStyle_value value;
+
+	public IfcNullStyle_value getIfcNullStyle() {
+		return value;
+	}
+
+	public void setIfcNullStyle(IfcNullStyle_value value){
+		this.value=value;
+	}
+
 }

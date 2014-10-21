@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcThermalLoadSourceEnum
+public class IfcThermalLoadSourceEnum extends Thing
 {
 	public enum IfcThermalLoadSourceEnum_value{PEOPLE, LIGHTING, EQUIPMENT, VENTILATIONINDOORAIR, VENTILATIONOUTSIDEAIR, RECIRCULATEDAIR, EXHAUSTAIR, AIREXCHANGERATE, DRYBULBTEMPERATURE, RELATIVEHUMIDITY, INFILTRATION, USERDEFINED, NOTDEFINED};
 	private IfcThermalLoadSourceEnum_value value;
+
+	public IfcThermalLoadSourceEnum_value getIfcThermalLoadSourceEnum() {
+		return value;
+	}
+
+	public void setIfcThermalLoadSourceEnum(IfcThermalLoadSourceEnum_value value){
+		this.value=value;
+	}
+
 }

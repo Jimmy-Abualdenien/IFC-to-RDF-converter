@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDimensionExtentUsage
+public class IfcDimensionExtentUsage extends Thing
 {
 	public enum IfcDimensionExtentUsage_value{ORIGIN, TARGET};
 	private IfcDimensionExtentUsage_value value;
+
+	public IfcDimensionExtentUsage_value getIfcDimensionExtentUsage() {
+		return value;
+	}
+
+	public void setIfcDimensionExtentUsage(IfcDimensionExtentUsage_value value){
+		this.value=value;
+	}
+
 }

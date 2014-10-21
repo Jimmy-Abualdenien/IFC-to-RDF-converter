@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAirToAirHeatRecoveryTypeEnum
+public class IfcAirToAirHeatRecoveryTypeEnum extends Thing
 {
 	public enum IfcAirToAirHeatRecoveryTypeEnum_value{FIXEDPLATECOUNTERFLOWEXCHANGER, FIXEDPLATECROSSFLOWEXCHANGER, FIXEDPLATEPARALLELFLOWEXCHANGER, ROTARYWHEEL, RUNAROUNDCOILLOOP, HEATPIPE, TWINTOWERENTHALPYRECOVERYLOOPS, THERMOSIPHONSEALEDTUBEHEATEXCHANGERS, THERMOSIPHONCOILTYPEHEATEXCHANGERS, USERDEFINED, NOTDEFINED};
 	private IfcAirToAirHeatRecoveryTypeEnum_value value;
+
+	public IfcAirToAirHeatRecoveryTypeEnum_value getIfcAirToAirHeatRecoveryTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAirToAirHeatRecoveryTypeEnum(IfcAirToAirHeatRecoveryTypeEnum_value value){
+		this.value=value;
+	}
+
 }

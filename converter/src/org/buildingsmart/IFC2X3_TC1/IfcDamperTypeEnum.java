@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDamperTypeEnum
+public class IfcDamperTypeEnum extends Thing
 {
 	public enum IfcDamperTypeEnum_value{CONTROLDAMPER, FIREDAMPER, SMOKEDAMPER, FIRESMOKEDAMPER, BACKDRAFTDAMPER, RELIEFDAMPER, BLASTDAMPER, GRAVITYDAMPER, GRAVITYRELIEFDAMPER, BALANCINGDAMPER, FUMEHOODEXHAUST, USERDEFINED, NOTDEFINED};
 	private IfcDamperTypeEnum_value value;
+
+	public IfcDamperTypeEnum_value getIfcDamperTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDamperTypeEnum(IfcDamperTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFanTypeEnum
+public class IfcFanTypeEnum extends Thing
 {
 	public enum IfcFanTypeEnum_value{CENTRIFUGALFORWARDCURVED, CENTRIFUGALRADIAL, CENTRIFUGALBACKWARDINCLINEDCURVED, CENTRIFUGALAIRFOIL, TUBEAXIAL, VANEAXIAL, PROPELLORAXIAL, USERDEFINED, NOTDEFINED};
 	private IfcFanTypeEnum_value value;
+
+	public IfcFanTypeEnum_value getIfcFanTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFanTypeEnum(IfcFanTypeEnum_value value){
+		this.value=value;
+	}
+
 }

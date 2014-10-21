@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcThermalLoadTypeEnum
+public class IfcThermalLoadTypeEnum extends Thing
 {
 	public enum IfcThermalLoadTypeEnum_value{SENSIBLE, LATENT, RADIANT, NOTDEFINED};
 	private IfcThermalLoadTypeEnum_value value;
+
+	public IfcThermalLoadTypeEnum_value getIfcThermalLoadTypeEnum() {
+		return value;
+	}
+
+	public void setIfcThermalLoadTypeEnum(IfcThermalLoadTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRampTypeEnum
+public class IfcRampTypeEnum extends Thing
 {
 	public enum IfcRampTypeEnum_value{STRAIGHT_RUN_RAMP, TWO_STRAIGHT_RUN_RAMP, QUARTER_TURN_RAMP, TWO_QUARTER_TURN_RAMP, HALF_TURN_RAMP, SPIRAL_RAMP, USERDEFINED, NOTDEFINED};
 	private IfcRampTypeEnum_value value;
+
+	public IfcRampTypeEnum_value getIfcRampTypeEnum() {
+		return value;
+	}
+
+	public void setIfcRampTypeEnum(IfcRampTypeEnum_value value){
+		this.value=value;
+	}
+
 }

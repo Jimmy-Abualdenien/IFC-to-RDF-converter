@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPhysicalOrVirtualEnum
+public class IfcPhysicalOrVirtualEnum extends Thing
 {
 	public enum IfcPhysicalOrVirtualEnum_value{PHYSICAL, VIRTUAL, NOTDEFINED};
 	private IfcPhysicalOrVirtualEnum_value value;
+
+	public IfcPhysicalOrVirtualEnum_value getIfcPhysicalOrVirtualEnum() {
+		return value;
+	}
+
+	public void setIfcPhysicalOrVirtualEnum(IfcPhysicalOrVirtualEnum_value value){
+		this.value=value;
+	}
+
 }

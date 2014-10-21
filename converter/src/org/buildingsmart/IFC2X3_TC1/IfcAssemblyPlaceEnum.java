@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAssemblyPlaceEnum
+public class IfcAssemblyPlaceEnum extends Thing
 {
 	public enum IfcAssemblyPlaceEnum_value{SITE, FACTORY, NOTDEFINED};
 	private IfcAssemblyPlaceEnum_value value;
+
+	public IfcAssemblyPlaceEnum_value getIfcAssemblyPlaceEnum() {
+		return value;
+	}
+
+	public void setIfcAssemblyPlaceEnum(IfcAssemblyPlaceEnum_value value){
+		this.value=value;
+	}
+
 }

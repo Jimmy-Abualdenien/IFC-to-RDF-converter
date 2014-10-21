@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcTimeStamp extends Thing implements IfcDerivedMeasureValue
 {
 	private Integer integer_value;
+
+	public Integer getInteger() {
+		return integer_value;
+	}
+
+	public void setInteger(Integer value){
+		this.integer_value=value;
+	}
+
 }

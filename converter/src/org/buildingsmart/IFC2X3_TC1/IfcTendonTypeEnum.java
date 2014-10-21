@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTendonTypeEnum
+public class IfcTendonTypeEnum extends Thing
 {
 	public enum IfcTendonTypeEnum_value{STRAND, WIRE, BAR, COATED, USERDEFINED, NOTDEFINED};
 	private IfcTendonTypeEnum_value value;
+
+	public IfcTendonTypeEnum_value getIfcTendonTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTendonTypeEnum(IfcTendonTypeEnum_value value){
+		this.value=value;
+	}
+
 }

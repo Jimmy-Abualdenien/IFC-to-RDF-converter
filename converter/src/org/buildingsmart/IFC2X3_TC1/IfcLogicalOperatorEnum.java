@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLogicalOperatorEnum
+public class IfcLogicalOperatorEnum extends Thing
 {
 	public enum IfcLogicalOperatorEnum_value{LOGICALAND, LOGICALOR};
 	private IfcLogicalOperatorEnum_value value;
+
+	public IfcLogicalOperatorEnum_value getIfcLogicalOperatorEnum() {
+		return value;
+	}
+
+	public void setIfcLogicalOperatorEnum(IfcLogicalOperatorEnum_value value){
+		this.value=value;
+	}
+
 }

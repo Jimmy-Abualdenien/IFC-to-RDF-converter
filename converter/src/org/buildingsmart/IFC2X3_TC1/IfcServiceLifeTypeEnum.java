@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcServiceLifeTypeEnum
+public class IfcServiceLifeTypeEnum extends Thing
 {
 	public enum IfcServiceLifeTypeEnum_value{ACTUALSERVICELIFE, EXPECTEDSERVICELIFE, OPTIMISTICREFERENCESERVICELIFE, PESSIMISTICREFERENCESERVICELIFE, REFERENCESERVICELIFE};
 	private IfcServiceLifeTypeEnum_value value;
+
+	public IfcServiceLifeTypeEnum_value getIfcServiceLifeTypeEnum() {
+		return value;
+	}
+
+	public void setIfcServiceLifeTypeEnum(IfcServiceLifeTypeEnum_value value){
+		this.value=value;
+	}
+
 }

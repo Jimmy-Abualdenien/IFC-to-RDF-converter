@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTimeSeriesScheduleTypeEnum
+public class IfcTimeSeriesScheduleTypeEnum extends Thing
 {
 	public enum IfcTimeSeriesScheduleTypeEnum_value{ANNUAL, MONTHLY, WEEKLY, DAILY, USERDEFINED, NOTDEFINED};
 	private IfcTimeSeriesScheduleTypeEnum_value value;
+
+	public IfcTimeSeriesScheduleTypeEnum_value getIfcTimeSeriesScheduleTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTimeSeriesScheduleTypeEnum(IfcTimeSeriesScheduleTypeEnum_value value){
+		this.value=value;
+	}
+
 }

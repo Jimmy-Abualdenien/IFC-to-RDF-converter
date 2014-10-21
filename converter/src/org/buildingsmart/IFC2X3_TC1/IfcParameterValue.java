@@ -24,7 +24,16 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcParameterValue extends Thing implements IfcTrimmingSelect, IfcMeasureValue
+public class IfcParameterValue extends Thing implements IfcMeasureValue, IfcTrimmingSelect
 {
 	private Double double_value;
+
+	public Double getDouble() {
+		return double_value;
+	}
+
+	public void setDouble(Double value){
+		this.double_value=value;
+	}
+
 }

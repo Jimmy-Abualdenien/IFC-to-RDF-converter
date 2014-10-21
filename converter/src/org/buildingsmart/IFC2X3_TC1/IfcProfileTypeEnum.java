@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcProfileTypeEnum
+public class IfcProfileTypeEnum extends Thing
 {
 	public enum IfcProfileTypeEnum_value{CURVE, AREA};
 	private IfcProfileTypeEnum_value value;
+
+	public IfcProfileTypeEnum_value getIfcProfileTypeEnum() {
+		return value;
+	}
+
+	public void setIfcProfileTypeEnum(IfcProfileTypeEnum_value value){
+		this.value=value;
+	}
+
 }

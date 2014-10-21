@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCsgPrimitive3D extends IfcGeometricRepresentationItem implements IfcBooleanOperand, IfcCsgSelect
+public class IfcCsgPrimitive3D extends IfcGeometricRepresentationItem implements IfcCsgSelect, IfcBooleanOperand
 {
 	// The property attributes
 	private IfcAxis2Placement3D Position_of_IfcCsgPrimitive3D;

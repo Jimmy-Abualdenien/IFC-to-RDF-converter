@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRailingTypeEnum
+public class IfcRailingTypeEnum extends Thing
 {
 	public enum IfcRailingTypeEnum_value{HANDRAIL, GUARDRAIL, BALUSTRADE, USERDEFINED, NOTDEFINED};
 	private IfcRailingTypeEnum_value value;
+
+	public IfcRailingTypeEnum_value getIfcRailingTypeEnum() {
+		return value;
+	}
+
+	public void setIfcRailingTypeEnum(IfcRailingTypeEnum_value value){
+		this.value=value;
+	}
+
 }

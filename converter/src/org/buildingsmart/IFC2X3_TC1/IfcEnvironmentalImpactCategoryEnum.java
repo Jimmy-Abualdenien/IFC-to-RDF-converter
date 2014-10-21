@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEnvironmentalImpactCategoryEnum
+public class IfcEnvironmentalImpactCategoryEnum extends Thing
 {
 	public enum IfcEnvironmentalImpactCategoryEnum_value{COMBINEDVALUE, DISPOSAL, EXTRACTION, INSTALLATION, MANUFACTURE, TRANSPORTATION, USERDEFINED, NOTDEFINED};
 	private IfcEnvironmentalImpactCategoryEnum_value value;
+
+	public IfcEnvironmentalImpactCategoryEnum_value getIfcEnvironmentalImpactCategoryEnum() {
+		return value;
+	}
+
+	public void setIfcEnvironmentalImpactCategoryEnum(IfcEnvironmentalImpactCategoryEnum_value value){
+		this.value=value;
+	}
+
 }

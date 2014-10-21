@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEvaporatorTypeEnum
+public class IfcEvaporatorTypeEnum extends Thing
 {
 	public enum IfcEvaporatorTypeEnum_value{DIRECTEXPANSIONSHELLANDTUBE, DIRECTEXPANSIONTUBEINTUBE, DIRECTEXPANSIONBRAZEDPLATE, FLOODEDSHELLANDTUBE, SHELLANDCOIL, USERDEFINED, NOTDEFINED};
 	private IfcEvaporatorTypeEnum_value value;
+
+	public IfcEvaporatorTypeEnum_value getIfcEvaporatorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcEvaporatorTypeEnum(IfcEvaporatorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

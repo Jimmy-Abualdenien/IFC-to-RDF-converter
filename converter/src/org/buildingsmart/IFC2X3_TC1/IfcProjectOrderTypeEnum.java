@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcProjectOrderTypeEnum
+public class IfcProjectOrderTypeEnum extends Thing
 {
 	public enum IfcProjectOrderTypeEnum_value{CHANGEORDER, MAINTENANCEWORKORDER, MOVEORDER, PURCHASEORDER, WORKORDER, USERDEFINED, NOTDEFINED};
 	private IfcProjectOrderTypeEnum_value value;
+
+	public IfcProjectOrderTypeEnum_value getIfcProjectOrderTypeEnum() {
+		return value;
+	}
+
+	public void setIfcProjectOrderTypeEnum(IfcProjectOrderTypeEnum_value value){
+		this.value=value;
+	}
+
 }

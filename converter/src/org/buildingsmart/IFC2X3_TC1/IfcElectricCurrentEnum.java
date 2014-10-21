@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricCurrentEnum
+public class IfcElectricCurrentEnum extends Thing
 {
 	public enum IfcElectricCurrentEnum_value{ALTERNATING, DIRECT, NOTDEFINED};
 	private IfcElectricCurrentEnum_value value;
+
+	public IfcElectricCurrentEnum_value getIfcElectricCurrentEnum() {
+		return value;
+	}
+
+	public void setIfcElectricCurrentEnum(IfcElectricCurrentEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcComplexNumber extends Thing implements IfcMeasureValue
 {
 	private List<Double> Double_List = new ArrayList<Double>();
+
+	public List<Double>  getDouble_List() {
+		return Double_List;
+	}
+
+	public void setDouble_List(List<Double> value){
+		this.Double_List=value;
+	}
+
 }

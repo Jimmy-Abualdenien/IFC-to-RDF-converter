@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPlateTypeEnum
+public class IfcPlateTypeEnum extends Thing
 {
 	public enum IfcPlateTypeEnum_value{CURTAIN_PANEL, SHEET, USERDEFINED, NOTDEFINED};
 	private IfcPlateTypeEnum_value value;
+
+	public IfcPlateTypeEnum_value getIfcPlateTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPlateTypeEnum(IfcPlateTypeEnum_value value){
+		this.value=value;
+	}
+
 }

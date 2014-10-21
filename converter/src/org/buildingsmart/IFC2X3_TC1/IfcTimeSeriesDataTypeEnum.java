@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTimeSeriesDataTypeEnum
+public class IfcTimeSeriesDataTypeEnum extends Thing
 {
 	public enum IfcTimeSeriesDataTypeEnum_value{CONTINUOUS, DISCRETE, DISCRETEBINARY, PIECEWISEBINARY, PIECEWISECONSTANT, PIECEWISECONTINUOUS, NOTDEFINED};
 	private IfcTimeSeriesDataTypeEnum_value value;
+
+	public IfcTimeSeriesDataTypeEnum_value getIfcTimeSeriesDataTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTimeSeriesDataTypeEnum(IfcTimeSeriesDataTypeEnum_value value){
+		this.value=value;
+	}
+
 }

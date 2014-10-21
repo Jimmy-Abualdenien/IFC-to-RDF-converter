@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTrimmingPreference
+public class IfcTrimmingPreference extends Thing
 {
 	public enum IfcTrimmingPreference_value{CARTESIAN, PARAMETER, UNSPECIFIED};
 	private IfcTrimmingPreference_value value;
+
+	public IfcTrimmingPreference_value getIfcTrimmingPreference() {
+		return value;
+	}
+
+	public void setIfcTrimmingPreference(IfcTrimmingPreference_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSoundScaleEnum
+public class IfcSoundScaleEnum extends Thing
 {
 	public enum IfcSoundScaleEnum_value{DBA, DBB, DBC, NC, NR, USERDEFINED, NOTDEFINED};
 	private IfcSoundScaleEnum_value value;
+
+	public IfcSoundScaleEnum_value getIfcSoundScaleEnum() {
+		return value;
+	}
+
+	public void setIfcSoundScaleEnum(IfcSoundScaleEnum_value value){
+		this.value=value;
+	}
+
 }

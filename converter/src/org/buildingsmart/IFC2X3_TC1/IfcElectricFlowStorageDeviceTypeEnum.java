@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricFlowStorageDeviceTypeEnum
+public class IfcElectricFlowStorageDeviceTypeEnum extends Thing
 {
 	public enum IfcElectricFlowStorageDeviceTypeEnum_value{BATTERY, CAPACITORBANK, HARMONICFILTER, INDUCTORBANK, UPS, USERDEFINED, NOTDEFINED};
 	private IfcElectricFlowStorageDeviceTypeEnum_value value;
+
+	public IfcElectricFlowStorageDeviceTypeEnum_value getIfcElectricFlowStorageDeviceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricFlowStorageDeviceTypeEnum(IfcElectricFlowStorageDeviceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

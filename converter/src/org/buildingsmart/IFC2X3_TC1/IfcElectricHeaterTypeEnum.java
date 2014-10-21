@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricHeaterTypeEnum
+public class IfcElectricHeaterTypeEnum extends Thing
 {
 	public enum IfcElectricHeaterTypeEnum_value{ELECTRICPOINTHEATER, ELECTRICCABLEHEATER, ELECTRICMATHEATER, USERDEFINED, NOTDEFINED};
 	private IfcElectricHeaterTypeEnum_value value;
+
+	public IfcElectricHeaterTypeEnum_value getIfcElectricHeaterTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricHeaterTypeEnum(IfcElectricHeaterTypeEnum_value value){
+		this.value=value;
+	}
+
 }

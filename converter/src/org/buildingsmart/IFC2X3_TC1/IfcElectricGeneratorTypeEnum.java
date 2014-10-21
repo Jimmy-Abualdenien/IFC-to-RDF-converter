@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricGeneratorTypeEnum
+public class IfcElectricGeneratorTypeEnum extends Thing
 {
 	public enum IfcElectricGeneratorTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcElectricGeneratorTypeEnum_value value;
+
+	public IfcElectricGeneratorTypeEnum_value getIfcElectricGeneratorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricGeneratorTypeEnum(IfcElectricGeneratorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

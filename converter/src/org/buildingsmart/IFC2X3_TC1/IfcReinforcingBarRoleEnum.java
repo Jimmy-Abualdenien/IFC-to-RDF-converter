@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcReinforcingBarRoleEnum
+public class IfcReinforcingBarRoleEnum extends Thing
 {
 	public enum IfcReinforcingBarRoleEnum_value{MAIN, SHEAR, LIGATURE, STUD, PUNCHING, EDGE, RING, USERDEFINED, NOTDEFINED};
 	private IfcReinforcingBarRoleEnum_value value;
+
+	public IfcReinforcingBarRoleEnum_value getIfcReinforcingBarRoleEnum() {
+		return value;
+	}
+
+	public void setIfcReinforcingBarRoleEnum(IfcReinforcingBarRoleEnum_value value){
+		this.value=value;
+	}
+
 }

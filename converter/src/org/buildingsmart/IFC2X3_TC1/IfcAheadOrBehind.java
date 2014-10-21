@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAheadOrBehind
+public class IfcAheadOrBehind extends Thing
 {
 	public enum IfcAheadOrBehind_value{AHEAD, BEHIND};
 	private IfcAheadOrBehind_value value;
+
+	public IfcAheadOrBehind_value getIfcAheadOrBehind() {
+		return value;
+	}
+
+	public void setIfcAheadOrBehind(IfcAheadOrBehind_value value){
+		this.value=value;
+	}
+
 }

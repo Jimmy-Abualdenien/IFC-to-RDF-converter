@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRibPlateDirectionEnum
+public class IfcRibPlateDirectionEnum extends Thing
 {
 	public enum IfcRibPlateDirectionEnum_value{DIRECTION_X, DIRECTION_Y};
 	private IfcRibPlateDirectionEnum_value value;
+
+	public IfcRibPlateDirectionEnum_value getIfcRibPlateDirectionEnum() {
+		return value;
+	}
+
+	public void setIfcRibPlateDirectionEnum(IfcRibPlateDirectionEnum_value value){
+		this.value=value;
+	}
+
 }

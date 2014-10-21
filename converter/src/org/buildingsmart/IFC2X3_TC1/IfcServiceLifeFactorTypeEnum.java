@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcServiceLifeFactorTypeEnum
+public class IfcServiceLifeFactorTypeEnum extends Thing
 {
 	public enum IfcServiceLifeFactorTypeEnum_value{A_QUALITYOFCOMPONENTS, B_DESIGNLEVEL, C_WORKEXECUTIONLEVEL, D_INDOORENVIRONMENT, E_OUTDOORENVIRONMENT, F_INUSECONDITIONS, G_MAINTENANCELEVEL, USERDEFINED, NOTDEFINED};
 	private IfcServiceLifeFactorTypeEnum_value value;
+
+	public IfcServiceLifeFactorTypeEnum_value getIfcServiceLifeFactorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcServiceLifeFactorTypeEnum(IfcServiceLifeFactorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

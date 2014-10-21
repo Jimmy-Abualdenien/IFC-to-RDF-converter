@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSurfaceTextureEnum
+public class IfcSurfaceTextureEnum extends Thing
 {
 	public enum IfcSurfaceTextureEnum_value{BUMP, OPACITY, REFLECTION, SELFILLUMINATION, SHININESS, SPECULAR, TEXTURE, TRANSPARENCYMAP, NOTDEFINED};
 	private IfcSurfaceTextureEnum_value value;
+
+	public IfcSurfaceTextureEnum_value getIfcSurfaceTextureEnum() {
+		return value;
+	}
+
+	public void setIfcSurfaceTextureEnum(IfcSurfaceTextureEnum_value value){
+		this.value=value;
+	}
+
 }

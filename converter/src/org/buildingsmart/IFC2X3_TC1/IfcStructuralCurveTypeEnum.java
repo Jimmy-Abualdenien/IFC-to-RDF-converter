@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStructuralCurveTypeEnum
+public class IfcStructuralCurveTypeEnum extends Thing
 {
 	public enum IfcStructuralCurveTypeEnum_value{RIGID_JOINED_MEMBER, PIN_JOINED_MEMBER, CABLE, TENSION_MEMBER, COMPRESSION_MEMBER, USERDEFINED, NOTDEFINED};
 	private IfcStructuralCurveTypeEnum_value value;
+
+	public IfcStructuralCurveTypeEnum_value getIfcStructuralCurveTypeEnum() {
+		return value;
+	}
+
+	public void setIfcStructuralCurveTypeEnum(IfcStructuralCurveTypeEnum_value value){
+		this.value=value;
+	}
+
 }

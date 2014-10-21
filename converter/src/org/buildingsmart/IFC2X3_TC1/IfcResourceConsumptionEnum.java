@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcResourceConsumptionEnum
+public class IfcResourceConsumptionEnum extends Thing
 {
 	public enum IfcResourceConsumptionEnum_value{CONSUMED, PARTIALLYCONSUMED, NOTCONSUMED, OCCUPIED, PARTIALLYOCCUPIED, NOTOCCUPIED, USERDEFINED, NOTDEFINED};
 	private IfcResourceConsumptionEnum_value value;
+
+	public IfcResourceConsumptionEnum_value getIfcResourceConsumptionEnum() {
+		return value;
+	}
+
+	public void setIfcResourceConsumptionEnum(IfcResourceConsumptionEnum_value value){
+		this.value=value;
+	}
+
 }

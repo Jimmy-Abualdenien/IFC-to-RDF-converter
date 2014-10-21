@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcGeometricProjectionEnum
+public class IfcGeometricProjectionEnum extends Thing
 {
 	public enum IfcGeometricProjectionEnum_value{GRAPH_VIEW, SKETCH_VIEW, MODEL_VIEW, PLAN_VIEW, REFLECTED_PLAN_VIEW, SECTION_VIEW, ELEVATION_VIEW, USERDEFINED, NOTDEFINED};
 	private IfcGeometricProjectionEnum_value value;
+
+	public IfcGeometricProjectionEnum_value getIfcGeometricProjectionEnum() {
+		return value;
+	}
+
+	public void setIfcGeometricProjectionEnum(IfcGeometricProjectionEnum_value value){
+		this.value=value;
+	}
+
 }

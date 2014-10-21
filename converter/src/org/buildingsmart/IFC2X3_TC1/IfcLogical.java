@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcLogical extends Thing implements IfcSimpleValue
 {
 	private Boolean boolean_value;
+
+	public Boolean getBoolean() {
+		return boolean_value;
+	}
+
+	public void setBoolean(Boolean value){
+		this.boolean_value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStackTerminalTypeEnum
+public class IfcStackTerminalTypeEnum extends Thing
 {
 	public enum IfcStackTerminalTypeEnum_value{BIRDCAGE, COWL, RAINWATERHOPPER, USERDEFINED, NOTDEFINED};
 	private IfcStackTerminalTypeEnum_value value;
+
+	public IfcStackTerminalTypeEnum_value getIfcStackTerminalTypeEnum() {
+		return value;
+	}
+
+	public void setIfcStackTerminalTypeEnum(IfcStackTerminalTypeEnum_value value){
+		this.value=value;
+	}
+
 }

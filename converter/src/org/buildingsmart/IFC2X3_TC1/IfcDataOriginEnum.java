@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDataOriginEnum
+public class IfcDataOriginEnum extends Thing
 {
 	public enum IfcDataOriginEnum_value{MEASURED, PREDICTED, SIMULATED, USERDEFINED, NOTDEFINED};
 	private IfcDataOriginEnum_value value;
+
+	public IfcDataOriginEnum_value getIfcDataOriginEnum() {
+		return value;
+	}
+
+	public void setIfcDataOriginEnum(IfcDataOriginEnum_value value){
+		this.value=value;
+	}
+
 }

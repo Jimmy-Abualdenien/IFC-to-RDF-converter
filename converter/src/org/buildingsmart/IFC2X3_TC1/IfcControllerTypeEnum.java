@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcControllerTypeEnum
+public class IfcControllerTypeEnum extends Thing
 {
 	public enum IfcControllerTypeEnum_value{FLOATING, PROPORTIONAL, PROPORTIONALINTEGRAL, PROPORTIONALINTEGRALDERIVATIVE, TIMEDTWOPOSITION, TWOPOSITION, USERDEFINED, NOTDEFINED};
 	private IfcControllerTypeEnum_value value;
+
+	public IfcControllerTypeEnum_value getIfcControllerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcControllerTypeEnum(IfcControllerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

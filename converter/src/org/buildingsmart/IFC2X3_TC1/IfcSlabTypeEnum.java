@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSlabTypeEnum
+public class IfcSlabTypeEnum extends Thing
 {
 	public enum IfcSlabTypeEnum_value{FLOOR, ROOF, LANDING, BASESLAB, USERDEFINED, NOTDEFINED};
 	private IfcSlabTypeEnum_value value;
+
+	public IfcSlabTypeEnum_value getIfcSlabTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSlabTypeEnum(IfcSlabTypeEnum_value value){
+		this.value=value;
+	}
+
 }

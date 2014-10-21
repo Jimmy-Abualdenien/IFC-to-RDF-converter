@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcHeatExchangerTypeEnum
+public class IfcHeatExchangerTypeEnum extends Thing
 {
 	public enum IfcHeatExchangerTypeEnum_value{PLATE, SHELLANDTUBE, USERDEFINED, NOTDEFINED};
 	private IfcHeatExchangerTypeEnum_value value;
+
+	public IfcHeatExchangerTypeEnum_value getIfcHeatExchangerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcHeatExchangerTypeEnum(IfcHeatExchangerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

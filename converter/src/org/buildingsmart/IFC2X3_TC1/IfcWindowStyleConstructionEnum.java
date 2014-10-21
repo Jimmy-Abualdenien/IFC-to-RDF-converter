@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWindowStyleConstructionEnum
+public class IfcWindowStyleConstructionEnum extends Thing
 {
 	public enum IfcWindowStyleConstructionEnum_value{ALUMINIUM, HIGH_GRADE_STEEL, STEEL, WOOD, ALUMINIUM_WOOD, PLASTIC, OTHER_CONSTRUCTION, NOTDEFINED};
 	private IfcWindowStyleConstructionEnum_value value;
+
+	public IfcWindowStyleConstructionEnum_value getIfcWindowStyleConstructionEnum() {
+		return value;
+	}
+
+	public void setIfcWindowStyleConstructionEnum(IfcWindowStyleConstructionEnum_value value){
+		this.value=value;
+	}
+
 }

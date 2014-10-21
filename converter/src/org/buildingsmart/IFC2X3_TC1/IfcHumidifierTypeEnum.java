@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcHumidifierTypeEnum
+public class IfcHumidifierTypeEnum extends Thing
 {
 	public enum IfcHumidifierTypeEnum_value{STEAMINJECTION, ADIABATICAIRWASHER, ADIABATICPAN, ADIABATICWETTEDELEMENT, ADIABATICATOMIZING, ADIABATICULTRASONIC, ADIABATICRIGIDMEDIA, ADIABATICCOMPRESSEDAIRNOZZLE, ASSISTEDELECTRIC, ASSISTEDNATURALGAS, ASSISTEDPROPANE, ASSISTEDBUTANE, ASSISTEDSTEAM, USERDEFINED, NOTDEFINED};
 	private IfcHumidifierTypeEnum_value value;
+
+	public IfcHumidifierTypeEnum_value getIfcHumidifierTypeEnum() {
+		return value;
+	}
+
+	public void setIfcHumidifierTypeEnum(IfcHumidifierTypeEnum_value value){
+		this.value=value;
+	}
+
 }

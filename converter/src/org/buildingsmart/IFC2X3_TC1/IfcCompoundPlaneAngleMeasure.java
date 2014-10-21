@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcCompoundPlaneAngleMeasure extends Thing implements IfcDerivedMeasureValue
 {
 	private List<Integer> Integer_List = new ArrayList<Integer>();
+
+	public List<Integer>  getInteger_List() {
+		return Integer_List;
+	}
+
+	public void setInteger_List(List<Integer> value){
+		this.Integer_List=value;
+	}
+
 }

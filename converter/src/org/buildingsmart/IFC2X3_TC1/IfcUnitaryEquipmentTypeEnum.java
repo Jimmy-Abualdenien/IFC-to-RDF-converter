@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcUnitaryEquipmentTypeEnum
+public class IfcUnitaryEquipmentTypeEnum extends Thing
 {
 	public enum IfcUnitaryEquipmentTypeEnum_value{AIRHANDLER, AIRCONDITIONINGUNIT, SPLITSYSTEM, ROOFTOPUNIT, USERDEFINED, NOTDEFINED};
 	private IfcUnitaryEquipmentTypeEnum_value value;
+
+	public IfcUnitaryEquipmentTypeEnum_value getIfcUnitaryEquipmentTypeEnum() {
+		return value;
+	}
+
+	public void setIfcUnitaryEquipmentTypeEnum(IfcUnitaryEquipmentTypeEnum_value value){
+		this.value=value;
+	}
+
 }

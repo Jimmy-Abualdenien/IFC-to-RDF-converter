@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCondenserTypeEnum
+public class IfcCondenserTypeEnum extends Thing
 {
 	public enum IfcCondenserTypeEnum_value{WATERCOOLEDSHELLTUBE, WATERCOOLEDSHELLCOIL, WATERCOOLEDTUBEINTUBE, WATERCOOLEDBRAZEDPLATE, AIRCOOLED, EVAPORATIVECOOLED, USERDEFINED, NOTDEFINED};
 	private IfcCondenserTypeEnum_value value;
+
+	public IfcCondenserTypeEnum_value getIfcCondenserTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCondenserTypeEnum(IfcCondenserTypeEnum_value value){
+		this.value=value;
+	}
+
 }

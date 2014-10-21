@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPropertySourceEnum
+public class IfcPropertySourceEnum extends Thing
 {
 	public enum IfcPropertySourceEnum_value{DESIGN, DESIGNMAXIMUM, DESIGNMINIMUM, SIMULATED, ASBUILT, COMMISSIONING, MEASURED, USERDEFINED, NOTKNOWN};
 	private IfcPropertySourceEnum_value value;
+
+	public IfcPropertySourceEnum_value getIfcPropertySourceEnum() {
+		return value;
+	}
+
+	public void setIfcPropertySourceEnum(IfcPropertySourceEnum_value value){
+		this.value=value;
+	}
+
 }

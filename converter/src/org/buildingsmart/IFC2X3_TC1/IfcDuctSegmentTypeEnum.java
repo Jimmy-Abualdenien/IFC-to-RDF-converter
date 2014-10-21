@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDuctSegmentTypeEnum
+public class IfcDuctSegmentTypeEnum extends Thing
 {
 	public enum IfcDuctSegmentTypeEnum_value{RIGIDSEGMENT, FLEXIBLESEGMENT, USERDEFINED, NOTDEFINED};
 	private IfcDuctSegmentTypeEnum_value value;
+
+	public IfcDuctSegmentTypeEnum_value getIfcDuctSegmentTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDuctSegmentTypeEnum(IfcDuctSegmentTypeEnum_value value){
+		this.value=value;
+	}
+
 }

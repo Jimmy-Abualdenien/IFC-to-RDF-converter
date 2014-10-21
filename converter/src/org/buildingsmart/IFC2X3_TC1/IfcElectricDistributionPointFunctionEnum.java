@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricDistributionPointFunctionEnum
+public class IfcElectricDistributionPointFunctionEnum extends Thing
 {
 	public enum IfcElectricDistributionPointFunctionEnum_value{ALARMPANEL, CONSUMERUNIT, CONTROLPANEL, DISTRIBUTIONBOARD, GASDETECTORPANEL, INDICATORPANEL, MIMICPANEL, MOTORCONTROLCENTRE, SWITCHBOARD, USERDEFINED, NOTDEFINED};
 	private IfcElectricDistributionPointFunctionEnum_value value;
+
+	public IfcElectricDistributionPointFunctionEnum_value getIfcElectricDistributionPointFunctionEnum() {
+		return value;
+	}
+
+	public void setIfcElectricDistributionPointFunctionEnum(IfcElectricDistributionPointFunctionEnum_value value){
+		this.value=value;
+	}
+
 }

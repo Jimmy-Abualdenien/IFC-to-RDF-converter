@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricMotorTypeEnum
+public class IfcElectricMotorTypeEnum extends Thing
 {
 	public enum IfcElectricMotorTypeEnum_value{DC, INDUCTION, POLYPHASE, RELUCTANCESYNCHRONOUS, SYNCHRONOUS, USERDEFINED, NOTDEFINED};
 	private IfcElectricMotorTypeEnum_value value;
+
+	public IfcElectricMotorTypeEnum_value getIfcElectricMotorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricMotorTypeEnum(IfcElectricMotorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

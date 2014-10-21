@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcProcedureTypeEnum
+public class IfcProcedureTypeEnum extends Thing
 {
 	public enum IfcProcedureTypeEnum_value{ADVICE_CAUTION, ADVICE_NOTE, ADVICE_WARNING, CALIBRATION, DIAGNOSTIC, SHUTDOWN, STARTUP, USERDEFINED, NOTDEFINED};
 	private IfcProcedureTypeEnum_value value;
+
+	public IfcProcedureTypeEnum_value getIfcProcedureTypeEnum() {
+		return value;
+	}
+
+	public void setIfcProcedureTypeEnum(IfcProcedureTypeEnum_value value){
+		this.value=value;
+	}
+
 }

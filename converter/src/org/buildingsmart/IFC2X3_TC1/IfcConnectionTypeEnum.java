@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcConnectionTypeEnum
+public class IfcConnectionTypeEnum extends Thing
 {
 	public enum IfcConnectionTypeEnum_value{ATPATH, ATSTART, ATEND, NOTDEFINED};
 	private IfcConnectionTypeEnum_value value;
+
+	public IfcConnectionTypeEnum_value getIfcConnectionTypeEnum() {
+		return value;
+	}
+
+	public void setIfcConnectionTypeEnum(IfcConnectionTypeEnum_value value){
+		this.value=value;
+	}
+
 }

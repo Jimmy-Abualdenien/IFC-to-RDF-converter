@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcVibrationIsolatorTypeEnum
+public class IfcVibrationIsolatorTypeEnum extends Thing
 {
 	public enum IfcVibrationIsolatorTypeEnum_value{COMPRESSION, SPRING, USERDEFINED, NOTDEFINED};
 	private IfcVibrationIsolatorTypeEnum_value value;
+
+	public IfcVibrationIsolatorTypeEnum_value getIfcVibrationIsolatorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcVibrationIsolatorTypeEnum(IfcVibrationIsolatorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

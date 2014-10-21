@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCoilTypeEnum
+public class IfcCoilTypeEnum extends Thing
 {
 	public enum IfcCoilTypeEnum_value{DXCOOLINGCOIL, WATERCOOLINGCOIL, STEAMHEATINGCOIL, WATERHEATINGCOIL, ELECTRICHEATINGCOIL, GASHEATINGCOIL, USERDEFINED, NOTDEFINED};
 	private IfcCoilTypeEnum_value value;
+
+	public IfcCoilTypeEnum_value getIfcCoilTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCoilTypeEnum(IfcCoilTypeEnum_value value){
+		this.value=value;
+	}
+
 }

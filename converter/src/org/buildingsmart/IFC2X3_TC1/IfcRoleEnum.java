@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRoleEnum
+public class IfcRoleEnum extends Thing
 {
 	public enum IfcRoleEnum_value{SUPPLIER, MANUFACTURER, CONTRACTOR, SUBCONTRACTOR, ARCHITECT, STRUCTURALENGINEER, COSTENGINEER, CLIENT, BUILDINGOWNER, BUILDINGOPERATOR, MECHANICALENGINEER, ELECTRICALENGINEER, PROJECTMANAGER, FACILITIESMANAGER, CIVILENGINEER, COMISSIONINGENGINEER, ENGINEER, OWNER, CONSULTANT, CONSTRUCTIONMANAGER, FIELDCONSTRUCTIONMANAGER, RESELLER, USERDEFINED};
 	private IfcRoleEnum_value value;
+
+	public IfcRoleEnum_value getIfcRoleEnum() {
+		return value;
+	}
+
+	public void setIfcRoleEnum(IfcRoleEnum_value value){
+		this.value=value;
+	}
+
 }

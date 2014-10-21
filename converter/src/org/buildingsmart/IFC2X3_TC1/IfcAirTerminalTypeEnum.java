@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAirTerminalTypeEnum
+public class IfcAirTerminalTypeEnum extends Thing
 {
 	public enum IfcAirTerminalTypeEnum_value{GRILLE, REGISTER, DIFFUSER, EYEBALL, IRIS, LINEARGRILLE, LINEARDIFFUSER, USERDEFINED, NOTDEFINED};
 	private IfcAirTerminalTypeEnum_value value;
+
+	public IfcAirTerminalTypeEnum_value getIfcAirTerminalTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAirTerminalTypeEnum(IfcAirTerminalTypeEnum_value value){
+		this.value=value;
+	}
+
 }

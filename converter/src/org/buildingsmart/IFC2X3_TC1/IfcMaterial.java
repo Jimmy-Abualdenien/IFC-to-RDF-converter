@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMaterial extends Thing implements IfcObjectReferenceSelect, IfcMaterialSelect
+public class IfcMaterial extends Thing implements IfcMaterialSelect, IfcObjectReferenceSelect
 {
 	// The property attributes
 	private IfcLabel Name_of_IfcMaterial;

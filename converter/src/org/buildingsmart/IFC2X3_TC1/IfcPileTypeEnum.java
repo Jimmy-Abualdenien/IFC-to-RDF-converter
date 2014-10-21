@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPileTypeEnum
+public class IfcPileTypeEnum extends Thing
 {
 	public enum IfcPileTypeEnum_value{COHESION, FRICTION, SUPPORT, USERDEFINED, NOTDEFINED};
 	private IfcPileTypeEnum_value value;
+
+	public IfcPileTypeEnum_value getIfcPileTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPileTypeEnum(IfcPileTypeEnum_value value){
+		this.value=value;
+	}
+
 }

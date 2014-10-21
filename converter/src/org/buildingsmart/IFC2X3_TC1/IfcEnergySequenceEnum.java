@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEnergySequenceEnum
+public class IfcEnergySequenceEnum extends Thing
 {
 	public enum IfcEnergySequenceEnum_value{PRIMARY, SECONDARY, TERTIARY, AUXILIARY, USERDEFINED, NOTDEFINED};
 	private IfcEnergySequenceEnum_value value;
+
+	public IfcEnergySequenceEnum_value getIfcEnergySequenceEnum() {
+		return value;
+	}
+
+	public void setIfcEnergySequenceEnum(IfcEnergySequenceEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWasteTerminalTypeEnum
+public class IfcWasteTerminalTypeEnum extends Thing
 {
 	public enum IfcWasteTerminalTypeEnum_value{FLOORTRAP, FLOORWASTE, GULLYSUMP, GULLYTRAP, GREASEINTERCEPTOR, OILINTERCEPTOR, PETROLINTERCEPTOR, ROOFDRAIN, WASTEDISPOSALUNIT, WASTETRAP, USERDEFINED, NOTDEFINED};
 	private IfcWasteTerminalTypeEnum_value value;
+
+	public IfcWasteTerminalTypeEnum_value getIfcWasteTerminalTypeEnum() {
+		return value;
+	}
+
+	public void setIfcWasteTerminalTypeEnum(IfcWasteTerminalTypeEnum_value value){
+		this.value=value;
+	}
+
 }

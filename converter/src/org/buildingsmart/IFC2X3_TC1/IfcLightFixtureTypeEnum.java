@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLightFixtureTypeEnum
+public class IfcLightFixtureTypeEnum extends Thing
 {
 	public enum IfcLightFixtureTypeEnum_value{POINTSOURCE, DIRECTIONSOURCE, USERDEFINED, NOTDEFINED};
 	private IfcLightFixtureTypeEnum_value value;
+
+	public IfcLightFixtureTypeEnum_value getIfcLightFixtureTypeEnum() {
+		return value;
+	}
+
+	public void setIfcLightFixtureTypeEnum(IfcLightFixtureTypeEnum_value value){
+		this.value=value;
+	}
+
 }

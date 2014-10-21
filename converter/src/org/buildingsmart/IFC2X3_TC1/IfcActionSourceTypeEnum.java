@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcActionSourceTypeEnum
+public class IfcActionSourceTypeEnum extends Thing
 {
 	public enum IfcActionSourceTypeEnum_value{DEAD_LOAD_G, COMPLETION_G1, LIVE_LOAD_Q, SNOW_S, WIND_W, PRESTRESSING_P, SETTLEMENT_U, TEMPERATURE_T, EARTHQUAKE_E, FIRE, IMPULSE, IMPACT, TRANSPORT, ERECTION, PROPPING, SYSTEM_IMPERFECTION, SHRINKAGE, CREEP, LACK_OF_FIT, BUOYANCY, ICE, CURRENT, WAVE, RAIN, BRAKES, USERDEFINED, NOTDEFINED};
 	private IfcActionSourceTypeEnum_value value;
+
+	public IfcActionSourceTypeEnum_value getIfcActionSourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcActionSourceTypeEnum(IfcActionSourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

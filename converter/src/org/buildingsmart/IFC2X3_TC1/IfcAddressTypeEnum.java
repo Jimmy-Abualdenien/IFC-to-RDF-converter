@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAddressTypeEnum
+public class IfcAddressTypeEnum extends Thing
 {
 	public enum IfcAddressTypeEnum_value{OFFICE, SITE, HOME, DISTRIBUTIONPOINT, USERDEFINED};
 	private IfcAddressTypeEnum_value value;
+
+	public IfcAddressTypeEnum_value getIfcAddressTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAddressTypeEnum(IfcAddressTypeEnum_value value){
+		this.value=value;
+	}
+
 }

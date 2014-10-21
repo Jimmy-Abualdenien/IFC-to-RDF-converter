@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRampFlightTypeEnum
+public class IfcRampFlightTypeEnum extends Thing
 {
 	public enum IfcRampFlightTypeEnum_value{STRAIGHT, SPIRAL, USERDEFINED, NOTDEFINED};
 	private IfcRampFlightTypeEnum_value value;
+
+	public IfcRampFlightTypeEnum_value getIfcRampFlightTypeEnum() {
+		return value;
+	}
+
+	public void setIfcRampFlightTypeEnum(IfcRampFlightTypeEnum_value value){
+		this.value=value;
+	}
+
 }

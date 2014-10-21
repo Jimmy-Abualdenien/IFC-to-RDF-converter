@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPipeFittingTypeEnum
+public class IfcPipeFittingTypeEnum extends Thing
 {
 	public enum IfcPipeFittingTypeEnum_value{BEND, CONNECTOR, ENTRY, EXIT, JUNCTION, OBSTRUCTION, TRANSITION, USERDEFINED, NOTDEFINED};
 	private IfcPipeFittingTypeEnum_value value;
+
+	public IfcPipeFittingTypeEnum_value getIfcPipeFittingTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPipeFittingTypeEnum(IfcPipeFittingTypeEnum_value value){
+		this.value=value;
+	}
+
 }

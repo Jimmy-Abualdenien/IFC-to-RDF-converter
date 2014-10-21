@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEvaporativeCoolerTypeEnum
+public class IfcEvaporativeCoolerTypeEnum extends Thing
 {
 	public enum IfcEvaporativeCoolerTypeEnum_value{DIRECTEVAPORATIVERANDOMMEDIAAIRCOOLER, DIRECTEVAPORATIVERIGIDMEDIAAIRCOOLER, DIRECTEVAPORATIVESLINGERSPACKAGEDAIRCOOLER, DIRECTEVAPORATIVEPACKAGEDROTARYAIRCOOLER, DIRECTEVAPORATIVEAIRWASHER, INDIRECTEVAPORATIVEPACKAGEAIRCOOLER, INDIRECTEVAPORATIVEWETCOIL, INDIRECTEVAPORATIVECOOLINGTOWERORCOILCOOLER, INDIRECTDIRECTCOMBINATION, USERDEFINED, NOTDEFINED};
 	private IfcEvaporativeCoolerTypeEnum_value value;
+
+	public IfcEvaporativeCoolerTypeEnum_value getIfcEvaporativeCoolerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcEvaporativeCoolerTypeEnum(IfcEvaporativeCoolerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

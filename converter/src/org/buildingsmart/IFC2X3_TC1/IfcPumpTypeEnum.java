@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPumpTypeEnum
+public class IfcPumpTypeEnum extends Thing
 {
 	public enum IfcPumpTypeEnum_value{CIRCULATOR, ENDSUCTION, SPLITCASE, VERTICALINLINE, VERTICALTURBINE, USERDEFINED, NOTDEFINED};
 	private IfcPumpTypeEnum_value value;
+
+	public IfcPumpTypeEnum_value getIfcPumpTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPumpTypeEnum(IfcPumpTypeEnum_value value){
+		this.value=value;
+	}
+
 }

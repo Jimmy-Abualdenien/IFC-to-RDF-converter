@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAnalysisModelTypeEnum
+public class IfcAnalysisModelTypeEnum extends Thing
 {
 	public enum IfcAnalysisModelTypeEnum_value{IN_PLANE_LOADING_2D, OUT_PLANE_LOADING_2D, LOADING_3D, USERDEFINED, NOTDEFINED};
 	private IfcAnalysisModelTypeEnum_value value;
+
+	public IfcAnalysisModelTypeEnum_value getIfcAnalysisModelTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAnalysisModelTypeEnum(IfcAnalysisModelTypeEnum_value value){
+		this.value=value;
+	}
+
 }

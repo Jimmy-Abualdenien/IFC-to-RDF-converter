@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFireSuppressionTerminalTypeEnum
+public class IfcFireSuppressionTerminalTypeEnum extends Thing
 {
 	public enum IfcFireSuppressionTerminalTypeEnum_value{BREECHINGINLET, FIREHYDRANT, HOSEREEL, SPRINKLER, SPRINKLERDEFLECTOR, USERDEFINED, NOTDEFINED};
 	private IfcFireSuppressionTerminalTypeEnum_value value;
+
+	public IfcFireSuppressionTerminalTypeEnum_value getIfcFireSuppressionTerminalTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFireSuppressionTerminalTypeEnum(IfcFireSuppressionTerminalTypeEnum_value value){
+		this.value=value;
+	}
+
 }

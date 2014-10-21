@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDocumentConfidentialityEnum
+public class IfcDocumentConfidentialityEnum extends Thing
 {
 	public enum IfcDocumentConfidentialityEnum_value{PUBLIC, RESTRICTED, CONFIDENTIAL, PERSONAL, USERDEFINED, NOTDEFINED};
 	private IfcDocumentConfidentialityEnum_value value;
+
+	public IfcDocumentConfidentialityEnum_value getIfcDocumentConfidentialityEnum() {
+		return value;
+	}
+
+	public void setIfcDocumentConfidentialityEnum(IfcDocumentConfidentialityEnum_value value){
+		this.value=value;
+	}
+
 }

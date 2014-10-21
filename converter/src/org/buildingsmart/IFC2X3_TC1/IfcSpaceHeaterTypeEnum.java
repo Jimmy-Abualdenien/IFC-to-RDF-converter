@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSpaceHeaterTypeEnum
+public class IfcSpaceHeaterTypeEnum extends Thing
 {
 	public enum IfcSpaceHeaterTypeEnum_value{SECTIONALRADIATOR, PANELRADIATOR, TUBULARRADIATOR, CONVECTOR, BASEBOARDHEATER, FINNEDTUBEUNIT, UNITHEATER, USERDEFINED, NOTDEFINED};
 	private IfcSpaceHeaterTypeEnum_value value;
+
+	public IfcSpaceHeaterTypeEnum_value getIfcSpaceHeaterTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSpaceHeaterTypeEnum(IfcSpaceHeaterTypeEnum_value value){
+		this.value=value;
+	}
+
 }

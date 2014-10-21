@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFilterTypeEnum
+public class IfcFilterTypeEnum extends Thing
 {
 	public enum IfcFilterTypeEnum_value{AIRPARTICLEFILTER, ODORFILTER, OILFILTER, STRAINER, WATERFILTER, USERDEFINED, NOTDEFINED};
 	private IfcFilterTypeEnum_value value;
+
+	public IfcFilterTypeEnum_value getIfcFilterTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFilterTypeEnum(IfcFilterTypeEnum_value value){
+		this.value=value;
+	}
+
 }

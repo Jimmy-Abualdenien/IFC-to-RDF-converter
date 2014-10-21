@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcGasTerminalTypeEnum
+public class IfcGasTerminalTypeEnum extends Thing
 {
 	public enum IfcGasTerminalTypeEnum_value{GASAPPLIANCE, GASBOOSTER, GASBURNER, USERDEFINED, NOTDEFINED};
 	private IfcGasTerminalTypeEnum_value value;
+
+	public IfcGasTerminalTypeEnum_value getIfcGasTerminalTypeEnum() {
+		return value;
+	}
+
+	public void setIfcGasTerminalTypeEnum(IfcGasTerminalTypeEnum_value value){
+		this.value=value;
+	}
+
 }

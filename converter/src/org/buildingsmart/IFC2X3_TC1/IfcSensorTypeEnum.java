@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSensorTypeEnum
+public class IfcSensorTypeEnum extends Thing
 {
 	public enum IfcSensorTypeEnum_value{CO2SENSOR, FIRESENSOR, FLOWSENSOR, GASSENSOR, HEATSENSOR, HUMIDITYSENSOR, LIGHTSENSOR, MOISTURESENSOR, MOVEMENTSENSOR, PRESSURESENSOR, SMOKESENSOR, SOUNDSENSOR, TEMPERATURESENSOR, USERDEFINED, NOTDEFINED};
 	private IfcSensorTypeEnum_value value;
+
+	public IfcSensorTypeEnum_value getIfcSensorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSensorTypeEnum(IfcSensorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

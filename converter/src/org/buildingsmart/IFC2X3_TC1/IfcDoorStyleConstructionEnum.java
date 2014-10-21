@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDoorStyleConstructionEnum
+public class IfcDoorStyleConstructionEnum extends Thing
 {
 	public enum IfcDoorStyleConstructionEnum_value{ALUMINIUM, HIGH_GRADE_STEEL, STEEL, WOOD, ALUMINIUM_WOOD, ALUMINIUM_PLASTIC, PLASTIC, USERDEFINED, NOTDEFINED};
 	private IfcDoorStyleConstructionEnum_value value;
+
+	public IfcDoorStyleConstructionEnum_value getIfcDoorStyleConstructionEnum() {
+		return value;
+	}
+
+	public void setIfcDoorStyleConstructionEnum(IfcDoorStyleConstructionEnum_value value){
+		this.value=value;
+	}
+
 }

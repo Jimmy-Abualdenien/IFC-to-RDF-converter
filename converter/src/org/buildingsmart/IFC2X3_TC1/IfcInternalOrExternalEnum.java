@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcInternalOrExternalEnum
+public class IfcInternalOrExternalEnum extends Thing
 {
 	public enum IfcInternalOrExternalEnum_value{INTERNAL, EXTERNAL, NOTDEFINED};
 	private IfcInternalOrExternalEnum_value value;
+
+	public IfcInternalOrExternalEnum_value getIfcInternalOrExternalEnum() {
+		return value;
+	}
+
+	public void setIfcInternalOrExternalEnum(IfcInternalOrExternalEnum_value value){
+		this.value=value;
+	}
+
 }

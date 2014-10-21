@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcOutletTypeEnum
+public class IfcOutletTypeEnum extends Thing
 {
 	public enum IfcOutletTypeEnum_value{AUDIOVISUALOUTLET, COMMUNICATIONSOUTLET, POWEROUTLET, USERDEFINED, NOTDEFINED};
 	private IfcOutletTypeEnum_value value;
+
+	public IfcOutletTypeEnum_value getIfcOutletTypeEnum() {
+		return value;
+	}
+
+	public void setIfcOutletTypeEnum(IfcOutletTypeEnum_value value){
+		this.value=value;
+	}
+
 }

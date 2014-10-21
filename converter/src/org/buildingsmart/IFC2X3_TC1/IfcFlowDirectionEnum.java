@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFlowDirectionEnum
+public class IfcFlowDirectionEnum extends Thing
 {
 	public enum IfcFlowDirectionEnum_value{SOURCE, SINK, SOURCEANDSINK, NOTDEFINED};
 	private IfcFlowDirectionEnum_value value;
+
+	public IfcFlowDirectionEnum_value getIfcFlowDirectionEnum() {
+		return value;
+	}
+
+	public void setIfcFlowDirectionEnum(IfcFlowDirectionEnum_value value){
+		this.value=value;
+	}
+
 }

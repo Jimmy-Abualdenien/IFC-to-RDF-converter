@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcDayInMonthNumber extends Thing
 {
 	private Integer integer_value;
+
+	public Integer getInteger() {
+		return integer_value;
+	}
+
+	public void setInteger(Integer value){
+		this.integer_value=value;
+	}
+
 }

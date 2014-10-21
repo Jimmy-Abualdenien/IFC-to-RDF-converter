@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSectionTypeEnum
+public class IfcSectionTypeEnum extends Thing
 {
 	public enum IfcSectionTypeEnum_value{UNIFORM, TAPERED};
 	private IfcSectionTypeEnum_value value;
+
+	public IfcSectionTypeEnum_value getIfcSectionTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSectionTypeEnum(IfcSectionTypeEnum_value value){
+		this.value=value;
+	}
+
 }

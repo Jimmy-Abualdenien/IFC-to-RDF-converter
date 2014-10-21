@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcReinforcingBarSurfaceEnum
+public class IfcReinforcingBarSurfaceEnum extends Thing
 {
 	public enum IfcReinforcingBarSurfaceEnum_value{PLAIN, TEXTURED};
 	private IfcReinforcingBarSurfaceEnum_value value;
+
+	public IfcReinforcingBarSurfaceEnum_value getIfcReinforcingBarSurfaceEnum() {
+		return value;
+	}
+
+	public void setIfcReinforcingBarSurfaceEnum(IfcReinforcingBarSurfaceEnum_value value){
+		this.value=value;
+	}
+
 }

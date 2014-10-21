@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFootingTypeEnum
+public class IfcFootingTypeEnum extends Thing
 {
 	public enum IfcFootingTypeEnum_value{FOOTING_BEAM, PAD_FOOTING, PILE_CAP, STRIP_FOOTING, USERDEFINED, NOTDEFINED};
 	private IfcFootingTypeEnum_value value;
+
+	public IfcFootingTypeEnum_value getIfcFootingTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFootingTypeEnum(IfcFootingTypeEnum_value value){
+		this.value=value;
+	}
+
 }
