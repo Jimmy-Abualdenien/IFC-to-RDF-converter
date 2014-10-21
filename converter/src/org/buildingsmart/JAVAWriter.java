@@ -507,9 +507,13 @@ public class JAVAWriter {
 		if(type_name.equalsIgnoreCase("INTEGER"))
 			return "Integer";							
 		if(type_name.equalsIgnoreCase("REAL"))
-			return "Double";								
-		if(type_name.equalsIgnoreCase("LOGICAL"))
-			return "Boolean";	
+			return "Double";							
+		if(type_name.equalsIgnoreCase("STRING"))
+			return "String";								
+		if(type_name.equalsIgnoreCase("LOGICAL") || type_name.equalsIgnoreCase("BOOLEAN"))
+			return "Boolean";							
+		if(type_name.equalsIgnoreCase("BINARY(32)"))
+			return "org.apache.axis2.databinding.types.xsd.HexBinary";
 		return type_name;
 	}
 
