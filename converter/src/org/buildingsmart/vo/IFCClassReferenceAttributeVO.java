@@ -21,9 +21,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 public class IFCClassReferenceAttributeVO {
    AttributeVO avo;
-   IFC_X3_VO value;
+   IFCVO value;
    
-public IFCClassReferenceAttributeVO(AttributeVO avo, IFC_X3_VO value) {
+public IFCClassReferenceAttributeVO(AttributeVO avo, IFCVO value) {
 	super();
 	this.avo = avo;
 	this.value = value;
@@ -34,10 +34,10 @@ public AttributeVO getAvo() {
 public void setAvo(AttributeVO avo) {
 	this.avo = avo;
 }
-public IFC_X3_VO getValue() {
+public IFCVO getValue() {
 	return value;
 }
-public void setValue(IFC_X3_VO value) {
+public void setValue(IFCVO value) {
 	this.value = value;
 }
    
