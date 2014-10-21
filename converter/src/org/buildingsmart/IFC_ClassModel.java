@@ -39,13 +39,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import javax.lang.model.util.Types;
+
 import fi.ni.rdf.Namespace;
+
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFCVO;
@@ -90,13 +94,15 @@ public class IFC_ClassModel {
 	public void parseModel(){
 		readModel();
 		mapEntries();
+		System.out.println("Ended reading and mapping IFC entries");
 		//calculateTheLongestsPathsToTheNode_and_setGlobalIDs();
 		createObjectTree();
+		System.out.println("Ended creating object tree");
 
 		for (Map.Entry<Long, Thing> entry : object_buffer.entrySet()) {
 			Thing gobject = entry.getValue();
 
-			Class c = gobject.getClass();
+			Class<? extends Thing> c = gobject.getClass();
 			
 			if (c.getSimpleName().equalsIgnoreCase("IfcProject"))
 				root = (Thing) gobject;
@@ -372,9 +378,11 @@ public class IFC_ClassModel {
 //		if (vo.getGid() != null) {
 //			subject = "gref_" + filter_extras(vo.getGid());
 //		} else {
-			subject = "iref_" + ifc_filename + "_i" + vo.getLine_num();
+//			subject = "iref_" + ifc_filename + "_i" + vo.getLine_num();
 //		}
-
+		//TODO: modify naming
+		subject = "iref_" + ifc_filename + "_i" + vo.getLine_num();
+		
 		// Somebody has pointed here from above:
 		if (vo != level_up_vo) {
 			String level_up_subject;
@@ -382,6 +390,7 @@ public class IFC_ClassModel {
 //				level_up_subject = "gref_"
 //						+ filter_extras(level_up_vo.getGid());
 //			} else {
+				//TODO: modify naming
 				level_up_subject = "iref_" + ifc_filename + "_i"
 						+ level_up_vo.getLine_num();
 //			}
@@ -396,8 +405,8 @@ public class IFC_ClassModel {
 		for (int i = 0; i < vo.getList().size(); i++) {
 			Object o = vo.getList().get(i);
 			if (String.class.isInstance(o)) {
-				if (!((String) o).equals("$")) { // Do not print out empty
-					// values'
+				if (!((String) o).equals("$")) { 
+					// Do not print out empty values
 
 					if (types.get(ExpressReader.formatClassName((String) o)) == null) {
 
@@ -431,57 +440,379 @@ public class IFC_ClassModel {
 					fillJavaClassInstanceValues("-", (IFCVO) o, vo,
 							level + 1);
 					System.out.println("1!" + evo);
-
 				}
 				attribute_pointer++;
 			} else if (LinkedList.class.isInstance(o)) {
-				@SuppressWarnings("unchecked")
-				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
-				StringBuffer local_txt = new StringBuffer();
-				for (int j = 0; j < tmp_list.size(); j++) {
-					Object o1 = tmp_list.get(j);
-					if (String.class.isInstance(o1)) {
-						if (j > 0)
-							local_txt.append(", ");
-						local_txt.append(filter_extras((String) o1));
-					}
-					if (IFCVO.class.isInstance(o1)) {
-						if ((evo != null)
-								&& (evo.getDerived_attribute_list() != null)
-								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-							fillJavaClassInstanceValues(
-									evo.getDerived_attribute_list()
-											.get(attribute_pointer).getName(),
-									(IFCVO) o1, vo, level + 1);
-							addIFCAttribute(vo, evo.getDerived_attribute_list()
-									.get(attribute_pointer), (IFCVO) o1);
-
-						} else {
-							fillJavaClassInstanceValues("-", (IFCVO) o1,
-									vo, level + 1);
-							System.out.println("2!" + evo);
-						}
-
-					}
-				}
-
-				if (local_txt.length() > 0) {
-					if ((evo != null)
-							&& (evo.getDerived_attribute_list() != null)
-							&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-						addLiteralValue(
-								vo.getLine_num(),
-								subject,
-								evo.getDerived_attribute_list()
-										.get(attribute_pointer).getName(), "'"
-										+ local_txt.toString() + "\'");
-					}
-
-				}
+//				@SuppressWarnings("unchecked")
+//				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
+//				StringBuffer local_txt = new StringBuffer();
+//				for (int j = 0; j < tmp_list.size(); j++) {
+//					Object o1 = tmp_list.get(j);
+//					if (String.class.isInstance(o1)) {
+//						if (j > 0)
+//							local_txt.append(", ");
+//						local_txt.append(filter_extras((String) o1));
+//					}
+//					if (IFCVO.class.isInstance(o1)) {
+//						if ((evo != null)
+//								&& (evo.getDerived_attribute_list() != null)
+//								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+//							fillJavaClassInstanceValues(
+//									evo.getDerived_attribute_list()
+//											.get(attribute_pointer).getName(),
+//									(IFCVO) o1, vo, level + 1);
+//							addIFCAttribute(vo, evo.getDerived_attribute_list()
+//									.get(attribute_pointer), (IFCVO) o1);
+//
+//						} else {
+//							fillJavaClassInstanceValues("-", (IFCVO) o1,
+//									vo, level + 1);
+//							System.out.println("2!" + evo);
+//						}
+//
+//					}
+//				}
+//
+//				if (local_txt.length() > 0) {
+//					if ((evo != null)
+//							&& (evo.getDerived_attribute_list() != null)
+//							&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+//						addLiteralValue(
+//								vo.getLine_num(),
+//								subject,
+//								evo.getDerived_attribute_list()
+//										.get(attribute_pointer).getName(), "'"
+//										+ local_txt.toString() + "\'");
+//					}
+//
+//				}
 				attribute_pointer++;
 			}
 		}
 	}
+	
+	/**
+	 * Adds the literal value.
+	 * 
+	 * @param subject_line_number
+	 *            the subject_line_number
+	 * @param s
+	 *            the s
+	 * @param p
+	 *            the p
+	 * @param o
+	 *            the o
+	 */
+	private void addLiteralValue(Long subject_line_number, String s, String p,
+			String o) {
+//		addLiteralValue(
+//				vo.getLine_num(),
+//				subject,
+//				evo.getDerived_attribute_list()
+//						.get(attribute_pointer).getName(),
+//				"\'" + filter_extras((String) o) + "'");
+		String p_uri;
+
+		Thing subject_line_entry = getLineEntry(subject_line_number);
+		p_uri = ExpressReader.formatProperty(p,false);
+
+		try {
+			setValue2Thing(subject_line_entry, filter_illegal_chars(p_uri),
+					filter_illegal_chars(filter_extras(o)));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Adds the literal value.
+	 * 
+	 * @param subject_line_number
+	 *            the subject_line_number
+	 * @param object_line_number
+	 *            the object_line_number
+	 * @param s
+	 *            the s
+	 * @param p
+	 *            the p
+	 */
+	private void addLiteralValue(Long subject_line_number,
+			Long object_line_number, String s, String p) {
+
+		String p_uri;
+
+		Thing subject_line_entry = getLineEntry(subject_line_number);
+		p_uri = ExpressReader.formatProperty(p,false);
+		Thing object_line_entry = getLineEntry(object_line_number);
+
+		try {
+			setValue2Thing(subject_line_entry, filter_illegal_chars(p_uri),
+					object_line_entry);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Adds the ifc attribute.
+	 * 
+	 * @param vo
+	 *            the value object representing the IFC file line
+	 * @param attribute
+	 *            the attribute
+	 * @param ref_value
+	 *            the ref_value
+	 */
+	private void addIFCAttribute(IFCVO vo, AttributeVO attribute,
+			IFCVO ref_value) {
+		if (attribute.isReverse_pointer()) {
+
+			LinkedList<IFCVO> lista = ref_value.getInverse_pointer_sets()
+					.get(attribute.getPoints_from().getName());
+			if (lista == null) {
+				lista = new LinkedList<IFCVO>();
+				ref_value.getInverse_pointer_sets().put(attribute.getPoints_from()
+						.getName(), lista);
+			}
+			lista.add(vo);
+		}
+	}
+	
+	/**
+	 * Sets the value2 thing.
+	 * 
+	 * @param t
+	 *            the t
+	 * @param param_name
+	 *            the param_name
+	 * @param value
+	 *            the value
+	 * 
+	 *            This uses most of the CPU time
+	 */
+	private void setValue2Thing(Thing t, String param_name, Object value) {
+		if (value.equals("*")) {
+			return; // No value
+		}
+		
+		//TODO: enable other Datatypes that might be present, but that are just not present at the moment in the sample file...................................
+		
+		String set_method_name = formatSetMethod(param_name);
+		Method method[] = t.getClass().getMethods();
+		Class<?> valueClass = value.getClass();
+		if(valueClass==String.class){
+			String val = value.toString();
+			
+			for (int j = 0; j < method.length; j++) {
+				try {
+					if (method[j].getName().equals(set_method_name)) {
+						Class<?> cl = method[j].getParameterTypes()[0];
+						if(cl!=valueClass){
+							if(cl==Integer.class){
+								System.out.println("Directly adding Integer field in main property : adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+								method[j].invoke(t, Integer.parseInt(val));
+								System.out.println("Okay : " + method[j].getName());
+							}
+							else if(cl==Double.class){
+								System.out.println("Directly adding Double field in main property : adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+								Double d = parseDouble(val);
+								method[j].invoke(t, d);
+								System.out.println("Okay : " + method[j].getName());
+							}
+							else if(cl==Boolean.class){
+								System.out.println("Directly adding Boolean field in main property : adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+								method[j].invoke(t, Boolean.parseBoolean(val));
+								System.out.println("Okay : " + method[j].getName());
+							}
+							else {
+								boolean literalPlaceHolderCreated = false;
+								//retrieve class, create an instance of that class and hopefully assign the value to that class
+								System.out.println("Writing instance of " + valueClass.getName() + " to " +cl.toString());
+								Constructor<?> ct = cl.getConstructor();
+								Thing thing = (Thing) ct.newInstance();
+								Method m[] = cl.getMethods();						
+								for (int jj = 0; jj < m.length; jj++) {
+									if(val.startsWith("_") && val.endsWith("_")){
+										//ENUMERATION
+										if (m[jj].getName().equals("set" + cl.getSimpleName()) && m[jj].getParameterTypes()[0].isEnum()) {
+											Class<?> enumClass = m[jj].getParameterTypes()[0];
+											List<?> enumConstants = Arrays.asList(enumClass.getEnumConstants());
+											val = val.substring(1,val.length()-1);
+											for(Object enumConstant : enumConstants){
+												String checkers = enumConstant.toString();
+												if(checkers.equalsIgnoreCase(val)){
+													System.out.println("Okay (but Enumeration): " + m[jj].getName());
+													m[jj].invoke(thing, enumConstant);	
+													literalPlaceHolderCreated = true;	
+													break;
+												}
+											}
+											break;
+										}
+									}
+									else {									
+										if(m[jj].getName().equals("setInteger") && m[jj].getParameterTypes()[0]==Integer.class){											
+											m[jj].invoke(thing, Integer.parseInt(val));
+											literalPlaceHolderCreated = true;
+											System.out.println("Okay (but Integer): " + m[jj].getName());
+											break;
+										}
+										else if(m[jj].getName().equals("setDouble") && m[jj].getParameterTypes()[0]==Double.class){
+											Double d = parseDouble(val);
+											m[jj].invoke(thing, d);
+											literalPlaceHolderCreated = true;
+											System.out.println("Okay (but Double): " + m[jj].getName());
+											break;
+										}
+										else if (m[jj].getName().equals("setString") && m[jj].getParameterTypes()[0]==String.class) {
+											m[jj].invoke(thing, value);		
+											literalPlaceHolderCreated = true;
+											System.out.println("Okay : " + m[jj].getName());
+											break;											
+										}
+									}
+								}						
+	
+								//add class reference to initial class via its set method
+								if(literalPlaceHolderCreated){
+									method[j].invoke(t,thing);
+									System.out.println("Okay : " + method[j].getName());
+								}
+								else{
+									System.out.println("Did not find the appropriate setter method while adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+								}
+							}
+						}
+						else{
+							System.out.println("Directly adding String field in main property : adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+							//this is highly unlikely / impossible to happen
+							method[j].invoke(t, value);
+							System.out.println("Okay : " + method[j].getName());
+						}		
+						
+						return; // Only one invocation
+					}
+	
+				} catch (Exception e) {
+					e.printStackTrace();
+					System.out.println("Exception caught : " + e.getMessage());
+					try {
+	//					Class<?> cls = Class.forName("org.buildingsmart." + schemaName + "."
+	//							+ method[j].getParameterTypes()[0].getSimpleName());
+	//					Constructor<?> ct = cls.getConstructor();
+	//					Object o = ct.newInstance();
+	//					cls.getMethod(IFC_CLassModelConstants.SET_VALUE,
+	//							String.class).invoke(o, value);
+	//					if (method[j].getName().equals(formatSetMethod(param_name))) {
+	//						if (value.equals("*")) {
+	//							method[j].invoke(t, o);// ; // No value
+	//						} else
+	//							method[j].invoke(t, o);
+	//					}
+					} catch (Exception e1) {
+						e1.printStackTrace();
+						System.err.println("ERR param:" + param_name + " object:"
+								+ value.toString() + " class:"
+								+ t.getClass().getSimpleName() + " value class:"
+								+ value.getClass().getSimpleName());
+					}
+				}
+			}
+		}
+		else{
+			System.out.println("received a THING object : " + t.toString() + " - " + param_name + " - " + value.toString());					
+			for (int j = 0; j < method.length; j++) {
+				try {
+					if (method[j].getName().equals(set_method_name)) {
+						Class<?> cl = method[j].getParameterTypes()[0];
+						if(cl.isAssignableFrom(valueClass)){
+							System.out.println("Directly adding String field in main property : adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+							//this is highly unlikely / impossible to happen
+							method[j].invoke(t, value);
+							System.out.println("Okay : " + method[j].getName());
+						}
+						else if(cl!=valueClass){
+							System.out.println("NOT writing instance of " + valueClass.getName() + " to " +cl.toString() + " (setMethodName : " + set_method_name + ")");
+						}
+						else{
+							System.out.println("Directly adding String field in main property : adding " + valueClass.getName() + " to " + cl.getName() + " (setMethodName : " + set_method_name + ")");
+							//this is highly unlikely / impossible to happen
+							method[j].invoke(t, value);
+							System.out.println("Okay : " + method[j].getName());
+						}							
+						return; // Only one invocation
+					}	
+				} catch (Exception e) {
+					e.printStackTrace();
+						System.err.println("ERR param:" + param_name + " object:"
+								+ value.toString() + " class:"
+								+ t.getClass().getSimpleName() + " value class:"
+								+ value.getClass().getSimpleName());
+				}
+			}
+		}
+	}	
+	
+	/**
+	 * Gets the line entry.
+	 * 
+	 * @param line_number
+	 *            the line_number
+	 * @return the line entry
+	 */
+	public Thing getLineEntry(Long line_number) {
+		return getLineEntry(line_number, null);
+	}
+
+	/**
+	 * Gets the line entry.
+	 * 
+	 * @param line_number
+	 *            the line_number
+	 * @param class_name
+	 *            the class_name
+	 * @return the line entry
+	 */
+	private Thing getLineEntry(Long line_number, String class_name) {
+		Thing thing = object_buffer.get(line_number);
+		if (thing == null) {
+			if (class_name == null)
+				return null;
+			@SuppressWarnings("rawtypes")
+			Class cls = null;
+			try {
+				cls = Class.forName("org.buildingsmart." + schemaName + "." + class_name);
+				@SuppressWarnings({ "rawtypes", "unchecked" })
+				Constructor ct = cls.getConstructor();
+				thing = (Thing) ct.newInstance();
+				thing.getI().setLineNumber(line_number);
+				object_buffer.put(line_number, (Thing) thing);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return thing;
+	}
+
+	/**
+	 * Format set method.
+	 * 
+	 * @param s
+	 *            the s
+	 * @return the string
+	 */
+	static public String formatSetMethod(String s) {
+		if (s == null)
+			return null;
+		StringBuffer sb = new StringBuffer();
+		sb.append("set");
+		sb.append(Character.toUpperCase(s.charAt(0)));
+		sb.append(s.substring(1));
+		return sb.toString();
+	}
+	
+
+	// ========================================================================================================
 	
 	public void listRDF(BufferedWriter out, String path) throws IOException {
 		try {
@@ -583,7 +914,7 @@ public class IFC_ClassModel {
 		return subject;
 
 	}
-	
+
 	// ========================================================================================================
 
 	public void neatPrintOut(Long line_number) {
@@ -620,209 +951,9 @@ public class IFC_ClassModel {
 
 	// ========================================================================================================
 
-	/**
-	 * Gets the line entry.
-	 * 
-	 * @param line_number
-	 *            the line_number
-	 * @return the line entry
-	 */
-	public Thing getLineEntry(Long line_number) {
-		return getLineEntry(line_number, null);
-	}
-
-	/**
-	 * Gets the line entry.
-	 * 
-	 * @param line_number
-	 *            the line_number
-	 * @param class_name
-	 *            the class_name
-	 * @return the line entry
-	 */
-
-	private Thing getLineEntry(Long line_number, String class_name) {
-		Thing thing = object_buffer.get(line_number);
-		if (thing == null) {
-			if (class_name == null)
-				return null;
-			@SuppressWarnings("rawtypes")
-			Class cls = null;
-			try {
-				cls = Class.forName("org.buildingsmart." + schemaName + "." + class_name);
-				@SuppressWarnings({ "rawtypes", "unchecked" })
-				Constructor ct = cls.getConstructor();
-				thing = (Thing) ct.newInstance();
-				thing.getI().setLineNumber(line_number);
-				object_buffer.put(line_number, (Thing) thing);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return thing;
-	}
-
-	/**
-	 * Format set method.
-	 * 
-	 * @param s
-	 *            the s
-	 * @return the string
-	 */
-	static public String formatSetMethod(String s) {
-		if (s == null)
-			return null;
-		StringBuffer sb = new StringBuffer();
-		sb.append("set");
-		sb.append(Character.toUpperCase(s.charAt(0)));
-		sb.append(s.substring(1));
-		return sb.toString();
-	}
-
-	/**
-	 * Sets the value2 thing.
-	 * 
-	 * @param t
-	 *            the t
-	 * @param param_name
-	 *            the param_name
-	 * @param value
-	 *            the value
-	 * 
-	 *            This uses most of the CPU time
-	 */
-	@SuppressWarnings("unchecked")
-	private void setValue2Thing(Thing t, String param_name, Object value) {
-		if (value.equals("*")) {
-			return; // No value
-		}
-		String set_method_name = formatSetMethod(param_name);
-		Method method[] = t.getClass().getMethods();
-		for (int j = 0; j < method.length; j++) {
-			try {
-				if (method[j].getName().equals(set_method_name)) {
-					method[j].invoke(t, value);
-					return; // Only one invocation
-				}
-
-			} catch (Exception e) {
-				try {
-
-					@SuppressWarnings("rawtypes")
-					Class cls = Class.forName("org.buildingsmart." + schemaName + "."
-							+ method[j].getParameterTypes()[0].getSimpleName()
-							+ "_StringValue");
-					@SuppressWarnings("rawtypes")
-					Constructor ct = cls.getConstructor();
-					Object o = ct.newInstance();
-					cls.getMethod(IFC_CLassModelConstants.SET_VALUE,
-							String.class).invoke(o, value);
-					if (method[j].getName().equals(formatSetMethod(param_name))) {
-						if (value.equals("*")) {
-							method[j].invoke(t, o);// ; // No value
-						} else
-							method[j].invoke(t, o);
-					}
-
-				} catch (Exception e1) {
-					e1.printStackTrace();
-					System.err.println("ERR param:" + param_name + " object:"
-							+ value.toString() + " class:"
-							+ t.getClass().getSimpleName() + " value class:"
-							+ value.getClass().getSimpleName());
-				}
-			}
-
-		}
-
-	}
-
-	/**
-	 * Adds the literal value.
-	 * 
-	 * @param subject_line_number
-	 *            the subject_line_number
-	 * @param s
-	 *            the s
-	 * @param p
-	 *            the p
-	 * @param o
-	 *            the o
-	 */
-	private void addLiteralValue(Long subject_line_number, String s, String p,
-			String o) {
-
-		String p_uri;
-
-		Thing subject_line_entry = getLineEntry(subject_line_number);
-		p_uri = ExpressReader.formatProperty(p,false);
-
-		try {
-			setValue2Thing(subject_line_entry, filter_illegal_chars(p_uri),
-					filter_illegal_chars(filter_extras(o)));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Adds the literal value.
-	 * 
-	 * @param subject_line_number
-	 *            the subject_line_number
-	 * @param object_line_number
-	 *            the object_line_number
-	 * @param s
-	 *            the s
-	 * @param p
-	 *            the p
-	 */
-	private void addLiteralValue(Long subject_line_number,
-			Long object_line_number, String s, String p) {
-
-		String p_uri;
-
-		Thing subject_line_entry = getLineEntry(subject_line_number);
-		p_uri = ExpressReader.formatProperty(p,false);
-		Thing object_line_entry = getLineEntry(object_line_number);
-
-		try {
-			setValue2Thing(subject_line_entry, filter_illegal_chars(p_uri),
-					object_line_entry);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Adds the ifc attribute.
-	 * 
-	 * @param vo
-	 *            the value object representing the IFC file line
-	 * @param attribute
-	 *            the attribute
-	 * @param ref_value
-	 *            the ref_value
-	 */
-	private void addIFCAttribute(IFCVO vo, AttributeVO attribute,
-			IFCVO ref_value) {
-		if (attribute.isReverse_pointer()) {
-
-			LinkedList<IFCVO> lista = ref_value.getInverse_pointer_sets()
-					.get(attribute.getPoints_from().getName());
-			if (lista == null) {
-				lista = new LinkedList<IFCVO>();
-				ref_value.getInverse_pointer_sets().put(attribute.getPoints_from()
-						.getName(), lista);
-			}
-			lista.add(vo);
-		}
-	}
-
 	
 
 	
-
 	//HELPER METHODS	
 	private String filter_extras(String txt) {
 		StringBuffer sb = new StringBuffer();
@@ -886,6 +1017,24 @@ public class IFC_ClassModel {
 			return Long.valueOf(txt);
 		} catch (Exception e) {
 			return Long.MIN_VALUE;
+		}
+	}
+	
+	private Double parseDouble(String val){
+		Double d = new Double(0);
+		if(val.contains("_E-"))
+			val = val.replaceAll("_", "");
+		
+		if(val.contains("_"))
+			val = val.replaceAll("_", ".");
+		
+		try{
+			d = Double.parseDouble(val);
+			return d;
+		}
+		catch(Exception e){
+			System.out.println("error in parsing double : " + val);
+			return null;
 		}
 	}
 	
