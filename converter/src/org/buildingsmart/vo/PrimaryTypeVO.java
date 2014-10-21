@@ -40,6 +40,7 @@ public class PrimaryTypeVO {
 	public String getXSDType(){
 		if(pTypeName.equalsIgnoreCase("REAL")) return "double";
 		else if(pTypeName.equalsIgnoreCase("BINARY")) return "hexBinary";
+		else if(pTypeName.equalsIgnoreCase("BINARY(32)")) return "hexBinary";
 		else if(pTypeName.equalsIgnoreCase("BOOLEAN")) return "boolean";
 		else if(pTypeName.equalsIgnoreCase("INTEGER")) return "integer";
 		else if(pTypeName.equalsIgnoreCase("NUMBER")) return "integer";
@@ -53,6 +54,7 @@ public class PrimaryTypeVO {
 	private void setXSDType(){
 			if(pTypeName.equalsIgnoreCase("REAL")) XSDType = "double";
 			else if(pTypeName.equalsIgnoreCase("BINARY")) XSDType = "hexBinary";
+			else if(pTypeName.equalsIgnoreCase("BINARY(32)")) XSDType = "hexBinary";
 			else if(pTypeName.equalsIgnoreCase("BOOLEAN")) XSDType = "boolean";
 			else if(pTypeName.equalsIgnoreCase("INTEGER")) XSDType = "integer";
 			else if(pTypeName.equalsIgnoreCase("NUMBER")) XSDType = "integer";
@@ -66,6 +68,7 @@ public class PrimaryTypeVO {
 	public String getJAVAType() {
 		if(pTypeName.equalsIgnoreCase("REAL")) return "Double";
 		else if(pTypeName.equalsIgnoreCase("BINARY")) return "org.apache.axis2.databinding.types.xsd.HexBinary";
+		else if(pTypeName.equalsIgnoreCase("BINARY(32)")) return "org.apache.axis2.databinding.types.xsd.HexBinary";
 		else if(pTypeName.equalsIgnoreCase("BOOLEAN")) return "Boolean";
 		else if(pTypeName.equalsIgnoreCase("INTEGER")) return "Integer";
 		else if(pTypeName.equalsIgnoreCase("NUMBER")) return "Integer";
@@ -78,6 +81,7 @@ public class PrimaryTypeVO {
 
 	public void setJAVAType() {
 		if(pTypeName.equalsIgnoreCase("REAL")) JAVAType = "Double";
+		else if(pTypeName.equalsIgnoreCase("BINARY(32)")) JAVAType = "org.apache.axis2.databinding.types.xsd.HexBinary";
 		else if(pTypeName.equalsIgnoreCase("BINARY")) JAVAType = "org.apache.axis2.databinding.types.xsd.HexBinary";
 		else if(pTypeName.equalsIgnoreCase("BOOLEAN")) JAVAType = "Boolean";
 		else if(pTypeName.equalsIgnoreCase("INTEGER")) JAVAType = "Integer";
