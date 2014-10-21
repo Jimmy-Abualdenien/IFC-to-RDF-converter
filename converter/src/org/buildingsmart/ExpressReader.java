@@ -90,6 +90,29 @@ public class ExpressReader {
 		if (!theDir.exists())
 			theDir.mkdir();
 	}
+	
+	public void readAndBuild(){
+		
+		try {
+			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+			File logFile = new File("out//log_" + timeLog + ".txt");
+			System.out.println(logFile.getCanonicalPath());		
+			logger = new BufferedWriter(new FileWriter(logFile));
+			
+			this.readSpec();
+			this.buildExpressStructure();
+			this.generateNamedIndividuals();
+			this.iterateAndPrint();
+	
+			this.rearrangeAttributes();
+			this.rearrangeProperties();
+			this.rearrangeInverses();
+			System.out.println("ended reading the EXPRESS file and building internals");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	public static void main(String[] args) throws IOException {
 		try {
@@ -104,8 +127,8 @@ public class ExpressReader {
 
 			logger = new BufferedWriter(new FileWriter(logFile));
 
-			ExpressReader er = new ExpressReader("IFC4_ADD1",
-					"samples\\IFC4_ADD1.exp");// "IFC4RC4","samples\\IFC4RC4.exp");
+			ExpressReader er = new ExpressReader("IFC2X3_TC1",
+					"samples\\IFC2X3_TC1.exp");// "IFC4RC4","samples\\IFC4RC4.exp");
 			er.readSpec();
 			System.out.println("ended parsing the EXPRESS file");
 			er.buildExpressStructure();
