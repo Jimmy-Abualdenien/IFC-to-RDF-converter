@@ -1,3 +1,4 @@
+package org.buildingsmart;
 
 /*
 The GNU Affero General Public License
@@ -18,8 +19,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.buildingsmart;
-
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -29,70 +28,85 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.buildingsmart.InverseLinksList;
+//import org.buildingsmart.InverseLinksList;
 import org.buildingsmart.vo.Link;
 import org.buildingsmart.vo.ValuePair;
 
 public class Thing {
 
-    public int incoming_count=0;
+    private Long line_number;
+    private BigInteger global_id_value;
+    private int incoming_count = 0;    
+    private String thing_name;
+    private String thing_uri;
+    private internals i = new internals(this);
     
-    String thing_name;
-    String thing_uri;
-    public Long line_number;
-    BigInteger global_id_value;
+    public Long getLine_number() {
+		return line_number;
+	}
+
+
+	public void setLine_number(Long line_number) {
+		this.line_number = line_number;
+	}
+
+
+	public internals getI() {
+		return i;
+	}
     
-    public internals i =new internals(this);;
+
+	public void setI(internals i) {
+		this.i = i;
+	}
+	
     public class internals
     {
+        private boolean ready = true;
+        private boolean touched = false; 
 	    Thing host;
 	    
 	    public internals(Thing host) {
-		super();
-		this.host = host;
-	    }
-
-	
-
-	    private boolean ready = true;
-	    private boolean touched = false;
-	   	    
-	    public BigInteger drum_getGlobal_id_value() {
-		return global_id_value;
-	    }
-
-	    public void drum_setGlobal_id_value(BigInteger param) {
-		global_id_value = param;
-	    }
-
-	    public Long drum_getLine_number() {	
-		return line_number;
-	    }
-
-	    public void drum_setLine_number(Long param) {
-		line_number = param;
+	    	super();
+			this.host = host;
 	    }
 
 	    public boolean isTouched() {
-		return touched;
+	    	return touched;
 	    }
 
 	    public void setTouched(boolean touched) {
-		this.touched = touched;
+	    	this.touched = touched;
 	    }
 
 	    public boolean isReady() {
-		return ready;
+	    	return ready;
 	    }
 
 	    public void setReady(boolean ready) {
-		this.ready = ready;
+	    	this.ready = ready;
+	    }
+	    
+	    public Long getLineNumber() {	
+	    	return getLine_number();
+	    }
+
+	    public void setLineNumber(Long param) {
+	    	setLine_number(param);
+	    }
+	    
+	    public BigInteger getGlobal_id_value() {
+	    	return global_id_value;
+	    }
+
+	    public void setGlobal_id_value(BigInteger param) {
+	    	global_id_value = param;
 	    }
 
 	    @SuppressWarnings("unchecked")
 	    public List<ValuePair> drum_getParameterAttributes() {
 		List<ValuePair> ret = new ArrayList<ValuePair>();
-		ret.add(new ValuePair("line_number", line_number));
+		ret.add(new ValuePair("line_number", getLine_number()));
 		Method method[] = host.getClass().getMethods();
 		for (int j = 0; j < method.length; j++) {
 		    try {
@@ -133,7 +147,7 @@ public class Thing {
 
 	    public List<ValuePair> drum_getNumberedListParameterAttributes() {
 		List<ValuePair> ret = new ArrayList<ValuePair>();
-		ret.add(new ValuePair("line_number", line_number));
+		ret.add(new ValuePair("line_number", getLine_number()));
 		Method method[] = host.getClass().getMethods();
 		for (int j = 0; j < method.length; j++) {
 		    try {
@@ -175,7 +189,7 @@ public class Thing {
 	    @SuppressWarnings("unchecked")
 	    public List<ValuePair> drum_getParameterAttributeValues() {
 		List<ValuePair> ret = new ArrayList<ValuePair>();
-		ret.add(new ValuePair("line_number", line_number));
+		ret.add(new ValuePair("line_number", getLine_number()));
 		Method method[] = host.getClass().getMethods();
 		for (int j = 0; j < method.length; j++) {
 		    try {
@@ -185,23 +199,25 @@ public class Thing {
 			    
 			    //if(InverseLinksList.class.isInstance(o))  // Modified 20th May 2014
 			    //	continue;
-			    if (IfcSet.class.isInstance(o)) {  // Modified 21st May 2014
-					for (int n = 0; n < ((List<Object>) o).size(); n++) {
-					    Object o1 = ((List<Object>) o).get(n);
-					    if (List.class.isInstance(o1))
-							ret.add(new ValuePair(method[j].getName().substring(3), o1));
-						if (Thing.class.isInstance(o1))    
-							ret.add(new ValuePair(method[j].getName().substring(3), o1));
-						if (String.class.isInstance(o1))
-							ret.add(new ValuePair(method[j].getName().substring(3), o1));
-						if (Double.class.isInstance(o1))
-							ret.add(new ValuePair(method[j].getName().substring(3), o1));
-						if (Long.class.isInstance(o1))
-							ret.add(new ValuePair(method[j].getName().substring(3), o1));
-						if (Date.class.isInstance(o1))
-							ret.add(new ValuePair(method[j].getName().substring(3), o1));
-					}
-			    }
+
+			    //TOCHECK!!!!!!!!!!!!!!!!!!
+//			    if (IfcSet.class.isInstance(o)) {  // Modified 21st May 2014
+//					for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//					    Object o1 = ((List<Object>) o).get(n);
+//					    if (List.class.isInstance(o1))
+//							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//						if (Thing.class.isInstance(o1))    
+//							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//						if (String.class.isInstance(o1))
+//							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//						if (Double.class.isInstance(o1))
+//							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//						if (Long.class.isInstance(o1))
+//							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//						if (Date.class.isInstance(o1))
+//							ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//					}
+//			    }
 			    if (List.class.isInstance(o))
 				ret.add(new ValuePair(method[j].getName().substring(3), o));
 			    if (Thing.class.isInstance(o))    // Modified 13rd May 2013
@@ -251,7 +267,6 @@ public class Thing {
 		}
 		return ret;
 	    }
-
 	    
 	    public List<Link> drum_getIfcClassAttributes_notInverses() {
 		List<Link> ret = new ArrayList<Link>();
@@ -263,28 +278,30 @@ public class Thing {
 			    if (Thing.class.isInstance(o))
 				ret.add(new Link(host,(Thing)o,method[j].getName().substring(3)));
 			    if (List.class.isInstance(o)) {
-				if (!InverseLinksList.class.isInstance(o))
-				{
-				     if (IfcList.class.isInstance(o))
-				     {
-                                       // LIST
-				       for (int n = 0; n < ((List<Object>) o).size(); n++) {
-				         Object o1 = ((List<Object>) o).get(n);
-				         if (Thing.class.isInstance(o1))
-					    ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)+"."+n));
-				       }
-				     }
-				     else
-				     {
-					 //SET
-			  	        for (int n = 0; n < ((List<Object>) o).size(); n++) {
-				          Object o1 = ((List<Object>) o).get(n);
-					  if (Thing.class.isInstance(o1))
-				            ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)));
-					   
-				         }
-				     }
-				}
+
+				    //TOCHECK!!!!!!!!!!!!!!!!!!
+//				if (!InverseLinksList.class.isInstance(o))
+//				{
+//				     if (IfcList.class.isInstance(o))
+//				     {
+//                                       // LIST
+//				       for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//				         Object o1 = ((List<Object>) o).get(n);
+//				         if (Thing.class.isInstance(o1))
+//					    ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)+"."+n));
+//				       }
+//				     }
+//				     else
+//				     {
+//					 //SET
+//			  	        for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//				          Object o1 = ((List<Object>) o).get(n);
+//					  if (Thing.class.isInstance(o1))
+//				            ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)));
+//					   
+//				         }
+//				     }
+//				}
 				
 			    }
 			}
@@ -325,7 +342,6 @@ public class Thing {
 		}
 		return ret;
 	    }
-
 
 	    public Long toLong(String txt) {
 		try {
@@ -424,27 +440,29 @@ public class Thing {
 				ret.add(new Link(host,(Thing)o,method[j].getName().substring(3)));
 
 			    if (List.class.isInstance(o)) {
-				     if (IfcList.class.isInstance(o))
-				     {
-					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
-							Object o1 = ((List<Object>) o).get(n);
-							if (Thing.class.isInstance(o1))
-							{
-							    Link l=new Link(host,(Thing)o1,method[j].getName().substring(3));
-							    l.setListIndex(n);
-							    ret.add(l);
-							}
-					      }
-				     }
-				     else
-				    {
-				    if(((List<Object>) o).size()<2)  // no more than 0 or 1
-					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
-							Object o1 = ((List<Object>) o).get(n);
-							if (Thing.class.isInstance(o1))
-							    ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)));
-					      }
-				    }
+
+				    //TOCHECK!!!!!!!!!!!!!!!!!!
+//				     if (IfcList.class.isInstance(o))
+//				     {
+//					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//							Object o1 = ((List<Object>) o).get(n);
+//							if (Thing.class.isInstance(o1))
+//							{
+//							    Link l=new Link(host,(Thing)o1,method[j].getName().substring(3));
+//							    l.setListIndex(n);
+//							    ret.add(l);
+//							}
+//					      }
+//				     }
+//				     else
+//				    {
+//				    if(((List<Object>) o).size()<2)  // no more than 0 or 1
+//					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//							Object o1 = ((List<Object>) o).get(n);
+//							if (Thing.class.isInstance(o1))
+//							    ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)));
+//					      }
+//				    }
 			    }
 
 			    
@@ -457,7 +475,6 @@ public class Thing {
 		}
 		return ret;
 	    }
-
 	    
 	    @SuppressWarnings("unchecked")
 	    public List<ValuePair> drum_getGroundablesInversesList() {
@@ -467,39 +484,38 @@ public class Thing {
 		    try {
 			if (method[j].getName().startsWith("get")) {
 			    Object o = method[j].invoke(host);
-			    if (InverseLinksList.class.isInstance(o))
-				for (int n = 0; n < ((List<Object>) o).size(); n++) {
-				    Object o1 = ((List<Object>) o).get(n);
-				    if (Thing.class.isInstance(o1))
-					ret.add(new ValuePair(method[j].getName().substring(3), o1));
-
-				}
+			    //TOCHECK!!!!!!!!!!!!!!!!!!
+//			    if (InverseLinksList.class.isInstance(o))
+//				for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//				    Object o1 = ((List<Object>) o).get(n);
+//				    if (Thing.class.isInstance(o1))
+//					ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//
+//				}
 			}
 
 		    } catch (Exception e) {
 			e.printStackTrace();
 		    }
-
 		}
 		return ret;
-
 	    }
-
     }
     
-    @Override
+
+	@Override
     public String toString() {
 //	if (IfcRoot.class.isInstance(this))
 //	    return this.getClass().getSimpleName() + "(" + ((IfcRoot) this).getGlobalId() + ")";
 //	else
-	    return this.getClass().getSimpleName() + "(" + line_number + ")";
+	    return this.getClass().getSimpleName() + "(" + getLine_number() + ")";
     }
 
     public String toGWHTML() {
 //	if (IfcRoot.class.isInstance(this))
 //	    return this.getClass().getSimpleName() + "<font POINT-SIZE=\"6\">(" + ((IfcRoot) this).getGlobalId() + ")</font>";
 //	else
-	    return this.getClass().getSimpleName() + "(" + line_number + ")";
+	    return this.getClass().getSimpleName() + "(" + getLine_number() + ")";
     }
     
 }
