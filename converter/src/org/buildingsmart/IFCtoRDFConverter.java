@@ -37,7 +37,7 @@ import net.sf.json.JSONObject;
  * The GNU Affero General Public License
  * 
  * Copyright (c) 2014 Jyrki Oraskari (original)
- * Copyright (c) 2014 Pieter Pauwels (modifications)
+ * Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,7 +57,31 @@ public class IFCtoRDFConverter {
 
 	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"+timeLog+"#";
-		
+	
+	public static void main(String[] args) {
+		//TODO: constructor changed!!
+		if(args.length != 5 && !(args.length == 2 && args[0].startsWith("-json")))
+		 	System.out.println("Usage:  java IFC_Converter express_filename express_schemaversion ifc_filename output_filename model__version_name \nExample: java IFC_Converter c:\\jo\\IFC2X3_TC1.exp IFC2X3_TC1 C:\\jo\\sample.ifc c:\\jo\\output_rdf.txt sample_version");
+		else {
+			if(args.length == 5) {
+				convert(args[0], args[1], args[2], args[3], args[4], DEFAULT_PATH);
+			} else {
+				if(args[0].equals("-json")){
+					try {
+						FileInputStream fis = new FileInputStream(args[1]);
+						String jsonString = slurp(fis);
+						fis.close();
+						convert(jsonString);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else if(args[0].equals("-jsonString")){
+					convert(args[1]);
+				}
+			}
+		}
+	}
+	
 	public static void convert(String jsonConfig) {
 		JSONObject obj = JSONObject.fromObject(jsonConfig);
 		String express_file = obj.getString("express_file");
@@ -76,8 +100,11 @@ public class IFCtoRDFConverter {
 		
 		long t0 = System.currentTimeMillis();
 		ExpressReader er = new ExpressReader(express_schema, express_file);
-		IFC_ClassModel model = new IFC_ClassModel(ifc_file, er.getEntities(), er.getTypes(), model_version_name);
-				
+		er.readAndBuild();
+		
+		IFC_ClassModel model = new IFC_ClassModel(ifc_file, er.getEntities(), er.getTypes(), model_version_name, express_schema);
+		model.parseModel();
+		
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(output_file)); //Should be N3 syntax / file extension
 			model.listRDF(out, path);
@@ -89,30 +116,6 @@ public class IFCtoRDFConverter {
 
 		long t1 = System.currentTimeMillis();
 		System.out.println("done in " + ((t1-t0)/1000.0) + " seconds.");		
-	}
-
-	public static void main(String[] args) {
-		//TODO: constructor changed!!
-		if(args.length != 5 && !(args.length == 2 && args[0].startsWith("-json")))
-		 	System.out.println("Usage:  java IFC_Converter express_filename express_schemaversion ifc_filename output_filename model__version_name \nExample: java IFC_Converter c:\\jo\\IFC2X3_TC1.exp IFC2X3_TC1 C:\\jo\\sample.ifc c:\\jo\\output_rdf.txt sample_version");
-		else {
-			if(args.length == 4) {
-				convert(args[0], args[1], args[2], args[3], args[4], DEFAULT_PATH);
-			} else {
-				if(args[0].equals("-json")){
-					try {
-						FileInputStream fis = new FileInputStream(args[1]);
-						String jsonString = slurp(fis);
-						fis.close();
-						convert(jsonString);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				} else if(args[0].equals("-jsonString")){
-					convert(args[1]);
-				}
-			}
-		}
 	}
 
 	public static String slurp (InputStream in) throws IOException {
