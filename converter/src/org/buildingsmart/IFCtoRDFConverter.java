@@ -59,7 +59,6 @@ public class IFCtoRDFConverter {
 	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"+timeLog+"#";
 	
 	public static void main(String[] args) {
-		//TODO: constructor changed!!
 		if(args.length != 5 && !(args.length == 2 && args[0].startsWith("-json")))
 		 	System.out.println("Usage:  java IFC_Converter express_filename express_schemaversion ifc_filename output_filename model__version_name \nExample: java IFC_Converter c:\\jo\\IFC2X3_TC1.exp IFC2X3_TC1 C:\\jo\\sample.ifc c:\\jo\\output_rdf.txt sample_version");
 		else {
@@ -108,6 +107,7 @@ public class IFCtoRDFConverter {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(output_file)); //Should be N3 syntax / file extension
 			model.listRDF(out, path);
+			System.out.println("Ended listing RDF");
 			validateResultWithJena(output_file, "N3");
 			writeModelToRDFXML(output_file, "N3", output_file.substring(0, output_file.lastIndexOf('.'))+".rdf");
 		} catch (IOException e) {
@@ -129,23 +129,18 @@ public class IFCtoRDFConverter {
 	
 	private static boolean validateResultWithJena(String output_file, String syntax) {
 		boolean valid = false;
-		try {
-			Model RDFModel = FileManager.get().loadModel(output_file, syntax);
-			InfModel infmodel = ModelFactory.createRDFSModel(RDFModel);
-			ValidityReport validity = infmodel.validate();
-			if (validity.isValid()) {
-				System.out.println("The generated "+syntax+" file is OK!");
-				valid = true;
-			} else {
-				System.out.println("The generated "+syntax+" file contains conflicts");
-				for (Iterator i = validity.getReports(); i.hasNext();) {
-					System.out.println(" - " + i.next());
-				}
+		Model RDFModel = FileManager.get().loadModel(output_file, syntax);
+		InfModel infmodel = ModelFactory.createRDFSModel(RDFModel);
+		ValidityReport validity = infmodel.validate();
+		if (validity.isValid()) {
+			System.out.println("The generated "+syntax+" file is OK!");
+			valid = true;
+		} else {
+			System.out.println("The generated "+syntax+" file contains conflicts");
+			for (Iterator i = validity.getReports(); i.hasNext();) {
+				System.out.println(" - " + i.next());
 			}
-		} catch (org.apache.jena.riot.RiotException e) {
-			return false;
 		}
-
 		return valid;
 	}
 
