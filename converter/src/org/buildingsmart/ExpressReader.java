@@ -78,6 +78,7 @@ public class ExpressReader {
 	private Map<String, Set<String>> siblings = new HashMap<String, Set<String>>();
 
 	private ArrayList<TypeVO> selectTypesToExpand_temp = new ArrayList<TypeVO>(); // unused
+	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
 
 	public ExpressReader(String expressSchemaName, String fileName) {
 		Namespace.IFC = "http://buildingsmart.org/ontology/"
@@ -138,7 +139,7 @@ public class ExpressReader {
 			er.rearrangeAttributes();
 			er.rearrangeProperties();
 			er.rearrangeInverses();
-			// er.unpackSelectTypes();
+			er.unpackSelectTypes();
 			// er.printIFCClassesInLog();
 
 			OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities,
@@ -148,7 +149,7 @@ public class ExpressReader {
 					.println("ended converting the EXPRESS schema into corresponding OWL file");
 
 			JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities,
-					er.types);
+					er.types, er.selectTypesToExpand);
 			jw.outputJavaClasses();
 			System.out
 					.println("ended converting the EXPRESS schema into corresponding JAVA Class Library");
@@ -1036,12 +1037,14 @@ public class ExpressReader {
 				for (int i = 0; i < selectTypesToExpand_temp.size(); i++) {
 					if (selectTypesToExpand_temp.get(i).getName()
 							.equalsIgnoreCase(selectEnt)) {
+						selectTypesToExpand.put(selectTypesToExpand_temp.get(i),vo);
+						//selectEnt extends selectTypesToExpand_temp.get(i)
 						// System.out.println("selecttype found in temp : " +
 						// selectEnt);
-						vo.getSelect_entities().remove(n);
-						for (String sel : selectTypesToExpand_temp.get(i)
-								.getSelect_entities())
-							vo.getSelect_entities().add(sel);
+//						vo.getSelect_entities().remove(n);
+//						for (String sel : selectTypesToExpand_temp.get(i)
+//								.getSelect_entities())
+//							vo.getSelect_entities().add(sel);
 					}
 				}
 			}

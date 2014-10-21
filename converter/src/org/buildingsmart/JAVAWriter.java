@@ -51,18 +51,19 @@ public class JAVAWriter {
 	private String expressSchemaName;
 	
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
-	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
-	
+	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();	
 	private Map<String, String> selectinterfaces = new HashMap<String, String>();
+	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();
 	
 	public JAVAWriter() {
 		// unused
 	}
 
-	public JAVAWriter(String expressSchemaName, Map<String, EntityVO> entities, Map<String, TypeVO> types) {
+	public JAVAWriter(String expressSchemaName, Map<String, EntityVO> entities, Map<String, TypeVO> types, Map<TypeVO, TypeVO> selectTypesToExpand) {
 		this.expressSchemaName = expressSchemaName;
 		this.entities = entities;
 		this.types = types;
+		this.selectTypesToExpand = selectTypesToExpand;
 	}
 	
 	public void outputJavaClasses() {
@@ -158,12 +159,26 @@ public class JAVAWriter {
 					out.write("\r\n{\r\n");	
 					String xsdt = ptype.getXSDType();
 					String javat = ptype.getJAVAType();					
-					out.write("\tprivate " + javat + " " + xsdt + "_value;\r\n");
+					//field
+					out.write("\tprivate " + javat + " " + xsdt + "_value;\r\n\r\n");
+					
+					//getter and setter
+					out.write("\tpublic " + javat + " get"	+ formatGetterANDSetter(xsdt) + "() {"+"\r\n");
+					out.write("\t\treturn " + xsdt + "_value;"+"\r\n");
+					out.write("\t}"+"\r\n\r\n");
+
+					out.write("\tpublic void set" + formatGetterANDSetter(xsdt) + "(" + javat + " value){"+"\r\n");
+					out.write("\t\tthis." + xsdt + "_value=value;"+"\r\n");
+					out.write("\t}"+"\r\n\r\n");
+					
+					//close all
 					out.write("}\r\n");
 				}
 				else if (type.getPrimarytype().equalsIgnoreCase("SELECT")) {
 					out.write("public interface ");
 					out.write(type.getName());
+					if(selectTypesToExpand.containsKey(type))
+						out.write(" extends " + ((TypeVO)selectTypesToExpand.get(type)).getName());
 					out.write("\r\n{\r\n");
 					out.write("\t//interface for" + "\r\n");
 					for (int i = 0; i < type.getSelect_entities().size(); i++) {
@@ -180,7 +195,8 @@ public class JAVAWriter {
 					out.write(type.getName());
 					
 					if (type.getPrimarytype().equalsIgnoreCase("ENUMERATION")) {
-						
+
+						out.write(" extends Thing");
 						if(selectinterfaces.containsKey(type.getName()))
 							out.write(" implements " + selectinterfaces.get(type.getName()));
 						out.write("\r\n{\r\n");
@@ -196,12 +212,23 @@ public class JAVAWriter {
 								out.write(type.getEnum_entities().get(i));
 						}
 						out.write("};\r\n");
-						out.write("\tprivate " + type.getName() + "_value value;\r\n");
+						out.write("\tprivate " + type.getName() + "_value value;\r\n\r\n");
+						
+						//getter and setter
+						out.write("\tpublic " + type.getName() + "_value" + " get"	+ formatGetterANDSetter(type.getName()) + "() {"+"\r\n");
+						out.write("\t\treturn value;"+"\r\n");
+						out.write("\t}"+"\r\n\r\n");
+
+						out.write("\tpublic void set" + formatGetterANDSetter(type.getName()) + "(" + type.getName() + "_value" + " value){"+"\r\n");
+						out.write("\t\tthis.value=value;"+"\r\n");
+						out.write("\t}"+"\r\n\r\n");
+
+						//close all
 						out.write("}\r\n");
 					}
 					else if(type.getPrimarytype().startsWith("ARRAY") || type.getPrimarytype().startsWith("SET") || type.getPrimarytype().startsWith("LIST")){
-						//sometimes this is LIST [3:3] OF IfcPositiveInteger
 						out.write(" extends Thing");
+						//sometimes this is LIST [3:3] OF IfcPositiveInteger
 						if(selectinterfaces.containsKey(type.getName()))
 							out.write(" implements " + selectinterfaces.get(type.getName()));
 						out.write("\r\n{\r\n");
@@ -212,7 +239,18 @@ public class JAVAWriter {
 							content = content.substring(0, content.length() - 1);
 						content = catchPrimaryTypes(content);	
 						
-						out.write("\tprivate List<" + content + "> " + content + "_List = new ArrayList<" + content + ">();\r\n");
+						out.write("\tprivate List<" + content + "> " + content + "_List = new ArrayList<" + content + ">();\r\n\r\n");
+						
+						//getter and setter
+						out.write("\tpublic " + "List<" + content + "> " + " get"	+ formatGetterANDSetter(content + "_List") + "() {"+"\r\n");
+						out.write("\t\treturn " + content + "_List;"+"\r\n");
+						out.write("\t}"+"\r\n\r\n");
+
+						out.write("\tpublic void set" + formatGetterANDSetter(content + "_List") + "(List<" + content + ">" + " value){"+"\r\n");
+						out.write("\t\tthis." + content + "_List=value;"+"\r\n");
+						out.write("\t}"+"\r\n\r\n");
+
+						//close all
 						out.write("}\r\n");
 					}
 					else	
