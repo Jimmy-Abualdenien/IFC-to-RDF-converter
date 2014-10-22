@@ -105,11 +105,11 @@ public class IFCtoRDFConverter {
 		model.parseModel();
 		
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(output_file)); //Should be N3 syntax / file extension
+			BufferedWriter out = new BufferedWriter(new FileWriter(output_file+".TTL")); //Should be N3 syntax / file extension
 			model.listRDF(out, path);
 			System.out.println("Ended listing RDF");
-			validateResultWithJena(output_file, "N3");
-			writeModelToRDFXML(output_file, "N3", output_file.substring(0, output_file.lastIndexOf('.'))+".rdf");
+			validateResultWithJena(output_file, "TTL");
+			//writeModelToRDFXML(output_file, "TTL", output_file.substring(0, output_file.lastIndexOf('.'))+".rdf");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
