@@ -1007,12 +1007,14 @@ public class IFC_ClassModel {
 				Thing gobject = entry.getValue();
 				String triples = generateTriples(gobject);
 				out.write(triples);
+				out.flush();
 			}
 			
 			for (Map.Entry<Long, Thing> entry : object_buffer_add.entrySet()) {
 				Thing gobject = entry.getValue();
 				String triples = generateTriples(gobject);
 				out.write(triples);
+				out.flush();
 			}
 
 		} finally {

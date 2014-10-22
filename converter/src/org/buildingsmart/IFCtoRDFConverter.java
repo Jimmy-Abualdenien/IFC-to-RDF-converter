@@ -136,7 +136,7 @@ public class IFCtoRDFConverter {
 	
 	private static boolean validateResultWithJena(String output_file, String syntax) {
 		boolean valid = false;
-		Model RDFModel = FileManager.get().loadModel(output_file+".ttl", syntax);
+		Model RDFModel = FileManager.get().loadModel(output_file, syntax);
 		InfModel infmodel = ModelFactory.createRDFSModel(RDFModel);
 		ValidityReport validity = infmodel.validate();
 		if (validity.isValid()) {
