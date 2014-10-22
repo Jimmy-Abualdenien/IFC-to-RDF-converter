@@ -23,42 +23,27 @@ import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
-//import org.buildingsmart.InverseLinksList;
-import org.buildingsmart.vo.Link;
 import org.buildingsmart.vo.ValuePair;
 
 public class Thing {
 
-    private Long line_number;
     private BigInteger global_id_value;
     private int incoming_count = 0;    
     private String thing_name;
     private String thing_uri;
     private internals i = new internals(this);
     
-    public Long getLine_number() {
-		return line_number;
-	}
-
-	public void setLine_number(Long line_number) {
-		this.line_number = line_number;
-	}
+    
 
 	public internals getI() {
 		return i;
 	}    
-
-//	public void setI(internals i) {
-//		this.i = i;
-//	}
 	
     public class internals
     {
+        private Long line_number;
         private boolean ready = true;
         private boolean touched = false; 
 	    Thing host;
@@ -82,14 +67,6 @@ public class Thing {
 
 	    public void setReady(boolean ready) {
 	    	this.ready = ready;
-	    }
-	    
-	    public Long getLineNumber() {	
-	    	return getLine_number();
-	    }
-
-	    public void setLineNumber(Long param) {
-	    	setLine_number(param);
 	    }
 	    
 	    public BigInteger getGlobal_id_value() {
@@ -183,8 +160,7 @@ public class Thing {
 		return ret;
 	    }
 
-	    @SuppressWarnings("unchecked")
-	    public List<ValuePair> drum_getParameterAttributeValues() {
+	    public List<ValuePair> getParameterAttributeValues() {
 		List<ValuePair> ret = new ArrayList<ValuePair>();
 		ret.add(new ValuePair("line_number", getLine_number()));
 		Method method[] = host.getClass().getMethods();
@@ -232,7 +208,6 @@ public class Thing {
 		    } catch (Exception e) {
 			e.printStackTrace();
 		    }
-
 		}
 		return ret;
 	    }
@@ -265,16 +240,16 @@ public class Thing {
 		return ret;
 	    }
 	    
-	    public List<Link> drum_getIfcClassAttributes_notInverses() {
-		List<Link> ret = new ArrayList<Link>();
-		Method method[] = host.getClass().getMethods();
-		for (int j = 0; j < method.length; j++) {
-		    try {
-			if (method[j].getName().startsWith("get")) {
-			    Object o = method[j].invoke(host);
-			    if (Thing.class.isInstance(o))
-				ret.add(new Link(host,(Thing)o,method[j].getName().substring(3)));
-			    if (List.class.isInstance(o)) {
+//	    public List<Link> drum_getIfcClassAttributes_notInverses() {
+//		List<Link> ret = new ArrayList<Link>();
+//		Method method[] = host.getClass().getMethods();
+//		for (int j = 0; j < method.length; j++) {
+//		    try {
+//			if (method[j].getName().startsWith("get")) {
+//			    Object o = method[j].invoke(host);
+//			    if (Thing.class.isInstance(o))
+//				ret.add(new Link(host,(Thing)o,method[j].getName().substring(3)));
+//			    if (List.class.isInstance(o)) {
 
 				    //TOCHECK!!!!!!!!!!!!!!!!!!
 //				if (!InverseLinksList.class.isInstance(o))
@@ -300,45 +275,45 @@ public class Thing {
 //				     }
 //				}
 				
-			    }
-			}
+//			    }
+//			}
+//
+//		    } catch (Exception e) {
+//			e.printStackTrace();
+//		    }
+//
+//		}
+//		return ret;
+//	    }
 
-		    } catch (Exception e) {
-			e.printStackTrace();
-		    }
-
-		}
-		return ret;
-	    }
-
-	    @SuppressWarnings("unchecked")
-	    public List<ValuePair> drum_getIfcClassAttributes_2_CHKSUM() {
-		List<ValuePair> ret = new ArrayList<ValuePair>();
-		Method method[] = host.getClass().getMethods();
-		for (int j = 0; j < method.length; j++) {
-		    try {
-			if (method[j].getName().startsWith("get")) {
-			    Object o = method[j].invoke(host);
-			    if (Thing.class.isInstance(o))
-				ret.add(new ValuePair(method[j].getName().substring(3), o));
-			    if (List.class.isInstance(o)) {
-				//if (!InverseLinksList.class.isInstance(o))
-				    for (int n = 0; n < ((List<Object>) o).size(); n++) {
-					Object o1 = ((List<Object>) o).get(n);
-					if (Thing.class.isInstance(o1))
-					    ret.add(new ValuePair(method[j].getName().substring(3), o1));
-
-				    }
-			    }
-			}
-
-		    } catch (Exception e) {
-			e.printStackTrace();
-		    }
-
-		}
-		return ret;
-	    }
+//	    @SuppressWarnings("unchecked")
+//	    public List<ValuePair> drum_getIfcClassAttributes_2_CHKSUM() {
+//		List<ValuePair> ret = new ArrayList<ValuePair>();
+//		Method method[] = host.getClass().getMethods();
+//		for (int j = 0; j < method.length; j++) {
+//		    try {
+//			if (method[j].getName().startsWith("get")) {
+//			    Object o = method[j].invoke(host);
+//			    if (Thing.class.isInstance(o))
+//				ret.add(new ValuePair(method[j].getName().substring(3), o));
+//			    if (List.class.isInstance(o)) {
+//				//if (!InverseLinksList.class.isInstance(o))
+//				    for (int n = 0; n < ((List<Object>) o).size(); n++) {
+//					Object o1 = ((List<Object>) o).get(n);
+//					if (Thing.class.isInstance(o1))
+//					    ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//
+//				    }
+//			    }
+//			}
+//
+//		    } catch (Exception e) {
+//			e.printStackTrace();
+//		    }
+//
+//		}
+//		return ret;
+//	    }
 
 	    public Long toLong(String txt) {
 		try {
@@ -426,77 +401,85 @@ public class Thing {
 	    }
 
 	    // Only lists or sets which have 0 or 1 members are allowed here
-	    public List<Link> ifcAnyObjectListOfLimitedCardinality() {
-		List<Link> ret = new ArrayList<Link>();
-		Method method[] = host.getClass().getMethods();
-		for (int j = 0; j < method.length; j++) {
-		    try {
-			if (method[j].getName().startsWith("get")) {
-			    Object o = method[j].invoke(host);
-			    if (Thing.class.isInstance(o))				
-				ret.add(new Link(host,(Thing)o,method[j].getName().substring(3)));
-
-			    if (List.class.isInstance(o)) {
-
-				    //TOCHECK!!!!!!!!!!!!!!!!!!
-//				     if (IfcList.class.isInstance(o))
-//				     {
-//					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
-//							Object o1 = ((List<Object>) o).get(n);
-//							if (Thing.class.isInstance(o1))
-//							{
-//							    Link l=new Link(host,(Thing)o1,method[j].getName().substring(3));
-//							    l.setListIndex(n);
-//							    ret.add(l);
-//							}
-//					      }
-//				     }
-//				     else
-//				    {
-//				    if(((List<Object>) o).size()<2)  // no more than 0 or 1
-//					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
-//							Object o1 = ((List<Object>) o).get(n);
-//							if (Thing.class.isInstance(o1))
-//							    ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)));
-//					      }
-//				    }
-			    }
-
-			    
-			}
-
-		    } catch (Exception e) {
-			e.printStackTrace();
-		    }
-
-		}
-		return ret;
-	    }
-	    
-	    @SuppressWarnings("unchecked")
-	    public List<ValuePair> drum_getGroundablesInversesList() {
-		List<ValuePair> ret = new ArrayList<ValuePair>();
-		Method method[] = host.getClass().getMethods();
-		for (int j = 0; j < method.length; j++) {
-		    try {
-			if (method[j].getName().startsWith("get")) {
-			    Object o = method[j].invoke(host);
-			    //TOCHECK!!!!!!!!!!!!!!!!!!
-//			    if (InverseLinksList.class.isInstance(o))
-//				for (int n = 0; n < ((List<Object>) o).size(); n++) {
-//				    Object o1 = ((List<Object>) o).get(n);
-//				    if (Thing.class.isInstance(o1))
-//					ret.add(new ValuePair(method[j].getName().substring(3), o1));
+//	    public List<Link> ifcAnyObjectListOfLimitedCardinality() {
+//		List<Link> ret = new ArrayList<Link>();
+//		Method method[] = host.getClass().getMethods();
+//		for (int j = 0; j < method.length; j++) {
+//		    try {
+//			if (method[j].getName().startsWith("get")) {
+//			    Object o = method[j].invoke(host);
+//			    if (Thing.class.isInstance(o))				
+//				ret.add(new Link(host,(Thing)o,method[j].getName().substring(3)));
 //
-//				}
-			}
-
-		    } catch (Exception e) {
-			e.printStackTrace();
-		    }
+//			    if (List.class.isInstance(o)) {
+//
+//				    //TOCHECK!!!!!!!!!!!!!!!!!!
+////				     if (IfcList.class.isInstance(o))
+////				     {
+////					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
+////							Object o1 = ((List<Object>) o).get(n);
+////							if (Thing.class.isInstance(o1))
+////							{
+////							    Link l=new Link(host,(Thing)o1,method[j].getName().substring(3));
+////							    l.setListIndex(n);
+////							    ret.add(l);
+////							}
+////					      }
+////				     }
+////				     else
+////				    {
+////				    if(((List<Object>) o).size()<2)  // no more than 0 or 1
+////					      for (int n = 0; n < ((List<Object>) o).size(); n++) {
+////							Object o1 = ((List<Object>) o).get(n);
+////							if (Thing.class.isInstance(o1))
+////							    ret.add(new Link(host,(Thing)o1,method[j].getName().substring(3)));
+////					      }
+////				    }
+//			    }
+//
+//			    
+//			}
+//
+//		    } catch (Exception e) {
+//			e.printStackTrace();
+//		    }
+//
+//		}
+//		return ret;
+//	    }
+//	    
+//	    @SuppressWarnings("unchecked")
+//	    public List<ValuePair> drum_getGroundablesInversesList() {
+//		List<ValuePair> ret = new ArrayList<ValuePair>();
+//		Method method[] = host.getClass().getMethods();
+//		for (int j = 0; j < method.length; j++) {
+//		    try {
+//			if (method[j].getName().startsWith("get")) {
+//			    Object o = method[j].invoke(host);
+//			    //TOCHECK!!!!!!!!!!!!!!!!!!
+////			    if (InverseLinksList.class.isInstance(o))
+////				for (int n = 0; n < ((List<Object>) o).size(); n++) {
+////				    Object o1 = ((List<Object>) o).get(n);
+////				    if (Thing.class.isInstance(o1))
+////					ret.add(new ValuePair(method[j].getName().substring(3), o1));
+////
+////				}
+//			}
+//
+//		    } catch (Exception e) {
+//			e.printStackTrace();
+//		    }
+//		}
+//		return ret;
+//	    }
+	    
+	    public Long getLine_number() {
+			return line_number;
 		}
-		return ret;
-	    }
+
+		public void setLine_number(Long line_number) {
+			this.line_number = line_number;
+		}
     }
     
 
@@ -505,14 +488,14 @@ public class Thing {
 //	if (IfcRoot.class.isInstance(this))
 //	    return this.getClass().getSimpleName() + "(" + ((IfcRoot) this).getGlobalId() + ")";
 //	else
-	    return this.getClass().getSimpleName() + "(" + getLine_number() + ")";
+	    return this.getClass().getSimpleName() + "(" + i.getLine_number() + ")";
     }
 
     public String toGWHTML() {
 //	if (IfcRoot.class.isInstance(this))
 //	    return this.getClass().getSimpleName() + "<font POINT-SIZE=\"6\">(" + ((IfcRoot) this).getGlobalId() + ")</font>";
 //	else
-	    return this.getClass().getSimpleName() + "(" + getLine_number() + ")";
+	    return this.getClass().getSimpleName() + "(" + i.getLine_number() + ")";
     }
     
 }
