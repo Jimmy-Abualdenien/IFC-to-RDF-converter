@@ -242,14 +242,14 @@ public class JAVAWriter {
 						out.write("\tprivate List<" + content + "> " + content + "_List = new ArrayList<" + content + ">();\r\n\r\n");
 						
 						//getter and setter
-						out.write("\tpublic " + "List<" + content + "> " + " get"	+ formatGetterANDSetter(content + "_List") + "() {"+"\r\n");
+						out.write("\tpublic " + "List<" + content + ">" + " get"	+ formatGetterANDSetter(content) + "() {"+"\r\n");
 						out.write("\t\treturn " + content + "_List;"+"\r\n");
 						out.write("\t}"+"\r\n\r\n");
 
-						out.write("\tpublic void set" + formatGetterANDSetter(content + "_List") + "(List<" + content + ">" + " value){"+"\r\n");
-						out.write("\t\tthis." + content + "_List=value;"+"\r\n");
+						out.write("\tpublic void set" + formatGetterANDSetter(content) + "(" + content + " value){"+"\r\n");
+						out.write("\t\tthis." + content + "_List.add(value);"+"\r\n");
 						out.write("\t}"+"\r\n\r\n");
-
+						
 						//close all
 						out.write("}\r\n");
 					}
@@ -328,15 +328,15 @@ public class JAVAWriter {
 		}		
 		
 		if (evo.getInverses().size() > 0)
-			out.write(" // The inverse attributes\n\n");
+			out.write("\t// The inverse attributes\r\n");
 		for (int n = 0; n < evo.getInverses().size(); n++) {
 			out.write("\tprivate List<"
 					+ evo.getInverses().get(n).getClassRange() + "> "
 					+ evo.getInverses().get(n).getName()
 					+ "= new ArrayList<"
-					+ evo.getInverses().get(n).getClassRange() + ">();\n");
+					+ evo.getInverses().get(n).getClassRange() + ">();\r\n");
 		}
-		out.write("\n\n");
+		out.write("\r\n\r\n");
 	}
 
 	private void outputJavaGetSetMethods2Attributes(EntityVO evo,
