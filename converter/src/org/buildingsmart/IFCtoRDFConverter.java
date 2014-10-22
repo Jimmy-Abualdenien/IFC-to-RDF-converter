@@ -18,6 +18,7 @@ import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 import com.hp.hpl.jena.util.FileManager;
 
 import net.sf.json.JSONObject;
@@ -105,11 +106,17 @@ public class IFCtoRDFConverter {
 		model.parseModel();
 		
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(output_file+".TTL")); //Should be N3 syntax / file extension
+			BufferedWriter out = new BufferedWriter(new FileWriter(output_file+".ttl")); //Should be N3 syntax / file extension
 			model.listRDF(out, path);
-			System.out.println("Ended listing RDF");
-			validateResultWithJena(output_file, "TTL");
-			//writeModelToRDFXML(output_file, "TTL", output_file.substring(0, output_file.lastIndexOf('.'))+".rdf");
+			System.out.println("Ended listing TTL : " + output_file+".ttl");
+			boolean valid = validateResultWithJena(output_file+".ttl", "TTL");
+			if(valid){
+				boolean validaswell = writeModelToRDFXML(output_file+".ttl", "TTL", output_file+".rdf");
+				if(validaswell)
+					System.out.println("Generated RDF/XML file at " + output_file+".rdf");
+				else
+					System.out.println("Not able to generate an RDF/XML file at " + output_file+".rdf for " + output_file+".ttl");
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -129,7 +136,7 @@ public class IFCtoRDFConverter {
 	
 	private static boolean validateResultWithJena(String output_file, String syntax) {
 		boolean valid = false;
-		Model RDFModel = FileManager.get().loadModel(output_file, syntax);
+		Model RDFModel = FileManager.get().loadModel(output_file+".ttl", syntax);
 		InfModel infmodel = ModelFactory.createRDFSModel(RDFModel);
 		ValidityReport validity = infmodel.validate();
 		if (validity.isValid()) {
@@ -137,7 +144,7 @@ public class IFCtoRDFConverter {
 			valid = true;
 		} else {
 			System.out.println("The generated "+syntax+" file contains conflicts");
-			for (Iterator i = validity.getReports(); i.hasNext();) {
+			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
 				System.out.println(" - " + i.next());
 			}
 		}

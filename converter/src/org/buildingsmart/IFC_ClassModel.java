@@ -38,7 +38,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +47,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import javax.lang.model.util.Types;
 
 import fi.ni.rdf.Namespace;
 
@@ -66,9 +64,11 @@ public class IFC_ClassModel {
 	private final String ifc_model_name;
 	private String model_file;
 	private String schemaName;
+	private int IDcounter = 0;
 	
 	private Map<Long, IFCVO> linemap = new HashMap<Long, IFCVO>();
 	public final Map<Long, Thing> object_buffer = new HashMap<Long, Thing>(); // line_number,
+	public final Map<Long, Thing> object_buffer_add = new HashMap<Long, Thing>(); // line_number,
 	//public final Map<String, Thing> gid_map = new HashMap<String, Thing>(); // GID,
 	//public boolean has_duplicate_guids = false;
 	private Thing root;
@@ -243,6 +243,7 @@ public class IFC_ClassModel {
 			}
 		}
 		linemap.put(ifcvo.getLine_num(), ifcvo);
+		IDcounter++;
 	}
 	
 	private void mapEntries() {
@@ -257,7 +258,7 @@ public class IFC_ClassModel {
 							+ entities.get(vo.getName()).getName());
 					Constructor<?> ct = cls.getConstructor();
 					thing = (Thing) ct.newInstance();
-					thing.getI().setLineNumber(vo.getLine_num());
+					thing.getI().setLine_number(vo.getLine_num());
 					object_buffer.put(vo.getLine_num(), (Thing) thing);
 				}
 			} catch (Exception e) {
@@ -964,7 +965,7 @@ public class IFC_ClassModel {
 				@SuppressWarnings({ "rawtypes", "unchecked" })
 				Constructor ct = cls.getConstructor();
 				thing = (Thing) ct.newInstance();
-				thing.getI().setLineNumber(line_number);
+				thing.getI().setLine_number(line_number);
 				object_buffer.put(line_number, (Thing) thing);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -990,19 +991,25 @@ public class IFC_ClassModel {
 		return sb.toString();
 	}
 	
-
 	// ========================================================================================================
 	
 	public void listRDF(BufferedWriter out, String path) throws IOException {
 		try {
-			out.write("@prefix : <" + path + ">.\n");
-			out.write("@prefix instances: <" + path + ">. \n");
-			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
-			out.write("@prefix ifc: <" + Namespace.IFC + "> .\n");
-			out.write("@prefix xsd: <" + Namespace.XSD + "> .\n");
-			out.write("\n");
+			out.write("@prefix : <" + path + "> . \r\n");
+			out.write("@prefix instances: <" + path + "> . \r\n");
+			out.write("@prefix owl: <" + Namespace.OWL + "> .\r\n");
+			out.write("@prefix ifc: <" + Namespace.IFC + "> .\r\n");
+			out.write("@prefix xsd: <" + Namespace.XSD + "> .\r\n");
+			out.write("@prefix rdf: <" + Namespace.RDF + "> .\r\n");
+			out.write("\r\n");
 			
 			for (Map.Entry<Long, Thing> entry : object_buffer.entrySet()) {
+				Thing gobject = entry.getValue();
+				String triples = generateTriples(gobject);
+				out.write(triples);
+			}
+			
+			for (Map.Entry<Long, Thing> entry : object_buffer_add.entrySet()) {
 				Thing gobject = entry.getValue();
 				String triples = generateTriples(gobject);
 				out.write(triples);
@@ -1023,27 +1030,28 @@ public class IFC_ClassModel {
 			toRet.append(subject + " owl:sameAs instances:" + this.ifc_model_name
 					+ "_iref_" + pointer.i.drum_getLine_number() + ".\n");
 		}*/
-		toRet.append(subject + " a ifc:" + pointer.getClass().getSimpleName()
-				+ ".\n");
+		toRet.append(subject + " rdf:type ifc:" + pointer.getClass().getSimpleName());
+//		toRet.append(" . \r\n");
 
-		List<ValuePair> l = pointer.getI().drum_getParameterAttributeValues();
+		List<ValuePair> l = pointer.getI().getParameterAttributeValues();
 		for (int n = 0; n < l.size(); n++) {
 			ValuePair vp = (ValuePair) l.get(n);
 			if (vp.getValue() == null)
 				continue; // null values allowed
 			if (List.class.isInstance(vp.getValue())) {
-				List li = (List) vp.getValue();
+				List<?> li = (List<?>) vp.getValue();
 				if (li.size() == 0)
 					continue; // empty list
-				toRet.append(subject + " ifc:"
-						+ ExpressReader.formatProperty(vp.getName(),false) + "  (\n");
+				toRet.append(" ; \r\n");
+				toRet.append("\t" + "ifc:"
+						+ ExpressReader.formatProperty(vp.getName(),false) + " (\r\n");
 				for (int j = 0; j < li.size(); j++) {
 					Object o1 = li.get(j);
 					if (Thing.class.isInstance(o1)) {
-						toRet.append(deduceSubject((Thing) o1) + "\n");
+						toRet.append("\t\t" + deduceSubject((Thing) o1) + "\r\n");
 						continue;
 					}
-					toRet.append(" \"" + o1.toString() + "\"");
+					toRet.append("\t\t" + "\"" + o1.toString() + "\"");
 					if (o1.getClass().equals(java.lang.Long.class))
 						toRet.append("^^xsd:integer");
 					if (o1.getClass().equals(java.lang.Double.class))
@@ -1052,21 +1060,22 @@ public class IFC_ClassModel {
 						toRet.append("^^xsd:datetime");
 					if (o1.getClass().equals(java.lang.String.class))
 						toRet.append("^^xsd:string");
-					toRet.append("\n");
+					toRet.append("\r\n");
 				}
-				toRet.append(").\n");
+				toRet.append("\t" + ")");
 				continue; // Case handled
 			}
-			toRet.append(subject + " ifc:"
+			toRet.append(" ; \r\n");
+			toRet.append("\t" + "ifc:"
 					+ ExpressReader.formatProperty(vp.getName(),false));
 			if (Thing.class.isInstance(vp.getValue())) {
-				toRet.append(" " + deduceSubject((Thing) vp.getValue()) + ".\n"); // Modified
+				toRet.append(" " + deduceSubject((Thing) vp.getValue())); // Modified
 																				  // 13rd
 																				  // May
 																				  // 2013
 				continue;
 			}
-			toRet.append("  \"" + vp.getValue() + "\"");
+			toRet.append(" \"" + vp.getValue() + "\"");
 			if (vp.getValue().getClass().equals(java.lang.Long.class))
 				toRet.append("^^xsd:integer");
 			if (vp.getValue().getClass().equals(java.lang.Double.class))
@@ -1075,9 +1084,9 @@ public class IFC_ClassModel {
 				toRet.append("^^xsd:datetime");
 			if (vp.getValue().getClass().equals(java.lang.String.class))
 				toRet.append("^^xsd:string");
-
-			toRet.append(".\n");
 		}
+		
+		toRet.append(" .\r\n\r\n");
 		
 		return toRet.toString();
 	}
@@ -1087,11 +1096,18 @@ public class IFC_ClassModel {
 		/*if (IfcRoot.class.isInstance(pointer)) {
 			subject =":guid" + GuidCompressor.uncompressGuidString(((IfcRoot) pointer).getGlobalId());
 		} else {*/
-			subject = "instances:" + this.ifc_model_name + "_iref_"
-					+ pointer.getI().getLineNumber();
+//			subject = "instances:" + this.ifc_model_name + "_iref_"
+//					+ pointer.getI().getLineNumber();
+		if(pointer.getI().getLine_number() != null)
+			subject = "instances:" + pointer.getClass().getSimpleName() + "_" + pointer.getI().getLine_number();
+		else {
+			IDcounter++;
+			subject = "instances:" + pointer.getClass().getSimpleName() + "_" + IDcounter;
+			pointer.getI().setLine_number((long) IDcounter);
+			object_buffer_add.put((long) IDcounter, pointer);
+		}
 		//}
 		return subject;
-
 	}
 
 	// ========================================================================================================

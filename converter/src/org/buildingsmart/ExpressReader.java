@@ -108,7 +108,7 @@ public class ExpressReader {
 			this.rearrangeAttributes();
 			this.rearrangeProperties();
 			this.rearrangeInverses();
-			System.out.println("ended reading the EXPRESS file and building internals");
+			System.out.println("Ended reading the EXPRESS file and building internals");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,7 +131,7 @@ public class ExpressReader {
 			ExpressReader er = new ExpressReader("IFC2X3_TC1",
 					"samples\\IFC2X3_TC1.exp");// "IFC4RC4","samples\\IFC4RC4.exp");
 			er.readSpec();
-			System.out.println("ended parsing the EXPRESS file");
+			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
 			er.generateNamedIndividuals();
 			er.iterateAndPrint();
@@ -146,13 +146,13 @@ public class ExpressReader {
 					er.types, er.siblings, er.enumIndividuals, er.properties);
 			ow.outputOWL();
 			System.out
-					.println("ended converting the EXPRESS schema into corresponding OWL file");
+					.println("Ended converting the EXPRESS schema into corresponding OWL file");
 
 			JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities,
 					er.types, er.selectTypesToExpand);
 			jw.outputJavaClasses();
 			System.out
-					.println("ended converting the EXPRESS schema into corresponding JAVA Class Library");
+					.println("Ended converting the EXPRESS schema into corresponding JAVA Class Library");
 
 		} catch (Exception e) {
 			e.printStackTrace();
