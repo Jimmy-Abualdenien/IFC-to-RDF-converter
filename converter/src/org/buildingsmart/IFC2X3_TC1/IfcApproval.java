@@ -34,8 +34,7 @@ public class IfcApproval extends Thing
 	private IfcText ApprovalQualifier;
 	private IfcLabel Name_of_IfcApproval;
 	private IfcIdentifier Identifier_of_IfcApproval;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcApprovalActorRelationship> Actors= new ArrayList<IfcApprovalActorRelationship>();
 	private List<IfcApprovalRelationship> IsRelatedWith= new ArrayList<IfcApprovalRelationship>();
 	private List<IfcApprovalRelationship> Relates= new ArrayList<IfcApprovalRelationship>();

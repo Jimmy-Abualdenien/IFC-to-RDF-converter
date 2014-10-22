@@ -29,8 +29,7 @@ public class IfcRepresentationMap extends Thing
 	// The property attributes
 	private IfcAxis2Placement MappingOrigin;
 	private IfcRepresentation MappedRepresentation;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMappedItem> MapUsage= new ArrayList<IfcMappedItem>();
 
 

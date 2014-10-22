@@ -28,8 +28,7 @@ public class IfcDraughtingCallout extends IfcGeometricRepresentationItem
 {
 	// The property attributes
 	private List<IfcDraughtingCalloutElement> Contents = new ArrayList<IfcDraughtingCalloutElement>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcDraughtingCalloutRelationship> IsRelatedFromCallout= new ArrayList<IfcDraughtingCalloutRelationship>();
 	private List<IfcDraughtingCalloutRelationship> IsRelatedToCallout= new ArrayList<IfcDraughtingCalloutRelationship>();
 

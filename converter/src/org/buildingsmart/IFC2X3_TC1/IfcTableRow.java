@@ -29,8 +29,7 @@ public class IfcTableRow extends Thing
 	// The property attributes
 	private List<IfcValue> RowCells = new ArrayList<IfcValue>();
 	private Boolean IsHeading;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcTable> OfTable= new ArrayList<IfcTable>();
 
 

@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMeasureWithUnit extends Thing implements IfcMetricValueSelect, IfcConditionCriterionSelect, IfcAppliedValueSelect
+public class IfcMeasureWithUnit extends Thing implements IfcAppliedValueSelect, IfcMetricValueSelect, IfcConditionCriterionSelect
 {
 	// The property attributes
 	private IfcValue ValueComponent;

@@ -30,8 +30,7 @@ public class IfcAddress extends Thing implements IfcObjectReferenceSelect
 	private IfcAddressTypeEnum Purpose_of_IfcAddress;
 	private IfcText Description_of_IfcAddress;
 	private IfcLabel UserDefinedPurpose;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcPerson> OfPerson= new ArrayList<IfcPerson>();
 	private List<IfcOrganization> OfOrganization= new ArrayList<IfcOrganization>();
 

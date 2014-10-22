@@ -30,8 +30,7 @@ public class IfcGrid extends IfcProduct
 	private List<IfcGridAxis> UAxes = new ArrayList<IfcGridAxis>();
 	private List<IfcGridAxis> VAxes = new ArrayList<IfcGridAxis>();
 	private List<IfcGridAxis> WAxes = new ArrayList<IfcGridAxis>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelContainedInSpatialStructure> ContainedInStructure= new ArrayList<IfcRelContainedInSpatialStructure>();
 
 

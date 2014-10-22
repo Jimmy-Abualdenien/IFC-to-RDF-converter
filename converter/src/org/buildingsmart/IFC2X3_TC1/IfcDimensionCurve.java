@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcDimensionCurve extends IfcAnnotationCurveOccurrence 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcTerminatorSymbol> AnnotatedBySymbols= new ArrayList<IfcTerminatorSymbol>();
 
 

@@ -24,14 +24,13 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMaterialLayer extends Thing implements IfcMaterialSelect, IfcObjectReferenceSelect
+public class IfcMaterialLayer extends Thing implements IfcObjectReferenceSelect, IfcMaterialSelect
 {
 	// The property attributes
 	private IfcMaterial Material_of_IfcMaterialLayer;
 	private IfcPositiveLengthMeasure LayerThickness;
 	private IfcLogical IsVentilated;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMaterialLayerSet> ToMaterialLayerSet= new ArrayList<IfcMaterialLayerSet>();
 
 

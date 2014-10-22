@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcTextureCoordinate extends Thing 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcAnnotationSurface> AnnotatedSurface= new ArrayList<IfcAnnotationSurface>();
 
 

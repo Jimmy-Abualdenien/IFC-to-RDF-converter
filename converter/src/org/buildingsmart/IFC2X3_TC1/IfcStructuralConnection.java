@@ -28,8 +28,7 @@ public class IfcStructuralConnection extends IfcStructuralItem
 {
 	// The property attributes
 	private IfcBoundaryCondition AppliedCondition_of_IfcStructuralConnection;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsStructuralMember> ConnectsStructuralMembers= new ArrayList<IfcRelConnectsStructuralMember>();
 
 

@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcStructuralMember extends IfcStructuralItem 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsStructuralElement> ReferencesElement= new ArrayList<IfcRelConnectsStructuralElement>();
 	private List<IfcRelConnectsStructuralMember> ConnectedBy= new ArrayList<IfcRelConnectsStructuralMember>();
 

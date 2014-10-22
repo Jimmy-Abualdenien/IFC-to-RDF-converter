@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcObjectPlacement extends Thing 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcProduct> PlacesObject= new ArrayList<IfcProduct>();
 	private List<IfcLocalPlacement> ReferencedByPlacements= new ArrayList<IfcLocalPlacement>();
 

@@ -30,8 +30,7 @@ public class IfcClassificationItem extends Thing
 	private IfcClassificationNotationFacet Notation;
 	private IfcClassification ItemOf;
 	private IfcLabel Title;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcClassificationItemRelationship> IsClassifiedItemIn= new ArrayList<IfcClassificationItemRelationship>();
 	private List<IfcClassificationItemRelationship> IsClassifyingItemIn= new ArrayList<IfcClassificationItemRelationship>();
 

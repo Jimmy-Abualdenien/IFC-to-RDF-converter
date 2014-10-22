@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcLibraryReference extends IfcExternalReference implements IfcLibrarySelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcLibraryInformation> ReferenceIntoLibrary= new ArrayList<IfcLibraryInformation>();
 
 

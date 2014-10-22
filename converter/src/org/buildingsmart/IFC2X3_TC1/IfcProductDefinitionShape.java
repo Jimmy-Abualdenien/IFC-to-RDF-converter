@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcProductDefinitionShape extends IfcProductRepresentation 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcProduct> ShapeOfProduct= new ArrayList<IfcProduct>();
 	private List<IfcShapeAspect> HasShapeAspects= new ArrayList<IfcShapeAspect>();
 

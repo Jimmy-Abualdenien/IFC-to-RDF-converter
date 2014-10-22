@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcSystem extends IfcGroup 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelServicesBuildings> ServicesBuildings= new ArrayList<IfcRelServicesBuildings>();
 
 

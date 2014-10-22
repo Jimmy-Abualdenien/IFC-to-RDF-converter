@@ -29,8 +29,7 @@ public class IfcSpace extends IfcSpatialStructureElement
 	// The property attributes
 	private IfcInternalOrExternalEnum InteriorOrExteriorSpace;
 	private IfcLengthMeasure ElevationWithFlooring;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelCoversSpaces> HasCoverings= new ArrayList<IfcRelCoversSpaces>();
 	private List<IfcRelSpaceBoundary> BoundedBy= new ArrayList<IfcRelSpaceBoundary>();
 

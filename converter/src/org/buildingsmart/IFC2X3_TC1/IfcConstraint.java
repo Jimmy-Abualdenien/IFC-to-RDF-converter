@@ -34,8 +34,7 @@ public class IfcConstraint extends Thing
 	private IfcActorSelect CreatingActor;
 	private IfcDateTimeSelect CreationTime_of_IfcConstraint;
 	private IfcLabel UserDefinedGrade;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcConstraintClassificationRelationship> ClassifiedAs= new ArrayList<IfcConstraintClassificationRelationship>();
 	private List<IfcConstraintRelationship> RelatesConstraints= new ArrayList<IfcConstraintRelationship>();
 	private List<IfcConstraintRelationship> IsRelatedWith= new ArrayList<IfcConstraintRelationship>();

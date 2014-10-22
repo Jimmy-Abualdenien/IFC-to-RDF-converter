@@ -31,8 +31,7 @@ public class IfcClassification extends Thing
 	private IfcLabel Edition;
 	private IfcCalendarDate EditionDate;
 	private IfcLabel Name_of_IfcClassification;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcClassificationItem> Contains= new ArrayList<IfcClassificationItem>();
 
 

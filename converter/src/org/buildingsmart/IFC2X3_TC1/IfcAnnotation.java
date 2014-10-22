@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcAnnotation extends IfcProduct 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelContainedInSpatialStructure> ContainedInStructure= new ArrayList<IfcRelContainedInSpatialStructure>();
 
 

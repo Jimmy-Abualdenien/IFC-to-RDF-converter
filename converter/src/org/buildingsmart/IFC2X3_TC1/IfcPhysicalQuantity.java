@@ -29,8 +29,7 @@ public class IfcPhysicalQuantity extends Thing
 	// The property attributes
 	private IfcLabel Name_of_IfcPhysicalQuantity;
 	private IfcText Description_of_IfcPhysicalQuantity;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcPhysicalComplexQuantity> PartOfComplex= new ArrayList<IfcPhysicalComplexQuantity>();
 
 

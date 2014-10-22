@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDirection extends IfcGeometricRepresentationItem implements IfcOrientationSelect, IfcVectorOrDirection
+public class IfcDirection extends IfcGeometricRepresentationItem implements IfcVectorOrDirection, IfcOrientationSelect
 {
 	// The property attributes
 	private List<Double> DirectionRatios = new ArrayList<Double>();

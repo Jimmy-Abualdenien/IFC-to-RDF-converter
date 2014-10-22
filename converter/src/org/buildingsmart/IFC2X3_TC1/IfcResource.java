@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcResource extends IfcObject 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToResource> ResourceOf= new ArrayList<IfcRelAssignsToResource>();
 
 

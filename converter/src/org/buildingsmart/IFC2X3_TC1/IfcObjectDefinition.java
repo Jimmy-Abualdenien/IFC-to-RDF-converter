@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcObjectDefinition extends IfcRoot 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssigns> HasAssignments= new ArrayList<IfcRelAssigns>();
 	private List<IfcRelDecomposes> IsDecomposedBy= new ArrayList<IfcRelDecomposes>();
 	private List<IfcRelDecomposes> Decomposes= new ArrayList<IfcRelDecomposes>();

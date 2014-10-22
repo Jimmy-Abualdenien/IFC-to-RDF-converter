@@ -24,6 +24,6 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcNormalisedRatioMeasure extends IfcRatioMeasure implements IfcMeasureValue, IfcColourOrFactor, IfcSizeSelect
+public class IfcNormalisedRatioMeasure extends IfcRatioMeasure implements IfcColourOrFactor, IfcSizeSelect, IfcMeasureValue
 {
 }

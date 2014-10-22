@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcStructuralReaction extends IfcStructuralActivity 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcStructuralAction> Causes= new ArrayList<IfcStructuralAction>();
 
 

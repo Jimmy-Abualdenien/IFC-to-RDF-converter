@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcControl extends IfcObject 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToControl> Controls= new ArrayList<IfcRelAssignsToControl>();
 
 

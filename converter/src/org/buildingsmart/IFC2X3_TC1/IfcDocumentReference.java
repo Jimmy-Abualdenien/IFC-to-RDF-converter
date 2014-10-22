@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcDocumentReference extends IfcExternalReference implements IfcDocumentSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcDocumentInformation> ReferenceToDocument= new ArrayList<IfcDocumentInformation>();
 
 

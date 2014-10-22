@@ -45,8 +45,7 @@ public class IfcScheduleTimeControl extends IfcControl
 	private IfcTimeMeasure StartFloat;
 	private IfcTimeMeasure FinishFloat;
 	private IfcPositiveRatioMeasure Completion;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsTasks> ScheduleTimeControlAssigned= new ArrayList<IfcRelAssignsTasks>();
 
 

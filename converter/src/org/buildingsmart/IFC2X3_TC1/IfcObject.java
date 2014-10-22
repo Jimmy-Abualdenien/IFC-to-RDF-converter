@@ -28,8 +28,7 @@ public class IfcObject extends IfcObjectDefinition
 {
 	// The property attributes
 	private IfcLabel ObjectType;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelDefines> IsDefinedBy= new ArrayList<IfcRelDefines>();
 
 

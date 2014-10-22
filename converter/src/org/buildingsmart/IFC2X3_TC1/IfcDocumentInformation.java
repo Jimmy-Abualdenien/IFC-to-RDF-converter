@@ -44,8 +44,7 @@ public class IfcDocumentInformation extends Thing implements IfcDocumentSelect
 	private IfcCalendarDate ValidUntil;
 	private IfcDocumentConfidentialityEnum Confidentiality;
 	private IfcDocumentStatusEnum Status_of_IfcDocumentInformation;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcDocumentInformationRelationship> IsPointedTo= new ArrayList<IfcDocumentInformationRelationship>();
 	private List<IfcDocumentInformationRelationship> IsPointer= new ArrayList<IfcDocumentInformationRelationship>();
 

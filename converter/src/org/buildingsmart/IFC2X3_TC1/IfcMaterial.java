@@ -24,12 +24,11 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMaterial extends Thing implements IfcMaterialSelect, IfcObjectReferenceSelect
+public class IfcMaterial extends Thing implements IfcObjectReferenceSelect, IfcMaterialSelect
 {
 	// The property attributes
 	private IfcLabel Name_of_IfcMaterial;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMaterialDefinitionRepresentation> HasRepresentation= new ArrayList<IfcMaterialDefinitionRepresentation>();
 	private List<IfcMaterialClassificationRelationship> ClassifiedAs= new ArrayList<IfcMaterialClassificationRelationship>();
 

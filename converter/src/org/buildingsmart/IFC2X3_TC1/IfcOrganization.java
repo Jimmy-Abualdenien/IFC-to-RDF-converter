@@ -32,8 +32,7 @@ public class IfcOrganization extends Thing implements IfcActorSelect, IfcObjectR
 	private IfcText Description_of_IfcOrganization;
 	private List<IfcActorRole> Roles_of_IfcOrganization = new ArrayList<IfcActorRole>();
 	private List<IfcAddress> Addresses_of_IfcOrganization = new ArrayList<IfcAddress>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcOrganizationRelationship> IsRelatedBy= new ArrayList<IfcOrganizationRelationship>();
 	private List<IfcOrganizationRelationship> Relates= new ArrayList<IfcOrganizationRelationship>();
 	private List<IfcPersonAndOrganization> Engages= new ArrayList<IfcPersonAndOrganization>();

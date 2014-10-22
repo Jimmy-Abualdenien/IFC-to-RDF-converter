@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDescriptiveMeasure extends Thing implements IfcMeasureValue, IfcSizeSelect
+public class IfcDescriptiveMeasure extends Thing implements IfcSizeSelect, IfcMeasureValue
 {
 	private String string_value;
 

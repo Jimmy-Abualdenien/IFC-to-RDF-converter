@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcOpeningElement extends IfcFeatureElementSubtraction 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelFillsElement> HasFillings= new ArrayList<IfcRelFillsElement>();
 
 

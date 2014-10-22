@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcProcess extends IfcObject 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToProcess> OperatesOn= new ArrayList<IfcRelAssignsToProcess>();
 	private List<IfcRelSequence> IsSuccessorFrom= new ArrayList<IfcRelSequence>();
 	private List<IfcRelSequence> IsPredecessorTo= new ArrayList<IfcRelSequence>();

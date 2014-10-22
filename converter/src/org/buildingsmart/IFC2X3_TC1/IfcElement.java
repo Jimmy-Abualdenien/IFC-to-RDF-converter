@@ -28,8 +28,7 @@ public class IfcElement extends IfcProduct implements IfcStructuralActivityAssig
 {
 	// The property attributes
 	private IfcIdentifier Tag_of_IfcElement;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsStructuralElement> HasStructuralMember= new ArrayList<IfcRelConnectsStructuralElement>();
 	private List<IfcRelFillsElement> FillsVoids= new ArrayList<IfcRelFillsElement>();
 	private List<IfcRelConnectsElements> ConnectedTo= new ArrayList<IfcRelConnectsElements>();

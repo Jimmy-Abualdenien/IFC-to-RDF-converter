@@ -28,12 +28,12 @@ public class IfcCompoundPlaneAngleMeasure extends Thing implements IfcDerivedMea
 {
 	private List<Integer> Integer_List = new ArrayList<Integer>();
 
-	public List<Integer>  getInteger_List() {
+	public List<Integer> getInteger() {
 		return Integer_List;
 	}
 
-	public void setInteger_List(List<Integer> value){
-		this.Integer_List=value;
+	public void setInteger(Integer value){
+		this.Integer_List.add(value);
 	}
 
 }

@@ -33,8 +33,7 @@ public class IfcAppliedValue extends Thing implements IfcObjectReferenceSelect
 	private IfcMeasureWithUnit UnitBasis;
 	private IfcDateTimeSelect ApplicableDate;
 	private IfcDateTimeSelect FixedUntilDate;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcReferencesValueDocument> ValuesReferenced= new ArrayList<IfcReferencesValueDocument>();
 	private List<IfcAppliedValueRelationship> ValueOfComponents= new ArrayList<IfcAppliedValueRelationship>();
 	private List<IfcAppliedValueRelationship> IsComponentIn= new ArrayList<IfcAppliedValueRelationship>();

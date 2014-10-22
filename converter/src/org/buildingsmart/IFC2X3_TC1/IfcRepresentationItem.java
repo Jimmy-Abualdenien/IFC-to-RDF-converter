@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcRepresentationItem extends Thing implements IfcLayeredItem
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcPresentationLayerAssignment> LayerAssignments= new ArrayList<IfcPresentationLayerAssignment>();
 	private List<IfcStyledItem> StyledByItem= new ArrayList<IfcStyledItem>();
 

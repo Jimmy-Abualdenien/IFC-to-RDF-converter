@@ -31,8 +31,7 @@ public class IfcGeometricRepresentationContext extends IfcRepresentationContext
 	private Double Precision;
 	private IfcAxis2Placement WorldCoordinateSystem;
 	private IfcDirection TrueNorth;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcGeometricRepresentationSubContext> HasSubContexts= new ArrayList<IfcGeometricRepresentationSubContext>();
 
 

@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcGroup extends IfcObject 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToGroup> IsGroupedBy= new ArrayList<IfcRelAssignsToGroup>();
 
 

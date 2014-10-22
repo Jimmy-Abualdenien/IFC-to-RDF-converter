@@ -28,8 +28,7 @@ public class IfcDistributionControlElement extends IfcDistributionElement
 {
 	// The property attributes
 	private IfcIdentifier ControlElementId;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelFlowControlElements> AssignedToFlowElement= new ArrayList<IfcRelFlowControlElements>();
 
 

@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBooleanResult extends IfcGeometricRepresentationItem implements IfcCsgSelect, IfcBooleanOperand
+public class IfcBooleanResult extends IfcGeometricRepresentationItem implements IfcBooleanOperand, IfcCsgSelect
 {
 	// The property attributes
 	private IfcBooleanOperator Operator_of_IfcBooleanResult;

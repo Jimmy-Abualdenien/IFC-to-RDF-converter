@@ -29,8 +29,7 @@ public class IfcProperty extends Thing
 	// The property attributes
 	private IfcIdentifier Name_of_IfcProperty;
 	private IfcText Description_of_IfcProperty;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcPropertyDependencyRelationship> PropertyForDependance= new ArrayList<IfcPropertyDependencyRelationship>();
 	private List<IfcPropertyDependencyRelationship> PropertyDependsOn= new ArrayList<IfcPropertyDependencyRelationship>();
 	private List<IfcComplexProperty> PartOfComplex= new ArrayList<IfcComplexProperty>();

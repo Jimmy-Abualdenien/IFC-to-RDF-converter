@@ -29,8 +29,7 @@ public class IfcTypeObject extends IfcObjectDefinition
 	// The property attributes
 	private IfcLabel ApplicableOccurrence;
 	private List<IfcPropertySetDefinition> HasPropertySets = new ArrayList<IfcPropertySetDefinition>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelDefinesByType> ObjectTypeOf= new ArrayList<IfcRelDefinesByType>();
 
 

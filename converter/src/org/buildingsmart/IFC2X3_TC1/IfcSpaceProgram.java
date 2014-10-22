@@ -32,8 +32,7 @@ public class IfcSpaceProgram extends IfcControl
 	private IfcAreaMeasure MinRequiredArea;
 	private IfcSpatialStructureElement RequestedLocation;
 	private IfcAreaMeasure StandardRequiredArea;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelInteractionRequirements> HasInteractionReqsFrom= new ArrayList<IfcRelInteractionRequirements>();
 	private List<IfcRelInteractionRequirements> HasInteractionReqsTo= new ArrayList<IfcRelInteractionRequirements>();
 

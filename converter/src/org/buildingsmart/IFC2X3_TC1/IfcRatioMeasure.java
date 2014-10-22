@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRatioMeasure extends Thing implements IfcMeasureValue, IfcSizeSelect, IfcAppliedValueSelect
+public class IfcRatioMeasure extends Thing implements IfcAppliedValueSelect, IfcSizeSelect, IfcMeasureValue
 {
 	private Double double_value;
 

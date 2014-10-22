@@ -30,8 +30,7 @@ public class IfcCompositeCurveSegment extends IfcGeometricRepresentationItem
 	private IfcTransitionCode Transition;
 	private Boolean SameSense_of_IfcCompositeCurveSegment;
 	private IfcCurve ParentCurve;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcCompositeCurve> UsingCurves= new ArrayList<IfcCompositeCurve>();
 
 

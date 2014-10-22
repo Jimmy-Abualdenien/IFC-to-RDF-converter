@@ -31,8 +31,7 @@ public class IfcRepresentation extends Thing implements IfcLayeredItem
 	private IfcLabel RepresentationIdentifier;
 	private IfcLabel RepresentationType;
 	private List<IfcRepresentationItem> Items = new ArrayList<IfcRepresentationItem>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRepresentationMap> RepresentationMap= new ArrayList<IfcRepresentationMap>();
 	private List<IfcPresentationLayerAssignment> LayerAssignments= new ArrayList<IfcPresentationLayerAssignment>();
 	private List<IfcProductRepresentation> OfProductRepresentation= new ArrayList<IfcProductRepresentation>();
