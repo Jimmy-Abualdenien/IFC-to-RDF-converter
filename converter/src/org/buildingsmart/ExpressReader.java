@@ -150,11 +150,11 @@ public class ExpressReader {
 			System.out
 					.println("Ended converting the EXPRESS schema into corresponding OWL file");
 
-			//JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities,
-			//		er.types, er.selectTypesToExpand);
-			//jw.outputJavaClasses();
-			//System.out
-			//		.println("Ended converting the EXPRESS schema into corresponding JAVA Class Library");
+			JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities,
+					er.types, er.selectTypesToExpand);
+			jw.outputJavaClasses();
+			System.out
+					.println("Ended converting the EXPRESS schema into corresponding JAVA Class Library");
 
 		} catch (Exception e) {
 			e.printStackTrace();
