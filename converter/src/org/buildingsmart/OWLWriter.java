@@ -82,6 +82,7 @@ public class OWLWriter {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter("out\\"
 					+ expressSchemaName + ".ttl"));
+			out.write("@prefix : <" + Namespace.IFC + "> .\r\n");
 			out.write("@prefix ifc: <" + Namespace.IFC + "> .\r\n");
 			out.write(getOwl_header());
 
