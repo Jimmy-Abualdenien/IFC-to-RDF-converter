@@ -794,7 +794,6 @@ public class OWLWriter {
 					out.write("\t\t\towl:onProperty ifc:" + attr.getName() + "\r\n");
 					out.write("\t\t]");
 				}
-//				writeExtraValueRestrictionsForListOfList(attr,out);
 				writeExtraCardinalityRestrictionsForListOfList(attr, out);
 				return;
 			} else {
@@ -860,21 +859,13 @@ public class OWLWriter {
 						.println("WARNING - IMPOSSIBLE: found mincardinality restriction that is greater than maxcardinality restriction for :"
 								+ attr.getName());
 			}
-//			writeExtraValueRestrictionsForListOfList(attr,out);
 			writeExtraCardinalityRestrictionsForListOfList(attr, out);
 			return;
 		}
 	}
-
-//	private void writeExtraValueRestrictionsForListOfList(AttributeVO attr, BufferedWriter out) throws IOException{
-//		System.out.println("Writing Value Restrictions ListOfList for : " + attr.getName()
-//				+ " - " + attr.getType().getName());
-//	}
 	
 	private void writeExtraCardinalityRestrictionsForListOfList(
 			AttributeVO attr, BufferedWriter out) throws IOException {
-		System.out.println("Writing Card Restrictions ListOfList for : " + attr.getName()
-				+ " - " + attr.getType().getName());
 		if (attr.getMinCard_listoflist() == -1 && attr.getMaxCard_listoflist() == -1) {
 			System.out.println("WARNING: [?,?] found for : " + attr.getName()
 					+ " - " + attr.getType().getName());
