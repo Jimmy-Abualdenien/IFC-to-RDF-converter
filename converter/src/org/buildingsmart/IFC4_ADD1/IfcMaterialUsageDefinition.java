@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcMaterialUsageDefinition extends Thing implements IfcMaterialSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesMaterial> AssociatedTo= new ArrayList<IfcRelAssociatesMaterial>();
 
 

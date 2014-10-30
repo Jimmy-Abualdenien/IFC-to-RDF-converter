@@ -29,8 +29,7 @@ public class IfcProcess extends IfcObject implements IfcProcessSelect
 	// The property attributes
 	private IfcIdentifier Identification_of_IfcProcess;
 	private IfcText LongDescription_of_IfcProcess;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelSequence> IsPredecessorTo= new ArrayList<IfcRelSequence>();
 	private List<IfcRelSequence> IsSuccessorFrom= new ArrayList<IfcRelSequence>();
 	private List<IfcRelAssignsToProcess> OperatesOn= new ArrayList<IfcRelAssignsToProcess>();

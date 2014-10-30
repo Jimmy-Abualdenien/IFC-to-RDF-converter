@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTaskTypeEnum
+public class IfcTaskTypeEnum extends Thing
 {
 	public enum IfcTaskTypeEnum_value{ATTENDANCE, CONSTRUCTION, DEMOLITION, DISMANTLE, DISPOSAL, INSTALLATION, LOGISTIC, MAINTENANCE, MOVE, OPERATION, REMOVAL, RENOVATION, USERDEFINED, NOTDEFINED};
 	private IfcTaskTypeEnum_value value;
+
+	public IfcTaskTypeEnum_value getIfcTaskTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTaskTypeEnum(IfcTaskTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDiscreteAccessoryTypeEnum
+public class IfcDiscreteAccessoryTypeEnum extends Thing
 {
 	public enum IfcDiscreteAccessoryTypeEnum_value{ANCHORPLATE, BRACKET, SHOE, USERDEFINED, NOTDEFINED};
 	private IfcDiscreteAccessoryTypeEnum_value value;
+
+	public IfcDiscreteAccessoryTypeEnum_value getIfcDiscreteAccessoryTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDiscreteAccessoryTypeEnum(IfcDiscreteAccessoryTypeEnum_value value){
+		this.value=value;
+	}
+
 }

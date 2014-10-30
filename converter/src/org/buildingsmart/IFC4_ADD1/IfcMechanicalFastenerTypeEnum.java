@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMechanicalFastenerTypeEnum
+public class IfcMechanicalFastenerTypeEnum extends Thing
 {
 	public enum IfcMechanicalFastenerTypeEnum_value{ANCHORBOLT, BOLT, DOWEL, NAIL, NAILPLATE, RIVET, SCREW, SHEARCONNECTOR, STAPLE, STUDSHEARCONNECTOR, USERDEFINED, NOTDEFINED};
 	private IfcMechanicalFastenerTypeEnum_value value;
+
+	public IfcMechanicalFastenerTypeEnum_value getIfcMechanicalFastenerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcMechanicalFastenerTypeEnum(IfcMechanicalFastenerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcDate extends Thing implements IfcSimpleValue
 {
 	private String string_value;
+
+	public String getString() {
+		return string_value;
+	}
+
+	public void setString(String value){
+		this.string_value=value;
+	}
+
 }

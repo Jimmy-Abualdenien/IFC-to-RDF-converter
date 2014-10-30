@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcPropertySetDefinition extends IfcPropertyDefinition implements IfcPropertySetDefinitionSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcTypeObject> DefinesType= new ArrayList<IfcTypeObject>();
 	private List<IfcRelDefinesByTemplate> IsDefinedBy= new ArrayList<IfcRelDefinesByTemplate>();
 	private List<IfcRelDefinesByProperties> DefinesOccurrence= new ArrayList<IfcRelDefinesByProperties>();

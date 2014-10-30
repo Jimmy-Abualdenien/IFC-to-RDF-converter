@@ -33,8 +33,7 @@ public class IfcMaterialProfile extends IfcMaterialDefinition
 	private IfcProfileDef Profile;
 	private IfcNormalisedRatioMeasure Priority_of_IfcMaterialProfile;
 	private IfcLabel Category_of_IfcMaterialProfile;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMaterialProfileSet> ToMaterialProfileSet= new ArrayList<IfcMaterialProfileSet>();
 
 

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSurfaceSide
+public class IfcSurfaceSide extends Thing
 {
 	public enum IfcSurfaceSide_value{POSITIVE, NEGATIVE, BOTH};
 	private IfcSurfaceSide_value value;
+
+	public IfcSurfaceSide_value getIfcSurfaceSide() {
+		return value;
+	}
+
+	public void setIfcSurfaceSide(IfcSurfaceSide_value value){
+		this.value=value;
+	}
+
 }

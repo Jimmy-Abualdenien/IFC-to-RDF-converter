@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcActionRequestTypeEnum
+public class IfcActionRequestTypeEnum extends Thing
 {
 	public enum IfcActionRequestTypeEnum_value{EMAIL, FAX, PHONE, POST, VERBAL, USERDEFINED, NOTDEFINED};
 	private IfcActionRequestTypeEnum_value value;
+
+	public IfcActionRequestTypeEnum_value getIfcActionRequestTypeEnum() {
+		return value;
+	}
+
+	public void setIfcActionRequestTypeEnum(IfcActionRequestTypeEnum_value value){
+		this.value=value;
+	}
+
 }

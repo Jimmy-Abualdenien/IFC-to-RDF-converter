@@ -30,8 +30,7 @@ public class IfcLibraryReference extends IfcExternalReference implements IfcLibr
 	private IfcText Description_of_IfcLibraryReference;
 	private IfcLanguageId Language;
 	private IfcLibraryInformation ReferencedLibrary;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesLibrary> LibraryRefForObjects= new ArrayList<IfcRelAssociatesLibrary>();
 
 

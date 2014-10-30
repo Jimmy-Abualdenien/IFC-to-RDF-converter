@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcConstructionProductResourceTypeEnum
+public class IfcConstructionProductResourceTypeEnum extends Thing
 {
 	public enum IfcConstructionProductResourceTypeEnum_value{ASSEMBLY, FORMWORK, USERDEFINED, NOTDEFINED};
 	private IfcConstructionProductResourceTypeEnum_value value;
+
+	public IfcConstructionProductResourceTypeEnum_value getIfcConstructionProductResourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcConstructionProductResourceTypeEnum(IfcConstructionProductResourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

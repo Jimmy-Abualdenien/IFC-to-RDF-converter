@@ -36,8 +36,7 @@ public class IfcApproval extends Thing implements IfcResourceObjectSelect
 	private IfcText Qualifier;
 	private IfcActorSelect RequestingApproval;
 	private IfcActorSelect GivingApproval;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReferences= new ArrayList<IfcExternalReferenceRelationship>();
 	private List<IfcRelAssociatesApproval> ApprovedObjects= new ArrayList<IfcRelAssociatesApproval>();
 	private List<IfcResourceApprovalRelationship> ApprovedResources= new ArrayList<IfcResourceApprovalRelationship>();

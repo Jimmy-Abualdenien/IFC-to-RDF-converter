@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTransportElementTypeEnum
+public class IfcTransportElementTypeEnum extends Thing
 {
 	public enum IfcTransportElementTypeEnum_value{ELEVATOR, ESCALATOR, MOVINGWALKWAY, CRANEWAY, LIFTINGGEAR, USERDEFINED, NOTDEFINED};
 	private IfcTransportElementTypeEnum_value value;
+
+	public IfcTransportElementTypeEnum_value getIfcTransportElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTransportElementTypeEnum(IfcTransportElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

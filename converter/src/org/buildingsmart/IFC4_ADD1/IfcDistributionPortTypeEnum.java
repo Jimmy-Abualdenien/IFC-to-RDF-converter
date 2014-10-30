@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDistributionPortTypeEnum
+public class IfcDistributionPortTypeEnum extends Thing
 {
 	public enum IfcDistributionPortTypeEnum_value{CABLE, CABLECARRIER, DUCT, PIPE, USERDEFINED, NOTDEFINED};
 	private IfcDistributionPortTypeEnum_value value;
+
+	public IfcDistributionPortTypeEnum_value getIfcDistributionPortTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDistributionPortTypeEnum(IfcDistributionPortTypeEnum_value value){
+		this.value=value;
+	}
+
 }

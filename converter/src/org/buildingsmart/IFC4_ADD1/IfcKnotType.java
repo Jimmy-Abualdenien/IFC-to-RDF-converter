@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcKnotType
+public class IfcKnotType extends Thing
 {
 	public enum IfcKnotType_value{UNIFORM_KNOTS, QUASI_UNIFORM_KNOTS, PIECEWISE_BEZIER_KNOTS, UNSPECIFIED};
 	private IfcKnotType_value value;
+
+	public IfcKnotType_value getIfcKnotType() {
+		return value;
+	}
+
+	public void setIfcKnotType(IfcKnotType_value value){
+		this.value=value;
+	}
+
 }

@@ -31,8 +31,7 @@ public class IfcCoordinateReferenceSystem extends Thing implements IfcCoordinate
 	private IfcText Description_of_IfcCoordinateReferenceSystem;
 	private IfcIdentifier GeodeticDatum;
 	private IfcIdentifier VerticalDatum;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcCoordinateOperation> HasCoordinateOperation= new ArrayList<IfcCoordinateOperation>();
 
 

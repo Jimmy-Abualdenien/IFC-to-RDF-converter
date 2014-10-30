@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDuctSilencerTypeEnum
+public class IfcDuctSilencerTypeEnum extends Thing
 {
 	public enum IfcDuctSilencerTypeEnum_value{FLATOVAL, RECTANGULAR, ROUND, USERDEFINED, NOTDEFINED};
 	private IfcDuctSilencerTypeEnum_value value;
+
+	public IfcDuctSilencerTypeEnum_value getIfcDuctSilencerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDuctSilencerTypeEnum(IfcDuctSilencerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

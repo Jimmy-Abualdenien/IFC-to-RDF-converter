@@ -37,8 +37,7 @@ public class IfcAppliedValue extends Thing implements IfcObjectReferenceSelect, 
 	private IfcLabel Condition;
 	private IfcArithmeticOperatorEnum ArithmeticOperator;
 	private List<IfcAppliedValue> Components = new ArrayList<IfcAppliedValue>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReference= new ArrayList<IfcExternalReferenceRelationship>();
 
 

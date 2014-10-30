@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTaskDurationEnum
+public class IfcTaskDurationEnum extends Thing
 {
 	public enum IfcTaskDurationEnum_value{ELAPSEDTIME, WORKTIME, NOTDEFINED};
 	private IfcTaskDurationEnum_value value;
+
+	public IfcTaskDurationEnum_value getIfcTaskDurationEnum() {
+		return value;
+	}
+
+	public void setIfcTaskDurationEnum(IfcTaskDurationEnum_value value){
+		this.value=value;
+	}
+
 }

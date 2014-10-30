@@ -30,8 +30,7 @@ public class IfcStructuralResultGroup extends IfcGroup
 	private IfcAnalysisTheoryTypeEnum TheoryType;
 	private IfcStructuralLoadGroup ResultForLoadGroup;
 	private IfcBoolean IsLinear;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcStructuralAnalysisModel> ResultGroupFor= new ArrayList<IfcStructuralAnalysisModel>();
 
 

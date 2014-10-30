@@ -30,8 +30,7 @@ public class IfcClassificationReference extends IfcExternalReference implements 
 	private IfcClassificationReferenceSelect ReferencedSource;
 	private IfcText Description_of_IfcClassificationReference;
 	private IfcIdentifier Sort;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesClassification> ClassificationRefForObjects= new ArrayList<IfcRelAssociatesClassification>();
 	private List<IfcClassificationReference> HasReferences= new ArrayList<IfcClassificationReference>();
 

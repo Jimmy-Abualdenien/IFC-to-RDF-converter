@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcPropertyDefinition extends IfcRoot implements IfcDefinitionSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelDeclares> HasContext= new ArrayList<IfcRelDeclares>();
 	private List<IfcRelAssociates> HasAssociations= new ArrayList<IfcRelAssociates>();
 

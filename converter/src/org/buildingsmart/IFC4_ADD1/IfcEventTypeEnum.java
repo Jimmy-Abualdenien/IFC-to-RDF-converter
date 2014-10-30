@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEventTypeEnum
+public class IfcEventTypeEnum extends Thing
 {
 	public enum IfcEventTypeEnum_value{STARTEVENT, ENDEVENT, INTERMEDIATEEVENT, USERDEFINED, NOTDEFINED};
 	private IfcEventTypeEnum_value value;
+
+	public IfcEventTypeEnum_value getIfcEventTypeEnum() {
+		return value;
+	}
+
+	public void setIfcEventTypeEnum(IfcEventTypeEnum_value value){
+		this.value=value;
+	}
+
 }

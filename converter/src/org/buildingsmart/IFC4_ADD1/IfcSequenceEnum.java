@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSequenceEnum
+public class IfcSequenceEnum extends Thing
 {
 	public enum IfcSequenceEnum_value{START_START, START_FINISH, FINISH_START, FINISH_FINISH, USERDEFINED, NOTDEFINED};
 	private IfcSequenceEnum_value value;
+
+	public IfcSequenceEnum_value getIfcSequenceEnum() {
+		return value;
+	}
+
+	public void setIfcSequenceEnum(IfcSequenceEnum_value value){
+		this.value=value;
+	}
+
 }

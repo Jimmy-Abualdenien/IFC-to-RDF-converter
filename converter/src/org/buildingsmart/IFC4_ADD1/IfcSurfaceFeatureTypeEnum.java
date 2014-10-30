@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSurfaceFeatureTypeEnum
+public class IfcSurfaceFeatureTypeEnum extends Thing
 {
 	public enum IfcSurfaceFeatureTypeEnum_value{MARK, TAG, TREATMENT, USERDEFINED, NOTDEFINED};
 	private IfcSurfaceFeatureTypeEnum_value value;
+
+	public IfcSurfaceFeatureTypeEnum_value getIfcSurfaceFeatureTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSurfaceFeatureTypeEnum(IfcSurfaceFeatureTypeEnum_value value){
+		this.value=value;
+	}
+
 }

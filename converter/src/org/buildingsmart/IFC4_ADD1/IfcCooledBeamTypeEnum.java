@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCooledBeamTypeEnum
+public class IfcCooledBeamTypeEnum extends Thing
 {
 	public enum IfcCooledBeamTypeEnum_value{ACTIVE, PASSIVE, USERDEFINED, NOTDEFINED};
 	private IfcCooledBeamTypeEnum_value value;
+
+	public IfcCooledBeamTypeEnum_value getIfcCooledBeamTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCooledBeamTypeEnum(IfcCooledBeamTypeEnum_value value){
+		this.value=value;
+	}
+
 }

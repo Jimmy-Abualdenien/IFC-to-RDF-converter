@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDocumentStatusEnum
+public class IfcDocumentStatusEnum extends Thing
 {
 	public enum IfcDocumentStatusEnum_value{DRAFT, FINALDRAFT, FINAL, REVISION, NOTDEFINED};
 	private IfcDocumentStatusEnum_value value;
+
+	public IfcDocumentStatusEnum_value getIfcDocumentStatusEnum() {
+		return value;
+	}
+
+	public void setIfcDocumentStatusEnum(IfcDocumentStatusEnum_value value){
+		this.value=value;
+	}
+
 }

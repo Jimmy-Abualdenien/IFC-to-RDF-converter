@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWindowPanelPositionEnum
+public class IfcWindowPanelPositionEnum extends Thing
 {
 	public enum IfcWindowPanelPositionEnum_value{LEFT, MIDDLE, RIGHT, BOTTOM, TOP, NOTDEFINED};
 	private IfcWindowPanelPositionEnum_value value;
+
+	public IfcWindowPanelPositionEnum_value getIfcWindowPanelPositionEnum() {
+		return value;
+	}
+
+	public void setIfcWindowPanelPositionEnum(IfcWindowPanelPositionEnum_value value){
+		this.value=value;
+	}
+
 }

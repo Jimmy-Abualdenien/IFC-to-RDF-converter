@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcReinforcingMeshTypeEnum
+public class IfcReinforcingMeshTypeEnum extends Thing
 {
 	public enum IfcReinforcingMeshTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcReinforcingMeshTypeEnum_value value;
+
+	public IfcReinforcingMeshTypeEnum_value getIfcReinforcingMeshTypeEnum() {
+		return value;
+	}
+
+	public void setIfcReinforcingMeshTypeEnum(IfcReinforcingMeshTypeEnum_value value){
+		this.value=value;
+	}
+
 }

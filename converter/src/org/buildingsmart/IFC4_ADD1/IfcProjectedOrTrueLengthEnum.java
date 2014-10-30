@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcProjectedOrTrueLengthEnum
+public class IfcProjectedOrTrueLengthEnum extends Thing
 {
 	public enum IfcProjectedOrTrueLengthEnum_value{PROJECTED_LENGTH, TRUE_LENGTH};
 	private IfcProjectedOrTrueLengthEnum_value value;
+
+	public IfcProjectedOrTrueLengthEnum_value getIfcProjectedOrTrueLengthEnum() {
+		return value;
+	}
+
+	public void setIfcProjectedOrTrueLengthEnum(IfcProjectedOrTrueLengthEnum_value value){
+		this.value=value;
+	}
+
 }

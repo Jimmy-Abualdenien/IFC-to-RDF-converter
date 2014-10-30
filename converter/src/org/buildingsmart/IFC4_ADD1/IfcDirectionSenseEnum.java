@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDirectionSenseEnum
+public class IfcDirectionSenseEnum extends Thing
 {
 	public enum IfcDirectionSenseEnum_value{POSITIVE, NEGATIVE};
 	private IfcDirectionSenseEnum_value value;
+
+	public IfcDirectionSenseEnum_value getIfcDirectionSenseEnum() {
+		return value;
+	}
+
+	public void setIfcDirectionSenseEnum(IfcDirectionSenseEnum_value value){
+		this.value=value;
+	}
+
 }

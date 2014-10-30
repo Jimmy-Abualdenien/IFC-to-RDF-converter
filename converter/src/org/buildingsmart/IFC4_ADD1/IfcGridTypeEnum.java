@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcGridTypeEnum
+public class IfcGridTypeEnum extends Thing
 {
 	public enum IfcGridTypeEnum_value{RECTANGULAR, RADIAL, TRIANGULAR, IRREGULAR, USERDEFINED, NOTDEFINED};
 	private IfcGridTypeEnum_value value;
+
+	public IfcGridTypeEnum_value getIfcGridTypeEnum() {
+		return value;
+	}
+
+	public void setIfcGridTypeEnum(IfcGridTypeEnum_value value){
+		this.value=value;
+	}
+
 }

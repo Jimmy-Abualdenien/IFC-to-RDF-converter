@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDistributionChamberElementTypeEnum
+public class IfcDistributionChamberElementTypeEnum extends Thing
 {
 	public enum IfcDistributionChamberElementTypeEnum_value{FORMEDDUCT, INSPECTIONCHAMBER, INSPECTIONPIT, MANHOLE, METERCHAMBER, SUMP, TRENCH, VALVECHAMBER, USERDEFINED, NOTDEFINED};
 	private IfcDistributionChamberElementTypeEnum_value value;
+
+	public IfcDistributionChamberElementTypeEnum_value getIfcDistributionChamberElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDistributionChamberElementTypeEnum(IfcDistributionChamberElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

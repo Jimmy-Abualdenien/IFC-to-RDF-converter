@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSIUnitName
+public class IfcSIUnitName extends Thing
 {
 	public enum IfcSIUnitName_value{AMPERE, BECQUEREL, CANDELA, COULOMB, CUBIC_METRE, DEGREE_CELSIUS, FARAD, GRAM, GRAY, HENRY, HERTZ, JOULE, KELVIN, LUMEN, LUX, METRE, MOLE, NEWTON, OHM, PASCAL, RADIAN, SECOND, SIEMENS, SIEVERT, SQUARE_METRE, STERADIAN, TESLA, VOLT, WATT, WEBER};
 	private IfcSIUnitName_value value;
+
+	public IfcSIUnitName_value getIfcSIUnitName() {
+		return value;
+	}
+
+	public void setIfcSIUnitName(IfcSIUnitName_value value){
+		this.value=value;
+	}
+
 }

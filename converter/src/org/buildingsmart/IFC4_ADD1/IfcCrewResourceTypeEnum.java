@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCrewResourceTypeEnum
+public class IfcCrewResourceTypeEnum extends Thing
 {
 	public enum IfcCrewResourceTypeEnum_value{OFFICE, SITE, USERDEFINED, NOTDEFINED};
 	private IfcCrewResourceTypeEnum_value value;
+
+	public IfcCrewResourceTypeEnum_value getIfcCrewResourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCrewResourceTypeEnum(IfcCrewResourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

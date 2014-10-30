@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcChillerTypeEnum
+public class IfcChillerTypeEnum extends Thing
 {
 	public enum IfcChillerTypeEnum_value{AIRCOOLED, WATERCOOLED, HEATRECOVERY, USERDEFINED, NOTDEFINED};
 	private IfcChillerTypeEnum_value value;
+
+	public IfcChillerTypeEnum_value getIfcChillerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcChillerTypeEnum(IfcChillerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

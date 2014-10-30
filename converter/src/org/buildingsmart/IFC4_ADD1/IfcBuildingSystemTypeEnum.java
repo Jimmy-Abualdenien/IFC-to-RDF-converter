@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBuildingSystemTypeEnum
+public class IfcBuildingSystemTypeEnum extends Thing
 {
 	public enum IfcBuildingSystemTypeEnum_value{FENESTRATION, FOUNDATION, LOADBEARING, OUTERSHELL, SHADING, TRANSPORT, USERDEFINED, NOTDEFINED};
 	private IfcBuildingSystemTypeEnum_value value;
+
+	public IfcBuildingSystemTypeEnum_value getIfcBuildingSystemTypeEnum() {
+		return value;
+	}
+
+	public void setIfcBuildingSystemTypeEnum(IfcBuildingSystemTypeEnum_value value){
+		this.value=value;
+	}
+
 }

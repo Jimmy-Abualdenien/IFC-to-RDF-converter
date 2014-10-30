@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcActionTypeEnum
+public class IfcActionTypeEnum extends Thing
 {
 	public enum IfcActionTypeEnum_value{PERMANENT_G, VARIABLE_Q, EXTRAORDINARY_A, USERDEFINED, NOTDEFINED};
 	private IfcActionTypeEnum_value value;
+
+	public IfcActionTypeEnum_value getIfcActionTypeEnum() {
+		return value;
+	}
+
+	public void setIfcActionTypeEnum(IfcActionTypeEnum_value value){
+		this.value=value;
+	}
+
 }

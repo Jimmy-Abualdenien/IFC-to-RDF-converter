@@ -29,8 +29,7 @@ public class IfcProfileDef extends Thing implements IfcResourceObjectSelect
 	// The property attributes
 	private IfcProfileTypeEnum ProfileType;
 	private IfcLabel ProfileName;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReference= new ArrayList<IfcExternalReferenceRelationship>();
 	private List<IfcProfileProperties> HasProperties= new ArrayList<IfcProfileProperties>();
 

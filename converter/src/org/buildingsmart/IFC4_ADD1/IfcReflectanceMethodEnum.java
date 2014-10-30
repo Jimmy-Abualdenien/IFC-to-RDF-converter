@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcReflectanceMethodEnum
+public class IfcReflectanceMethodEnum extends Thing
 {
 	public enum IfcReflectanceMethodEnum_value{BLINN, FLAT, GLASS, MATT, METAL, MIRROR, PHONG, PLASTIC, STRAUSS, NOTDEFINED};
 	private IfcReflectanceMethodEnum_value value;
+
+	public IfcReflectanceMethodEnum_value getIfcReflectanceMethodEnum() {
+		return value;
+	}
+
+	public void setIfcReflectanceMethodEnum(IfcReflectanceMethodEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEventTriggerTypeEnum
+public class IfcEventTriggerTypeEnum extends Thing
 {
 	public enum IfcEventTriggerTypeEnum_value{EVENTRULE, EVENTMESSAGE, EVENTTIME, EVENTCOMPLEX, USERDEFINED, NOTDEFINED};
 	private IfcEventTriggerTypeEnum_value value;
+
+	public IfcEventTriggerTypeEnum_value getIfcEventTriggerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcEventTriggerTypeEnum(IfcEventTriggerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

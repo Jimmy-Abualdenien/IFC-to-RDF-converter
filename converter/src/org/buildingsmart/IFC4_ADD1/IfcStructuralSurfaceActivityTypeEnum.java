@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStructuralSurfaceActivityTypeEnum
+public class IfcStructuralSurfaceActivityTypeEnum extends Thing
 {
 	public enum IfcStructuralSurfaceActivityTypeEnum_value{CONST, BILINEAR, DISCRETE, ISOCONTOUR, USERDEFINED, NOTDEFINED};
 	private IfcStructuralSurfaceActivityTypeEnum_value value;
+
+	public IfcStructuralSurfaceActivityTypeEnum_value getIfcStructuralSurfaceActivityTypeEnum() {
+		return value;
+	}
+
+	public void setIfcStructuralSurfaceActivityTypeEnum(IfcStructuralSurfaceActivityTypeEnum_value value){
+		this.value=value;
+	}
+
 }

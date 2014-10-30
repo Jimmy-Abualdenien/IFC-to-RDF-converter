@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcActuatorTypeEnum
+public class IfcActuatorTypeEnum extends Thing
 {
 	public enum IfcActuatorTypeEnum_value{ELECTRICACTUATOR, HANDOPERATEDACTUATOR, HYDRAULICACTUATOR, PNEUMATICACTUATOR, THERMOSTATICACTUATOR, USERDEFINED, NOTDEFINED};
 	private IfcActuatorTypeEnum_value value;
+
+	public IfcActuatorTypeEnum_value getIfcActuatorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcActuatorTypeEnum(IfcActuatorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

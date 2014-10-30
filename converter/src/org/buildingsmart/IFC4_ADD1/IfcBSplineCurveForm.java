@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBSplineCurveForm
+public class IfcBSplineCurveForm extends Thing
 {
 	public enum IfcBSplineCurveForm_value{POLYLINE_FORM, CIRCULAR_ARC, ELLIPTIC_ARC, PARABOLIC_ARC, HYPERBOLIC_ARC, UNSPECIFIED};
 	private IfcBSplineCurveForm_value value;
+
+	public IfcBSplineCurveForm_value getIfcBSplineCurveForm() {
+		return value;
+	}
+
+	public void setIfcBSplineCurveForm(IfcBSplineCurveForm_value value){
+		this.value=value;
+	}
+
 }

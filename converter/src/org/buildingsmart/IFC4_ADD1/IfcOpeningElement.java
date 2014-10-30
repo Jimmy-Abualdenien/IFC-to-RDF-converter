@@ -28,8 +28,7 @@ public class IfcOpeningElement extends IfcFeatureElementSubtraction
 {
 	// The property attributes
 	private IfcOpeningElementTypeEnum PredefinedType_of_IfcOpeningElement;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelFillsElement> HasFillings= new ArrayList<IfcRelFillsElement>();
 
 

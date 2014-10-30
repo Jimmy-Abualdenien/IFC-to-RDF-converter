@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcObjectiveEnum
+public class IfcObjectiveEnum extends Thing
 {
 	public enum IfcObjectiveEnum_value{CODECOMPLIANCE, CODEWAIVER, DESIGNINTENT, EXTERNAL, HEALTHANDSAFETY, MERGECONFLICT, MODELVIEW, PARAMETER, REQUIREMENT, SPECIFICATION, TRIGGERCONDITION, USERDEFINED, NOTDEFINED};
 	private IfcObjectiveEnum_value value;
+
+	public IfcObjectiveEnum_value getIfcObjectiveEnum() {
+		return value;
+	}
+
+	public void setIfcObjectiveEnum(IfcObjectiveEnum_value value){
+		this.value=value;
+	}
+
 }

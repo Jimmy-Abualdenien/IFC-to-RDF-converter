@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcConstructionEquipmentResourceTypeEnum
+public class IfcConstructionEquipmentResourceTypeEnum extends Thing
 {
 	public enum IfcConstructionEquipmentResourceTypeEnum_value{DEMOLISHING, EARTHMOVING, ERECTING, HEATING, LIGHTING, PAVING, PUMPING, TRANSPORTING, USERDEFINED, NOTDEFINED};
 	private IfcConstructionEquipmentResourceTypeEnum_value value;
+
+	public IfcConstructionEquipmentResourceTypeEnum_value getIfcConstructionEquipmentResourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcConstructionEquipmentResourceTypeEnum(IfcConstructionEquipmentResourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

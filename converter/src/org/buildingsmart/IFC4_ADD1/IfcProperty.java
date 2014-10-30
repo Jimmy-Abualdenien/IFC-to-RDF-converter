@@ -29,8 +29,7 @@ public class IfcProperty extends IfcPropertyAbstraction
 	// The property attributes
 	private IfcIdentifier Name_of_IfcProperty;
 	private IfcText Description_of_IfcProperty;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcPropertySet> PartOfPset= new ArrayList<IfcPropertySet>();
 	private List<IfcPropertyDependencyRelationship> PropertyForDependance= new ArrayList<IfcPropertyDependencyRelationship>();
 	private List<IfcPropertyDependencyRelationship> PropertyDependsOn= new ArrayList<IfcPropertyDependencyRelationship>();

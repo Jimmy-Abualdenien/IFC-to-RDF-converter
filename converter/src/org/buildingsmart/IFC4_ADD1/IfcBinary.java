@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcBinary extends Thing
 {
 	private org.apache.axis2.databinding.types.xsd.HexBinary hexBinary_value;
+
+	public org.apache.axis2.databinding.types.xsd.HexBinary getHexBinary() {
+		return hexBinary_value;
+	}
+
+	public void setHexBinary(org.apache.axis2.databinding.types.xsd.HexBinary value){
+		this.hexBinary_value=value;
+	}
+
 }

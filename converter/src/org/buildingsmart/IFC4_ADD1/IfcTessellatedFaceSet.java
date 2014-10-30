@@ -30,8 +30,7 @@ public class IfcTessellatedFaceSet extends IfcTessellatedItem
 	private IfcCartesianPointList3D Coordinates_of_IfcTessellatedFaceSet;
 	private List<List<IfcParameterValue>> Normals = new ArrayList<List<IfcParameterValue>>();
 	private IfcBoolean Closed;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcIndexedColourMap> HasColours= new ArrayList<IfcIndexedColourMap>();
 	private List<IfcIndexedTextureMap> HasTextures= new ArrayList<IfcIndexedTextureMap>();
 

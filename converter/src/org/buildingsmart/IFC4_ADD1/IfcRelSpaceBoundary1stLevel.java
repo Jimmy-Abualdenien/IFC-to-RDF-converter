@@ -28,8 +28,7 @@ public class IfcRelSpaceBoundary1stLevel extends IfcRelSpaceBoundary
 {
 	// The property attributes
 	private IfcRelSpaceBoundary1stLevel ParentBoundary;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelSpaceBoundary1stLevel> InnerBoundaries= new ArrayList<IfcRelSpaceBoundary1stLevel>();
 
 

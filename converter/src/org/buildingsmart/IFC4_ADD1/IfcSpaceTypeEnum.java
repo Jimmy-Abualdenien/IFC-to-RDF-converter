@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSpaceTypeEnum
+public class IfcSpaceTypeEnum extends Thing
 {
 	public enum IfcSpaceTypeEnum_value{SPACE, PARKING, GFA, INTERNAL, EXTERNAL, USERDEFINED, NOTDEFINED};
 	private IfcSpaceTypeEnum_value value;
+
+	public IfcSpaceTypeEnum_value getIfcSpaceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSpaceTypeEnum(IfcSpaceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

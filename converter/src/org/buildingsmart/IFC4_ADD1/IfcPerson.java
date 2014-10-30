@@ -35,8 +35,7 @@ public class IfcPerson extends Thing implements IfcActorSelect, IfcObjectReferen
 	private List<IfcLabel> SuffixTitles = new ArrayList<IfcLabel>();
 	private List<IfcActorRole> Roles_of_IfcPerson = new ArrayList<IfcActorRole>();
 	private List<IfcAddress> Addresses_of_IfcPerson = new ArrayList<IfcAddress>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcPersonAndOrganization> EngagedIn= new ArrayList<IfcPersonAndOrganization>();
 
 

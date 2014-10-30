@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSolarDeviceTypeEnum
+public class IfcSolarDeviceTypeEnum extends Thing
 {
 	public enum IfcSolarDeviceTypeEnum_value{SOLARCOLLECTOR, SOLARPANEL, USERDEFINED, NOTDEFINED};
 	private IfcSolarDeviceTypeEnum_value value;
+
+	public IfcSolarDeviceTypeEnum_value getIfcSolarDeviceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSolarDeviceTypeEnum(IfcSolarDeviceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

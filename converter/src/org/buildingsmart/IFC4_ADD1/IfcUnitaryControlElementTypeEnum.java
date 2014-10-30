@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcUnitaryControlElementTypeEnum
+public class IfcUnitaryControlElementTypeEnum extends Thing
 {
 	public enum IfcUnitaryControlElementTypeEnum_value{ALARMPANEL, CONTROLPANEL, GASDETECTIONPANEL, INDICATORPANEL, MIMICPANEL, HUMIDISTAT, THERMOSTAT, WEATHERSTATION, USERDEFINED, NOTDEFINED};
 	private IfcUnitaryControlElementTypeEnum_value value;
+
+	public IfcUnitaryControlElementTypeEnum_value getIfcUnitaryControlElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcUnitaryControlElementTypeEnum(IfcUnitaryControlElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

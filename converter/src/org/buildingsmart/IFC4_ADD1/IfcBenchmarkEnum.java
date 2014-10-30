@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBenchmarkEnum
+public class IfcBenchmarkEnum extends Thing
 {
 	public enum IfcBenchmarkEnum_value{GREATERTHAN, GREATERTHANOREQUALTO, LESSTHAN, LESSTHANOREQUALTO, EQUALTO, NOTEQUALTO, INCLUDES, NOTINCLUDES, INCLUDEDIN, NOTINCLUDEDIN};
 	private IfcBenchmarkEnum_value value;
+
+	public IfcBenchmarkEnum_value getIfcBenchmarkEnum() {
+		return value;
+	}
+
+	public void setIfcBenchmarkEnum(IfcBenchmarkEnum_value value){
+		this.value=value;
+	}
+
 }

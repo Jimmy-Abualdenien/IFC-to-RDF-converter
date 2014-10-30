@@ -34,8 +34,7 @@ public class IfcConstraint extends Thing implements IfcResourceObjectSelect
 	private IfcActorSelect CreatingActor;
 	private IfcDateTime CreationTime_of_IfcConstraint;
 	private IfcLabel UserDefinedGrade;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReferences= new ArrayList<IfcExternalReferenceRelationship>();
 	private List<IfcResourceConstraintRelationship> PropertiesForConstraint= new ArrayList<IfcResourceConstraintRelationship>();
 

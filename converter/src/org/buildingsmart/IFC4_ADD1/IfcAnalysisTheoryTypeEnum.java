@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAnalysisTheoryTypeEnum
+public class IfcAnalysisTheoryTypeEnum extends Thing
 {
 	public enum IfcAnalysisTheoryTypeEnum_value{FIRST_ORDER_THEORY, SECOND_ORDER_THEORY, THIRD_ORDER_THEORY, FULL_NONLINEAR_THEORY, USERDEFINED, NOTDEFINED};
 	private IfcAnalysisTheoryTypeEnum_value value;
+
+	public IfcAnalysisTheoryTypeEnum_value getIfcAnalysisTheoryTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAnalysisTheoryTypeEnum(IfcAnalysisTheoryTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPileConstructionEnum
+public class IfcPileConstructionEnum extends Thing
 {
 	public enum IfcPileConstructionEnum_value{CAST_IN_PLACE, COMPOSITE, PRECAST_CONCRETE, PREFAB_STEEL, USERDEFINED, NOTDEFINED};
 	private IfcPileConstructionEnum_value value;
+
+	public IfcPileConstructionEnum_value getIfcPileConstructionEnum() {
+		return value;
+	}
+
+	public void setIfcPileConstructionEnum(IfcPileConstructionEnum_value value){
+		this.value=value;
+	}
+
 }

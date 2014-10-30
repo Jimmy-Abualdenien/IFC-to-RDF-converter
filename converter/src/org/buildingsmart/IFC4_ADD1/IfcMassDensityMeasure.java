@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcMassDensityMeasure extends Thing implements IfcDerivedMeasureValue
 {
 	private Double double_value;
+
+	public Double getDouble() {
+		return double_value;
+	}
+
+	public void setDouble(Double value){
+		this.double_value=value;
+	}
+
 }

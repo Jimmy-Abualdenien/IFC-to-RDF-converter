@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPropertySetTemplateTypeEnum
+public class IfcPropertySetTemplateTypeEnum extends Thing
 {
 	public enum IfcPropertySetTemplateTypeEnum_value{PSET_TYPEDRIVENONLY, PSET_TYPEDRIVENOVERRIDE, PSET_OCCURRENCEDRIVEN, PSET_PERFORMANCEDRIVEN, QTO_TYPEDRIVENONLY, QTO_TYPEDRIVENOVERRIDE, QTO_OCCURRENCEDRIVEN, NOTDEFINED};
 	private IfcPropertySetTemplateTypeEnum_value value;
+
+	public IfcPropertySetTemplateTypeEnum_value getIfcPropertySetTemplateTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPropertySetTemplateTypeEnum(IfcPropertySetTemplateTypeEnum_value value){
+		this.value=value;
+	}
+
 }

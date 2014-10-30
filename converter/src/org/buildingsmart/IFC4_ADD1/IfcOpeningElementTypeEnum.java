@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcOpeningElementTypeEnum
+public class IfcOpeningElementTypeEnum extends Thing
 {
 	public enum IfcOpeningElementTypeEnum_value{OPENING, RECESS, USERDEFINED, NOTDEFINED};
 	private IfcOpeningElementTypeEnum_value value;
+
+	public IfcOpeningElementTypeEnum_value getIfcOpeningElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcOpeningElementTypeEnum(IfcOpeningElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -28,8 +28,7 @@ public class IfcObject extends IfcObjectDefinition
 {
 	// The property attributes
 	private IfcLabel ObjectType_of_IfcObject;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelDefinesByObject> IsDeclaredBy= new ArrayList<IfcRelDefinesByObject>();
 	private List<IfcRelDefinesByObject> Declares= new ArrayList<IfcRelDefinesByObject>();
 	private List<IfcRelDefinesByType> IsTypedBy= new ArrayList<IfcRelDefinesByType>();

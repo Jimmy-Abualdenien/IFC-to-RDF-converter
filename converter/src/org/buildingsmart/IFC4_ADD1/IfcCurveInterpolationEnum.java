@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCurveInterpolationEnum
+public class IfcCurveInterpolationEnum extends Thing
 {
 	public enum IfcCurveInterpolationEnum_value{LINEAR, LOG_LINEAR, LOG_LOG, NOTDEFINED};
 	private IfcCurveInterpolationEnum_value value;
+
+	public IfcCurveInterpolationEnum_value getIfcCurveInterpolationEnum() {
+		return value;
+	}
+
+	public void setIfcCurveInterpolationEnum(IfcCurveInterpolationEnum_value value){
+		this.value=value;
+	}
+
 }

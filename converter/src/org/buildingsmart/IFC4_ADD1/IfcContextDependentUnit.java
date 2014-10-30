@@ -28,8 +28,7 @@ public class IfcContextDependentUnit extends IfcNamedUnit implements IfcResource
 {
 	// The property attributes
 	private IfcLabel Name_of_IfcContextDependentUnit;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReference= new ArrayList<IfcExternalReferenceRelationship>();
 
 

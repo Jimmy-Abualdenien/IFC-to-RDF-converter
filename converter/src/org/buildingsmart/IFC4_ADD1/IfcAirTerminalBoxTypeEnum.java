@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAirTerminalBoxTypeEnum
+public class IfcAirTerminalBoxTypeEnum extends Thing
 {
 	public enum IfcAirTerminalBoxTypeEnum_value{CONSTANTFLOW, VARIABLEFLOWPRESSUREDEPENDANT, VARIABLEFLOWPRESSUREINDEPENDANT, USERDEFINED, NOTDEFINED};
 	private IfcAirTerminalBoxTypeEnum_value value;
+
+	public IfcAirTerminalBoxTypeEnum_value getIfcAirTerminalBoxTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAirTerminalBoxTypeEnum(IfcAirTerminalBoxTypeEnum_value value){
+		this.value=value;
+	}
+
 }

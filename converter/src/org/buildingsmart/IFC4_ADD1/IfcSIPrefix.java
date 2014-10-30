@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSIPrefix
+public class IfcSIPrefix extends Thing
 {
 	public enum IfcSIPrefix_value{EXA, PETA, TERA, GIGA, MEGA, KILO, HECTO, DECA, DECI, CENTI, MILLI, MICRO, NANO, PICO, FEMTO, ATTO};
 	private IfcSIPrefix_value value;
+
+	public IfcSIPrefix_value getIfcSIPrefix() {
+		return value;
+	}
+
+	public void setIfcSIPrefix(IfcSIPrefix_value value){
+		this.value=value;
+	}
+
 }

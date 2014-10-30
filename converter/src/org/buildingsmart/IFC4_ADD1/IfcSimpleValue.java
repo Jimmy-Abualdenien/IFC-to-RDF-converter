@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface IfcSimpleValue
+public interface IfcSimpleValue extends IfcValue
 {
 	//interface for
 	//IfcBoolean

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcArithmeticOperatorEnum
+public class IfcArithmeticOperatorEnum extends Thing
 {
 	public enum IfcArithmeticOperatorEnum_value{ADD, DIVIDE, MULTIPLY, SUBTRACT};
 	private IfcArithmeticOperatorEnum_value value;
+
+	public IfcArithmeticOperatorEnum_value getIfcArithmeticOperatorEnum() {
+		return value;
+	}
+
+	public void setIfcArithmeticOperatorEnum(IfcArithmeticOperatorEnum_value value){
+		this.value=value;
+	}
+
 }

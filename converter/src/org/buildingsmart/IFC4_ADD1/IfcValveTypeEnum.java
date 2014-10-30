@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcValveTypeEnum
+public class IfcValveTypeEnum extends Thing
 {
 	public enum IfcValveTypeEnum_value{AIRRELEASE, ANTIVACUUM, CHANGEOVER, CHECK, COMMISSIONING, DIVERTING, DRAWOFFCOCK, DOUBLECHECK, DOUBLEREGULATING, FAUCET, FLUSHING, GASCOCK, GASTAP, ISOLATING, MIXING, PRESSUREREDUCING, PRESSURERELIEF, REGULATING, SAFETYCUTOFF, STEAMTRAP, STOPCOCK, USERDEFINED, NOTDEFINED};
 	private IfcValveTypeEnum_value value;
+
+	public IfcValveTypeEnum_value getIfcValveTypeEnum() {
+		return value;
+	}
+
+	public void setIfcValveTypeEnum(IfcValveTypeEnum_value value){
+		this.value=value;
+	}
+
 }

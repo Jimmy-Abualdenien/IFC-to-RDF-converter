@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDoorStyleOperationEnum
+public class IfcDoorStyleOperationEnum extends Thing
 {
 	public enum IfcDoorStyleOperationEnum_value{SINGLE_SWING_LEFT, SINGLE_SWING_RIGHT, DOUBLE_DOOR_SINGLE_SWING, DOUBLE_DOOR_SINGLE_SWING_OPPOSITE_LEFT, DOUBLE_DOOR_SINGLE_SWING_OPPOSITE_RIGHT, DOUBLE_SWING_LEFT, DOUBLE_SWING_RIGHT, DOUBLE_DOOR_DOUBLE_SWING, SLIDING_TO_LEFT, SLIDING_TO_RIGHT, DOUBLE_DOOR_SLIDING, FOLDING_TO_LEFT, FOLDING_TO_RIGHT, DOUBLE_DOOR_FOLDING, REVOLVING, ROLLINGUP, USERDEFINED, NOTDEFINED};
 	private IfcDoorStyleOperationEnum_value value;
+
+	public IfcDoorStyleOperationEnum_value getIfcDoorStyleOperationEnum() {
+		return value;
+	}
+
+	public void setIfcDoorStyleOperationEnum(IfcDoorStyleOperationEnum_value value){
+		this.value=value;
+	}
+
 }

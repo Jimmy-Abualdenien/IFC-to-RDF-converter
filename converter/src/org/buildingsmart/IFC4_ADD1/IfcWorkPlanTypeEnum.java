@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWorkPlanTypeEnum
+public class IfcWorkPlanTypeEnum extends Thing
 {
 	public enum IfcWorkPlanTypeEnum_value{ACTUAL, BASELINE, PLANNED, USERDEFINED, NOTDEFINED};
 	private IfcWorkPlanTypeEnum_value value;
+
+	public IfcWorkPlanTypeEnum_value getIfcWorkPlanTypeEnum() {
+		return value;
+	}
+
+	public void setIfcWorkPlanTypeEnum(IfcWorkPlanTypeEnum_value value){
+		this.value=value;
+	}
+
 }

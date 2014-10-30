@@ -28,8 +28,7 @@ public class IfcActor extends IfcObject
 {
 	// The property attributes
 	private IfcActorSelect TheActor;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToActor> IsActingUpon= new ArrayList<IfcRelAssignsToActor>();
 
 

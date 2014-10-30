@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCableCarrierFittingTypeEnum
+public class IfcCableCarrierFittingTypeEnum extends Thing
 {
 	public enum IfcCableCarrierFittingTypeEnum_value{BEND, CROSS, REDUCER, TEE, USERDEFINED, NOTDEFINED};
 	private IfcCableCarrierFittingTypeEnum_value value;
+
+	public IfcCableCarrierFittingTypeEnum_value getIfcCableCarrierFittingTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCableCarrierFittingTypeEnum(IfcCableCarrierFittingTypeEnum_value value){
+		this.value=value;
+	}
+
 }

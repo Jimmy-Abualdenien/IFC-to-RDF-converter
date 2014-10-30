@@ -33,8 +33,7 @@ public class IfcLibraryInformation extends IfcExternalInformation implements Ifc
 	private IfcDateTime VersionDate;
 	private IfcURIReference Location_of_IfcLibraryInformation;
 	private IfcText Description_of_IfcLibraryInformation;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesLibrary> LibraryInfoForObjects= new ArrayList<IfcRelAssociatesLibrary>();
 	private List<IfcLibraryReference> HasLibraryReferences= new ArrayList<IfcLibraryReference>();
 

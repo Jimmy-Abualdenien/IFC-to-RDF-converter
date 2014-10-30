@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcExternalSpatialElementTypeEnum
+public class IfcExternalSpatialElementTypeEnum extends Thing
 {
 	public enum IfcExternalSpatialElementTypeEnum_value{EXTERNAL, EXTERNAL_EARTH, EXTERNAL_WATER, EXTERNAL_FIRE, USERDEFINED, NOTDEFIEND};
 	private IfcExternalSpatialElementTypeEnum_value value;
+
+	public IfcExternalSpatialElementTypeEnum_value getIfcExternalSpatialElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcExternalSpatialElementTypeEnum(IfcExternalSpatialElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

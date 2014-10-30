@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcPropertyTemplate extends IfcPropertyTemplateDefinition 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcComplexPropertyTemplate> PartOfComplexTemplate= new ArrayList<IfcComplexPropertyTemplate>();
 	private List<IfcPropertySetTemplate> PartOfPsetTemplate= new ArrayList<IfcPropertySetTemplate>();
 

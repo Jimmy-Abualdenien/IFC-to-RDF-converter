@@ -28,8 +28,7 @@ public class IfcRelSpaceBoundary2ndLevel extends IfcRelSpaceBoundary1stLevel
 {
 	// The property attributes
 	private IfcRelSpaceBoundary2ndLevel CorrespondingBoundary;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelSpaceBoundary2ndLevel> Corresponds= new ArrayList<IfcRelSpaceBoundary2ndLevel>();
 
 

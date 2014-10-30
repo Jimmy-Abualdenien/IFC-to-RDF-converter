@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCoveringTypeEnum
+public class IfcCoveringTypeEnum extends Thing
 {
 	public enum IfcCoveringTypeEnum_value{CEILING, FLOORING, CLADDING, ROOFING, MOLDING, SKIRTINGBOARD, INSULATION, MEMBRANE, SLEEVING, WRAPPING, USERDEFINED, NOTDEFINED};
 	private IfcCoveringTypeEnum_value value;
+
+	public IfcCoveringTypeEnum_value getIfcCoveringTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCoveringTypeEnum(IfcCoveringTypeEnum_value value){
+		this.value=value;
+	}
+
 }

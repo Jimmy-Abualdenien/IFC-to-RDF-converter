@@ -30,8 +30,7 @@ public class IfcExternalReference extends Thing implements IfcObjectReferenceSel
 	private IfcURIReference Location_of_IfcExternalReference;
 	private IfcIdentifier Identification_of_IfcExternalReference;
 	private IfcLabel Name_of_IfcExternalReference;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> ExternalReferenceForResources= new ArrayList<IfcExternalReferenceRelationship>();
 
 

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcObjectTypeEnum
+public class IfcObjectTypeEnum extends Thing
 {
 	public enum IfcObjectTypeEnum_value{PRODUCT, PROCESS, CONTROL, RESOURCE, ACTOR, GROUP, PROJECT, NOTDEFINED};
 	private IfcObjectTypeEnum_value value;
+
+	public IfcObjectTypeEnum_value getIfcObjectTypeEnum() {
+		return value;
+	}
+
+	public void setIfcObjectTypeEnum(IfcObjectTypeEnum_value value){
+		this.value=value;
+	}
+
 }

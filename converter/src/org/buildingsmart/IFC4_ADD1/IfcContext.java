@@ -32,8 +32,7 @@ public class IfcContext extends IfcObjectDefinition
 	private IfcLabel Phase;
 	private List<IfcRepresentationContext> RepresentationContexts = new ArrayList<IfcRepresentationContext>();
 	private IfcUnitAssignment UnitsInContext;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelDefinesByProperties> IsDefinedBy= new ArrayList<IfcRelDefinesByProperties>();
 	private List<IfcRelDeclares> Declares= new ArrayList<IfcRelDeclares>();
 

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcJunctionBoxTypeEnum
+public class IfcJunctionBoxTypeEnum extends Thing
 {
 	public enum IfcJunctionBoxTypeEnum_value{DATA, POWER, USERDEFINED, NOTDEFINED};
 	private IfcJunctionBoxTypeEnum_value value;
+
+	public IfcJunctionBoxTypeEnum_value getIfcJunctionBoxTypeEnum() {
+		return value;
+	}
+
+	public void setIfcJunctionBoxTypeEnum(IfcJunctionBoxTypeEnum_value value){
+		this.value=value;
+	}
+
 }

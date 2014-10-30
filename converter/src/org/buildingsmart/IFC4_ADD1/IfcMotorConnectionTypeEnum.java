@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMotorConnectionTypeEnum
+public class IfcMotorConnectionTypeEnum extends Thing
 {
 	public enum IfcMotorConnectionTypeEnum_value{BELTDRIVE, COUPLING, DIRECTDRIVE, USERDEFINED, NOTDEFINED};
 	private IfcMotorConnectionTypeEnum_value value;
+
+	public IfcMotorConnectionTypeEnum_value getIfcMotorConnectionTypeEnum() {
+		return value;
+	}
+
+	public void setIfcMotorConnectionTypeEnum(IfcMotorConnectionTypeEnum_value value){
+		this.value=value;
+	}
+
 }

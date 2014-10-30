@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSpatialZoneTypeEnum
+public class IfcSpatialZoneTypeEnum extends Thing
 {
 	public enum IfcSpatialZoneTypeEnum_value{CONSTRUCTION, FIRESAFETY, LIGHTING, OCCUPANCY, SECURITY, THERMAL, TRANSPORT, VENTILATION, USERDEFINED, NOTDEFINED};
 	private IfcSpatialZoneTypeEnum_value value;
+
+	public IfcSpatialZoneTypeEnum_value getIfcSpatialZoneTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSpatialZoneTypeEnum(IfcSpatialZoneTypeEnum_value value){
+		this.value=value;
+	}
+
 }

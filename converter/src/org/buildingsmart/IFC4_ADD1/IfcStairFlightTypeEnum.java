@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStairFlightTypeEnum
+public class IfcStairFlightTypeEnum extends Thing
 {
 	public enum IfcStairFlightTypeEnum_value{STRAIGHT, WINDER, SPIRAL, CURVED, FREEFORM, USERDEFINED, NOTDEFINED};
 	private IfcStairFlightTypeEnum_value value;
+
+	public IfcStairFlightTypeEnum_value getIfcStairFlightTypeEnum() {
+		return value;
+	}
+
+	public void setIfcStairFlightTypeEnum(IfcStairFlightTypeEnum_value value){
+		this.value=value;
+	}
+
 }

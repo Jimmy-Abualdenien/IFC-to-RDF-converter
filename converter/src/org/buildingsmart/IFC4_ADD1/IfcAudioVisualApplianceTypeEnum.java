@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAudioVisualApplianceTypeEnum
+public class IfcAudioVisualApplianceTypeEnum extends Thing
 {
 	public enum IfcAudioVisualApplianceTypeEnum_value{AMPLIFIER, CAMERA, DISPLAY, MICROPHONE, PLAYER, PROJECTOR, RECEIVER, SPEAKER, SWITCHER, TELEPHONE, TUNER, USERDEFINED, NOTDEFINED};
 	private IfcAudioVisualApplianceTypeEnum_value value;
+
+	public IfcAudioVisualApplianceTypeEnum_value getIfcAudioVisualApplianceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAudioVisualApplianceTypeEnum(IfcAudioVisualApplianceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

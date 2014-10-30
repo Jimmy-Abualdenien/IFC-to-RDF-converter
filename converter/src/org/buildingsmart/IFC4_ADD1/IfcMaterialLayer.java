@@ -34,8 +34,7 @@ public class IfcMaterialLayer extends IfcMaterialDefinition
 	private IfcText Description_of_IfcMaterialLayer;
 	private IfcLabel Category_of_IfcMaterialLayer;
 	private IfcNormalisedRatioMeasure Priority_of_IfcMaterialLayer;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMaterialLayerSet> ToMaterialLayerSet= new ArrayList<IfcMaterialLayerSet>();
 
 

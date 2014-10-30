@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFastenerTypeEnum
+public class IfcFastenerTypeEnum extends Thing
 {
 	public enum IfcFastenerTypeEnum_value{GLUE, MORTAR, WELD, USERDEFINED, NOTDEFINED};
 	private IfcFastenerTypeEnum_value value;
+
+	public IfcFastenerTypeEnum_value getIfcFastenerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFastenerTypeEnum(IfcFastenerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

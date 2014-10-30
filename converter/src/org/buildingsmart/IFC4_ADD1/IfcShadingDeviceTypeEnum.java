@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcShadingDeviceTypeEnum
+public class IfcShadingDeviceTypeEnum extends Thing
 {
 	public enum IfcShadingDeviceTypeEnum_value{JALOUSIE, SHUTTER, AWNING, USERDEFINED, NOTDEFINED};
 	private IfcShadingDeviceTypeEnum_value value;
+
+	public IfcShadingDeviceTypeEnum_value getIfcShadingDeviceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcShadingDeviceTypeEnum(IfcShadingDeviceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

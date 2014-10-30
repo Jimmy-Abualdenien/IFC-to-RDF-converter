@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDoorTypeEnum
+public class IfcDoorTypeEnum extends Thing
 {
 	public enum IfcDoorTypeEnum_value{DOOR, GATE, TRAPDOOR, USERDEFINED, NOTDEFINED};
 	private IfcDoorTypeEnum_value value;
+
+	public IfcDoorTypeEnum_value getIfcDoorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcDoorTypeEnum(IfcDoorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -29,8 +29,7 @@ public class IfcConversionBasedUnit extends IfcNamedUnit implements IfcResourceO
 	// The property attributes
 	private IfcLabel Name_of_IfcConversionBasedUnit;
 	private IfcMeasureWithUnit ConversionFactor;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReference= new ArrayList<IfcExternalReferenceRelationship>();
 
 

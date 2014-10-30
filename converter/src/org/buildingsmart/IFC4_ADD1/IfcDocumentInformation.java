@@ -44,8 +44,7 @@ public class IfcDocumentInformation extends IfcExternalInformation implements If
 	private IfcDate ValidUntil;
 	private IfcDocumentConfidentialityEnum Confidentiality;
 	private IfcDocumentStatusEnum Status_of_IfcDocumentInformation;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesDocument> DocumentInfoForObjects= new ArrayList<IfcRelAssociatesDocument>();
 	private List<IfcDocumentReference> HasDocumentReferences= new ArrayList<IfcDocumentReference>();
 	private List<IfcDocumentInformationRelationship> IsPointedTo= new ArrayList<IfcDocumentInformationRelationship>();

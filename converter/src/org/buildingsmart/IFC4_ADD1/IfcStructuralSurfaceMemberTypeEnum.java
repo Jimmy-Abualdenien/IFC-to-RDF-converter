@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStructuralSurfaceMemberTypeEnum
+public class IfcStructuralSurfaceMemberTypeEnum extends Thing
 {
 	public enum IfcStructuralSurfaceMemberTypeEnum_value{BENDING_ELEMENT, MEMBRANE_ELEMENT, SHELL, USERDEFINED, NOTDEFINED};
 	private IfcStructuralSurfaceMemberTypeEnum_value value;
+
+	public IfcStructuralSurfaceMemberTypeEnum_value getIfcStructuralSurfaceMemberTypeEnum() {
+		return value;
+	}
+
+	public void setIfcStructuralSurfaceMemberTypeEnum(IfcStructuralSurfaceMemberTypeEnum_value value){
+		this.value=value;
+	}
+
 }

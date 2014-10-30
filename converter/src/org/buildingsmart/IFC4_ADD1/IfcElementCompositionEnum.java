@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElementCompositionEnum
+public class IfcElementCompositionEnum extends Thing
 {
 	public enum IfcElementCompositionEnum_value{COMPLEX, ELEMENT, PARTIAL};
 	private IfcElementCompositionEnum_value value;
+
+	public IfcElementCompositionEnum_value getIfcElementCompositionEnum() {
+		return value;
+	}
+
+	public void setIfcElementCompositionEnum(IfcElementCompositionEnum_value value){
+		this.value=value;
+	}
+
 }

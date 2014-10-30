@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcEngineTypeEnum
+public class IfcEngineTypeEnum extends Thing
 {
 	public enum IfcEngineTypeEnum_value{EXTERNALCOMBUSTION, INTERNALCOMBUSTION, USERDEFINED, NOTDEFINED};
 	private IfcEngineTypeEnum_value value;
+
+	public IfcEngineTypeEnum_value getIfcEngineTypeEnum() {
+		return value;
+	}
+
+	public void setIfcEngineTypeEnum(IfcEngineTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCostScheduleTypeEnum
+public class IfcCostScheduleTypeEnum extends Thing
 {
 	public enum IfcCostScheduleTypeEnum_value{BUDGET, COSTPLAN, ESTIMATE, TENDER, PRICEDBILLOFQUANTITIES, UNPRICEDBILLOFQUANTITIES, SCHEDULEOFRATES, USERDEFINED, NOTDEFINED};
 	private IfcCostScheduleTypeEnum_value value;
+
+	public IfcCostScheduleTypeEnum_value getIfcCostScheduleTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCostScheduleTypeEnum(IfcCostScheduleTypeEnum_value value){
+		this.value=value;
+	}
+
 }

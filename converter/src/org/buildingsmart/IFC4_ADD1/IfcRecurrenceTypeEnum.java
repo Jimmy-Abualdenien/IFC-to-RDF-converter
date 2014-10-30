@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRecurrenceTypeEnum
+public class IfcRecurrenceTypeEnum extends Thing
 {
 	public enum IfcRecurrenceTypeEnum_value{DAILY, WEEKLY, MONTHLY_BY_DAY_OF_MONTH, MONTHLY_BY_POSITION, BY_DAY_COUNT, BY_WEEKDAY_COUNT, YEARLY_BY_DAY_OF_MONTH, YEARLY_BY_POSITION};
 	private IfcRecurrenceTypeEnum_value value;
+
+	public IfcRecurrenceTypeEnum_value getIfcRecurrenceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcRecurrenceTypeEnum(IfcRecurrenceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

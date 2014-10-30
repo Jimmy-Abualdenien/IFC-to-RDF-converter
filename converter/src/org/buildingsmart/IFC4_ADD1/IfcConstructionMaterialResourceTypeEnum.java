@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcConstructionMaterialResourceTypeEnum
+public class IfcConstructionMaterialResourceTypeEnum extends Thing
 {
 	public enum IfcConstructionMaterialResourceTypeEnum_value{AGGREGATES, CONCRETE, DRYWALL, FUEL, GYPSUM, MASONRY, METAL, PLASTIC, WOOD, NOTDEFINED, USERDEFINED};
 	private IfcConstructionMaterialResourceTypeEnum_value value;
+
+	public IfcConstructionMaterialResourceTypeEnum_value getIfcConstructionMaterialResourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcConstructionMaterialResourceTypeEnum(IfcConstructionMaterialResourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

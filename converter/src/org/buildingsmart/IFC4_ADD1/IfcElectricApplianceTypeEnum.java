@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricApplianceTypeEnum
+public class IfcElectricApplianceTypeEnum extends Thing
 {
 	public enum IfcElectricApplianceTypeEnum_value{DISHWASHER, ELECTRICCOOKER, FREESTANDINGELECTRICHEATER, FREESTANDINGFAN, FREESTANDINGWATERHEATER, FREESTANDINGWATERCOOLER, FREEZER, FRIDGE_FREEZER, HANDDRYER, KITCHENMACHINE, MICROWAVE, PHOTOCOPIER, REFRIGERATOR, TUMBLEDRYER, VENDINGMACHINE, WASHINGMACHINE, USERDEFINED, NOTDEFINED};
 	private IfcElectricApplianceTypeEnum_value value;
+
+	public IfcElectricApplianceTypeEnum_value getIfcElectricApplianceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricApplianceTypeEnum(IfcElectricApplianceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

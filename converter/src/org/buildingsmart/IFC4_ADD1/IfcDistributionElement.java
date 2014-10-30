@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcDistributionElement extends IfcElement 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsPortToElement> HasPorts= new ArrayList<IfcRelConnectsPortToElement>();
 
 

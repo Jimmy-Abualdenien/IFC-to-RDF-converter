@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLaborResourceTypeEnum
+public class IfcLaborResourceTypeEnum extends Thing
 {
 	public enum IfcLaborResourceTypeEnum_value{ADMINISTRATION, CARPENTRY, CLEANING, CONCRETE, DRYWALL, ELECTRIC, FINISHING, FLOORING, GENERAL, HVAC, LANDSCAPING, MASONRY, PAINTING, PAVING, PLUMBING, ROOFING, SITEGRADING, STEELWORK, SURVEYING, USERDEFINED, NOTDEFINED};
 	private IfcLaborResourceTypeEnum_value value;
+
+	public IfcLaborResourceTypeEnum_value getIfcLaborResourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcLaborResourceTypeEnum(IfcLaborResourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

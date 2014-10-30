@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcConstraintEnum
+public class IfcConstraintEnum extends Thing
 {
 	public enum IfcConstraintEnum_value{HARD, SOFT, ADVISORY, USERDEFINED, NOTDEFINED};
 	private IfcConstraintEnum_value value;
+
+	public IfcConstraintEnum_value getIfcConstraintEnum() {
+		return value;
+	}
+
+	public void setIfcConstraintEnum(IfcConstraintEnum_value value){
+		this.value=value;
+	}
+
 }

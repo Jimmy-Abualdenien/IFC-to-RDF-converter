@@ -28,8 +28,7 @@ public class IfcFace extends IfcTopologicalRepresentationItem
 {
 	// The property attributes
 	private List<IfcFaceBound> Bounds = new ArrayList<IfcFaceBound>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcTextureMap> HasTextureMaps= new ArrayList<IfcTextureMap>();
 
 

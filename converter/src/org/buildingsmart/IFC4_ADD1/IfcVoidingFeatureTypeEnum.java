@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcVoidingFeatureTypeEnum
+public class IfcVoidingFeatureTypeEnum extends Thing
 {
 	public enum IfcVoidingFeatureTypeEnum_value{CUTOUT, NOTCH, HOLE, MITER, CHAMFER, EDGE, USERDEFINED, NOTDEFINED};
 	private IfcVoidingFeatureTypeEnum_value value;
+
+	public IfcVoidingFeatureTypeEnum_value getIfcVoidingFeatureTypeEnum() {
+		return value;
+	}
+
+	public void setIfcVoidingFeatureTypeEnum(IfcVoidingFeatureTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -32,8 +32,7 @@ public class IfcMaterialConstituent extends IfcMaterialDefinition
 	private IfcMaterial Material_of_IfcMaterialConstituent;
 	private IfcNormalisedRatioMeasure Fraction;
 	private IfcLabel Category_of_IfcMaterialConstituent;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMaterialConstituentSet> ToMaterialConstituentSet= new ArrayList<IfcMaterialConstituentSet>();
 
 

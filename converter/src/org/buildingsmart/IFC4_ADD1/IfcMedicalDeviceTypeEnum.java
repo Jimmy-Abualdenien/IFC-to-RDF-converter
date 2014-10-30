@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMedicalDeviceTypeEnum
+public class IfcMedicalDeviceTypeEnum extends Thing
 {
 	public enum IfcMedicalDeviceTypeEnum_value{AIRSTATION, FEEDAIRUNIT, OXYGENGENERATOR, OXYGENPLANT, VACUUMSTATION, USERDEFINED, NOTDEFINED};
 	private IfcMedicalDeviceTypeEnum_value value;
+
+	public IfcMedicalDeviceTypeEnum_value getIfcMedicalDeviceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcMedicalDeviceTypeEnum(IfcMedicalDeviceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

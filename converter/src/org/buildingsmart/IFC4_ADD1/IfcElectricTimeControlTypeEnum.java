@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricTimeControlTypeEnum
+public class IfcElectricTimeControlTypeEnum extends Thing
 {
 	public enum IfcElectricTimeControlTypeEnum_value{TIMECLOCK, TIMEDELAY, RELAY, USERDEFINED, NOTDEFINED};
 	private IfcElectricTimeControlTypeEnum_value value;
+
+	public IfcElectricTimeControlTypeEnum_value getIfcElectricTimeControlTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricTimeControlTypeEnum(IfcElectricTimeControlTypeEnum_value value){
+		this.value=value;
+	}
+
 }

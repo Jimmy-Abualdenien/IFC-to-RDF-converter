@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCurtainWallTypeEnum
+public class IfcCurtainWallTypeEnum extends Thing
 {
 	public enum IfcCurtainWallTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcCurtainWallTypeEnum_value value;
+
+	public IfcCurtainWallTypeEnum_value getIfcCurtainWallTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCurtainWallTypeEnum(IfcCurtainWallTypeEnum_value value){
+		this.value=value;
+	}
+
 }

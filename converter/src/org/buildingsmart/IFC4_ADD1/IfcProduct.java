@@ -29,8 +29,7 @@ public class IfcProduct extends IfcObject implements IfcProductSelect
 	// The property attributes
 	private IfcObjectPlacement ObjectPlacement;
 	private IfcProductRepresentation Representation;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToProduct> ReferencedBy= new ArrayList<IfcRelAssignsToProduct>();
 
 

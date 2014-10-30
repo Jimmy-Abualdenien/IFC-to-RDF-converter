@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcGeographicElementTypeEnum
+public class IfcGeographicElementTypeEnum extends Thing
 {
 	public enum IfcGeographicElementTypeEnum_value{TERRAIN, USERDEFINED, NOTDEFINED};
 	private IfcGeographicElementTypeEnum_value value;
+
+	public IfcGeographicElementTypeEnum_value getIfcGeographicElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcGeographicElementTypeEnum(IfcGeographicElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

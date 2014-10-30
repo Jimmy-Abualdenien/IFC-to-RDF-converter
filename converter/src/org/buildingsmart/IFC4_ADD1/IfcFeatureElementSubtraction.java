@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcFeatureElementSubtraction extends IfcFeatureElement 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelVoidsElement> VoidsElements= new ArrayList<IfcRelVoidsElement>();
 
 

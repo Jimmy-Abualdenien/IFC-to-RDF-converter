@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcInventoryTypeEnum
+public class IfcInventoryTypeEnum extends Thing
 {
 	public enum IfcInventoryTypeEnum_value{ASSETINVENTORY, SPACEINVENTORY, FURNITUREINVENTORY, USERDEFINED, NOTDEFINED};
 	private IfcInventoryTypeEnum_value value;
+
+	public IfcInventoryTypeEnum_value getIfcInventoryTypeEnum() {
+		return value;
+	}
+
+	public void setIfcInventoryTypeEnum(IfcInventoryTypeEnum_value value){
+		this.value=value;
+	}
+
 }

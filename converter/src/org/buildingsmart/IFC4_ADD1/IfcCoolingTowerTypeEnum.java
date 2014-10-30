@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCoolingTowerTypeEnum
+public class IfcCoolingTowerTypeEnum extends Thing
 {
 	public enum IfcCoolingTowerTypeEnum_value{NATURALDRAFT, MECHANICALINDUCEDDRAFT, MECHANICALFORCEDDRAFT, USERDEFINED, NOTDEFINED};
 	private IfcCoolingTowerTypeEnum_value value;
+
+	public IfcCoolingTowerTypeEnum_value getIfcCoolingTowerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCoolingTowerTypeEnum(IfcCoolingTowerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElectricDistributionBoardTypeEnum
+public class IfcElectricDistributionBoardTypeEnum extends Thing
 {
 	public enum IfcElectricDistributionBoardTypeEnum_value{CONSUMERUNIT, DISTRIBUTIONBOARD, MOTORCONTROLCENTRE, SWITCHBOARD, USERDEFINED, NOTDEFINED};
 	private IfcElectricDistributionBoardTypeEnum_value value;
+
+	public IfcElectricDistributionBoardTypeEnum_value getIfcElectricDistributionBoardTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElectricDistributionBoardTypeEnum(IfcElectricDistributionBoardTypeEnum_value value){
+		this.value=value;
+	}
+
 }

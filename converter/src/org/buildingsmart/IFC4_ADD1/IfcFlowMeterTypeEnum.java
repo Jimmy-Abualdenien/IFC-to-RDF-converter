@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFlowMeterTypeEnum
+public class IfcFlowMeterTypeEnum extends Thing
 {
 	public enum IfcFlowMeterTypeEnum_value{ENERGYMETER, GASMETER, OILMETER, WATERMETER, USERDEFINED, NOTDEFINED};
 	private IfcFlowMeterTypeEnum_value value;
+
+	public IfcFlowMeterTypeEnum_value getIfcFlowMeterTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFlowMeterTypeEnum(IfcFlowMeterTypeEnum_value value){
+		this.value=value;
+	}
+
 }

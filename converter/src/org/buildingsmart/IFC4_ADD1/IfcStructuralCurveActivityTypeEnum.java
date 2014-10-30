@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcStructuralCurveActivityTypeEnum
+public class IfcStructuralCurveActivityTypeEnum extends Thing
 {
 	public enum IfcStructuralCurveActivityTypeEnum_value{CONST, LINEAR, POLYGONAL, EQUIDISTANT, SINUS, PARABOLA, DISCRETE, USERDEFINED, NOTDEFINED};
 	private IfcStructuralCurveActivityTypeEnum_value value;
+
+	public IfcStructuralCurveActivityTypeEnum_value getIfcStructuralCurveActivityTypeEnum() {
+		return value;
+	}
+
+	public void setIfcStructuralCurveActivityTypeEnum(IfcStructuralCurveActivityTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcFeatureElementAddition extends IfcFeatureElement 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelProjectsElement> ProjectsElements= new ArrayList<IfcRelProjectsElement>();
 
 

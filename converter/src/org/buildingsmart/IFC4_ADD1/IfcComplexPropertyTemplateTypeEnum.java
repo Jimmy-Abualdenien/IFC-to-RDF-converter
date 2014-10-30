@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcComplexPropertyTemplateTypeEnum
+public class IfcComplexPropertyTemplateTypeEnum extends Thing
 {
 	public enum IfcComplexPropertyTemplateTypeEnum_value{P_COMPLEX, Q_COMPLEX};
 	private IfcComplexPropertyTemplateTypeEnum_value value;
+
+	public IfcComplexPropertyTemplateTypeEnum_value getIfcComplexPropertyTemplateTypeEnum() {
+		return value;
+	}
+
+	public void setIfcComplexPropertyTemplateTypeEnum(IfcComplexPropertyTemplateTypeEnum_value value){
+		this.value=value;
+	}
+
 }

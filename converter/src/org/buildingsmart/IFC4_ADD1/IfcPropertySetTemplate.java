@@ -30,8 +30,7 @@ public class IfcPropertySetTemplate extends IfcPropertyTemplateDefinition
 	private IfcPropertySetTemplateTypeEnum TemplateType_of_IfcPropertySetTemplate;
 	private IfcIdentifier ApplicableEntity;
 	private List<IfcPropertyTemplate> HasPropertyTemplates_of_IfcPropertySetTemplate = new ArrayList<IfcPropertyTemplate>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelDefinesByTemplate> Defines= new ArrayList<IfcRelDefinesByTemplate>();
 
 

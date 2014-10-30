@@ -32,8 +32,7 @@ public class IfcStructuralLoadGroup extends IfcGroup
 	private IfcActionSourceTypeEnum ActionSource;
 	private IfcRatioMeasure Coefficient;
 	private IfcLabel Purpose_of_IfcStructuralLoadGroup;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcStructuralResultGroup> SourceOfResultGroup= new ArrayList<IfcStructuralResultGroup>();
 	private List<IfcStructuralAnalysisModel> LoadGroupFor= new ArrayList<IfcStructuralAnalysisModel>();
 

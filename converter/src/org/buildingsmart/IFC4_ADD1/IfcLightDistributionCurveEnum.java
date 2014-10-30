@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLightDistributionCurveEnum
+public class IfcLightDistributionCurveEnum extends Thing
 {
 	public enum IfcLightDistributionCurveEnum_value{TYPE_A, TYPE_B, TYPE_C, NOTDEFINED};
 	private IfcLightDistributionCurveEnum_value value;
+
+	public IfcLightDistributionCurveEnum_value getIfcLightDistributionCurveEnum() {
+		return value;
+	}
+
+	public void setIfcLightDistributionCurveEnum(IfcLightDistributionCurveEnum_value value){
+		this.value=value;
+	}
+
 }

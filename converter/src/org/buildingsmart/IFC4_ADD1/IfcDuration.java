@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcDuration extends Thing implements IfcSimpleValue, IfcTimeOrRatioSelect
 {
 	private String string_value;
+
+	public String getString() {
+		return string_value;
+	}
+
+	public void setString(String value){
+		this.string_value=value;
+	}
+
 }

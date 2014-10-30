@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcElementAssemblyTypeEnum
+public class IfcElementAssemblyTypeEnum extends Thing
 {
 	public enum IfcElementAssemblyTypeEnum_value{ACCESSORY_ASSEMBLY, ARCH, BEAM_GRID, BRACED_FRAME, GIRDER, REINFORCEMENT_UNIT, RIGID_FRAME, SLAB_FIELD, TRUSS, USERDEFINED, NOTDEFINED};
 	private IfcElementAssemblyTypeEnum_value value;
+
+	public IfcElementAssemblyTypeEnum_value getIfcElementAssemblyTypeEnum() {
+		return value;
+	}
+
+	public void setIfcElementAssemblyTypeEnum(IfcElementAssemblyTypeEnum_value value){
+		this.value=value;
+	}
+
 }

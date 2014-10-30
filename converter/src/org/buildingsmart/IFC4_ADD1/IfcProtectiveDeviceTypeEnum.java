@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcProtectiveDeviceTypeEnum
+public class IfcProtectiveDeviceTypeEnum extends Thing
 {
 	public enum IfcProtectiveDeviceTypeEnum_value{CIRCUITBREAKER, EARTHLEAKAGECIRCUITBREAKER, EARTHINGSWITCH, FUSEDISCONNECTOR, RESIDUALCURRENTCIRCUITBREAKER, RESIDUALCURRENTSWITCH, VARISTOR, USERDEFINED, NOTDEFINED};
 	private IfcProtectiveDeviceTypeEnum_value value;
+
+	public IfcProtectiveDeviceTypeEnum_value getIfcProtectiveDeviceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcProtectiveDeviceTypeEnum(IfcProtectiveDeviceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

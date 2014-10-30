@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface IfcColour
+public interface IfcColour extends IfcFillStyleSelect
 {
 	//interface for
 	//IfcColourSpecification

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLayerSetDirectionEnum
+public class IfcLayerSetDirectionEnum extends Thing
 {
 	public enum IfcLayerSetDirectionEnum_value{AXIS1, AXIS2, AXIS3};
 	private IfcLayerSetDirectionEnum_value value;
+
+	public IfcLayerSetDirectionEnum_value getIfcLayerSetDirectionEnum() {
+		return value;
+	}
+
+	public void setIfcLayerSetDirectionEnum(IfcLayerSetDirectionEnum_value value){
+		this.value=value;
+	}
+
 }

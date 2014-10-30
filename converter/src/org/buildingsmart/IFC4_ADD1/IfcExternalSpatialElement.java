@@ -28,8 +28,7 @@ public class IfcExternalSpatialElement extends IfcExternalSpatialStructureElemen
 {
 	// The property attributes
 	private IfcExternalSpatialElementTypeEnum PredefinedType_of_IfcExternalSpatialElement;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelSpaceBoundary> BoundedBy= new ArrayList<IfcRelSpaceBoundary>();
 
 

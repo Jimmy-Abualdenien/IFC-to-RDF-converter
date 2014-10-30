@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSanitaryTerminalTypeEnum
+public class IfcSanitaryTerminalTypeEnum extends Thing
 {
 	public enum IfcSanitaryTerminalTypeEnum_value{BATH, BIDET, CISTERN, SHOWER, SINK, SANITARYFOUNTAIN, TOILETPAN, URINAL, WASHHANDBASIN, WCSEAT, USERDEFINED, NOTDEFINED};
 	private IfcSanitaryTerminalTypeEnum_value value;
+
+	public IfcSanitaryTerminalTypeEnum_value getIfcSanitaryTerminalTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSanitaryTerminalTypeEnum(IfcSanitaryTerminalTypeEnum_value value){
+		this.value=value;
+	}
+
 }

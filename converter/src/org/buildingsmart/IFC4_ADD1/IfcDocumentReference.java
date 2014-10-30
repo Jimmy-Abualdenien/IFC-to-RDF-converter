@@ -29,8 +29,7 @@ public class IfcDocumentReference extends IfcExternalReference implements IfcDoc
 	// The property attributes
 	private IfcText Description_of_IfcDocumentReference;
 	private IfcDocumentInformation ReferencedDocument;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesDocument> DocumentRefForObjects= new ArrayList<IfcRelAssociatesDocument>();
 
 

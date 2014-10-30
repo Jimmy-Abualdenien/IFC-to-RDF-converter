@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcColumnTypeEnum
+public class IfcColumnTypeEnum extends Thing
 {
 	public enum IfcColumnTypeEnum_value{COLUMN, PILASTER, USERDEFINED, NOTDEFINED};
 	private IfcColumnTypeEnum_value value;
+
+	public IfcColumnTypeEnum_value getIfcColumnTypeEnum() {
+		return value;
+	}
+
+	public void setIfcColumnTypeEnum(IfcColumnTypeEnum_value value){
+		this.value=value;
+	}
+
 }

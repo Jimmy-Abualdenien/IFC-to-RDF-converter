@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBurnerTypeEnum
+public class IfcBurnerTypeEnum extends Thing
 {
 	public enum IfcBurnerTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcBurnerTypeEnum_value value;
+
+	public IfcBurnerTypeEnum_value getIfcBurnerTypeEnum() {
+		return value;
+	}
+
+	public void setIfcBurnerTypeEnum(IfcBurnerTypeEnum_value value){
+		this.value=value;
+	}
+
 }

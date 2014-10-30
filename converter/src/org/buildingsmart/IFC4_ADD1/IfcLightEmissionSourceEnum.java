@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLightEmissionSourceEnum
+public class IfcLightEmissionSourceEnum extends Thing
 {
 	public enum IfcLightEmissionSourceEnum_value{COMPACTFLUORESCENT, FLUORESCENT, HIGHPRESSUREMERCURY, HIGHPRESSURESODIUM, LIGHTEMITTINGDIODE, LOWPRESSURESODIUM, LOWVOLTAGEHALOGEN, MAINVOLTAGEHALOGEN, METALHALIDE, TUNGSTENFILAMENT, NOTDEFINED};
 	private IfcLightEmissionSourceEnum_value value;
+
+	public IfcLightEmissionSourceEnum_value getIfcLightEmissionSourceEnum() {
+		return value;
+	}
+
+	public void setIfcLightEmissionSourceEnum(IfcLightEmissionSourceEnum_value value){
+		this.value=value;
+	}
+
 }

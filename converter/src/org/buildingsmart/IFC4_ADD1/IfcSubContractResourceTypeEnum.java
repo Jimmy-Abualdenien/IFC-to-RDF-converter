@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSubContractResourceTypeEnum
+public class IfcSubContractResourceTypeEnum extends Thing
 {
 	public enum IfcSubContractResourceTypeEnum_value{PURCHASE, WORK, USERDEFINED, NOTDEFINED};
 	private IfcSubContractResourceTypeEnum_value value;
+
+	public IfcSubContractResourceTypeEnum_value getIfcSubContractResourceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSubContractResourceTypeEnum(IfcSubContractResourceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

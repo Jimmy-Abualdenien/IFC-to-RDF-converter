@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcDistributionSystemEnum
+public class IfcDistributionSystemEnum extends Thing
 {
 	public enum IfcDistributionSystemEnum_value{AIRCONDITIONING, AUDIOVISUAL, CHEMICAL, CHILLEDWATER, COMMUNICATION, COMPRESSEDAIR, CONDENSERWATER, CONTROL, CONVEYING, DATA, DISPOSAL, DOMESTICCOLDWATER, DOMESTICHOTWATER, DRAINAGE, EARTHING, ELECTRICAL, ELECTROACOUSTIC, EXHAUST, FIREPROTECTION, FUEL, GAS, HAZARDOUS, HEATING, LIGHTING, LIGHTNINGPROTECTION, MUNICIPALSOLIDWASTE, OIL, OPERATIONAL, POWERGENERATION, RAINWATER, REFRIGERATION, SECURITY, SEWAGE, SIGNAL, STORMWATER, TELEPHONE, TV, VACUUM, VENT, VENTILATION, WASTEWATER, WATERSUPPLY, USERDEFINED, NOTDEFINED};
 	private IfcDistributionSystemEnum_value value;
+
+	public IfcDistributionSystemEnum_value getIfcDistributionSystemEnum() {
+		return value;
+	}
+
+	public void setIfcDistributionSystemEnum(IfcDistributionSystemEnum_value value){
+		this.value=value;
+	}
+
 }

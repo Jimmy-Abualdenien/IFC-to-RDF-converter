@@ -29,8 +29,7 @@ public class IfcRepresentationContext extends Thing
 	// The property attributes
 	private IfcLabel ContextIdentifier;
 	private IfcLabel ContextType;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRepresentation> RepresentationsInContext= new ArrayList<IfcRepresentation>();
 
 

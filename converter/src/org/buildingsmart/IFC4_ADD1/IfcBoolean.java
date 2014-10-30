@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcBoolean extends Thing implements IfcSimpleValue, IfcTranslationalStiffnessSelect, IfcRotationalStiffnessSelect, IfcWarpingStiffnessSelect, IfcModulusOfSubgradeReactionSelect, IfcModulusOfTranslationalSubgradeReactionSelect, IfcModulusOfRotationalSubgradeReactionSelect
 {
 	private Boolean boolean_value;
+
+	public Boolean getBoolean() {
+		return boolean_value;
+	}
+
+	public void setBoolean(Boolean value){
+		this.boolean_value=value;
+	}
+
 }

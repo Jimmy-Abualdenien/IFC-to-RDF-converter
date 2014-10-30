@@ -28,8 +28,7 @@ public class IfcCovering extends IfcBuildingElement
 {
 	// The property attributes
 	private IfcCoveringTypeEnum PredefinedType_of_IfcCovering;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelCoversSpaces> CoversSpaces= new ArrayList<IfcRelCoversSpaces>();
 	private List<IfcRelCoversBldgElements> CoversElements= new ArrayList<IfcRelCoversBldgElements>();
 

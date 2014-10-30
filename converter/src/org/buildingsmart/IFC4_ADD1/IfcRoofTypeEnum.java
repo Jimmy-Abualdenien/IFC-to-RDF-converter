@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcRoofTypeEnum
+public class IfcRoofTypeEnum extends Thing
 {
 	public enum IfcRoofTypeEnum_value{FLAT_ROOF, SHED_ROOF, GABLE_ROOF, HIP_ROOF, HIPPED_GABLE_ROOF, GAMBREL_ROOF, MANSARD_ROOF, BARREL_ROOF, RAINBOW_ROOF, BUTTERFLY_ROOF, PAVILION_ROOF, DOME_ROOF, FREEFORM, USERDEFINED, NOTDEFINED};
 	private IfcRoofTypeEnum_value value;
+
+	public IfcRoofTypeEnum_value getIfcRoofTypeEnum() {
+		return value;
+	}
+
+	public void setIfcRoofTypeEnum(IfcRoofTypeEnum_value value){
+		this.value=value;
+	}
+
 }

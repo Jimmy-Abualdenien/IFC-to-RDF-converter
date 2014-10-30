@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcPort extends IfcProduct 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsPortToElement> ContainedIn= new ArrayList<IfcRelConnectsPortToElement>();
 	private List<IfcRelConnectsPorts> ConnectedFrom= new ArrayList<IfcRelConnectsPorts>();
 	private List<IfcRelConnectsPorts> ConnectedTo= new ArrayList<IfcRelConnectsPorts>();

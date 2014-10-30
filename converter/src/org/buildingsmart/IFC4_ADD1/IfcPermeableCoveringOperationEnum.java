@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPermeableCoveringOperationEnum
+public class IfcPermeableCoveringOperationEnum extends Thing
 {
 	public enum IfcPermeableCoveringOperationEnum_value{GRILL, LOUVER, SCREEN, USERDEFINED, NOTDEFINED};
 	private IfcPermeableCoveringOperationEnum_value value;
+
+	public IfcPermeableCoveringOperationEnum_value getIfcPermeableCoveringOperationEnum() {
+		return value;
+	}
+
+	public void setIfcPermeableCoveringOperationEnum(IfcPermeableCoveringOperationEnum_value value){
+		this.value=value;
+	}
+
 }

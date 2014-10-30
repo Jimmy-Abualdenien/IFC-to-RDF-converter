@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcReinforcingBarTypeEnum
+public class IfcReinforcingBarTypeEnum extends Thing
 {
 	public enum IfcReinforcingBarTypeEnum_value{ANCHORING, EDGE, LIGATURE, MAIN, PUNCHING, RING, SHEAR, STUD, USERDEFINED, NOTDEFINED};
 	private IfcReinforcingBarTypeEnum_value value;
+
+	public IfcReinforcingBarTypeEnum_value getIfcReinforcingBarTypeEnum() {
+		return value;
+	}
+
+	public void setIfcReinforcingBarTypeEnum(IfcReinforcingBarTypeEnum_value value){
+		this.value=value;
+	}
+
 }

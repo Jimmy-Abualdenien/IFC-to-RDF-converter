@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcArcIndex extends Thing implements IfcSegmentIndexSelect
 {
 	private List<IfcPositiveInteger> IfcPositiveInteger_List = new ArrayList<IfcPositiveInteger>();
+
+	public List<IfcPositiveInteger> getIfcPositiveInteger() {
+		return IfcPositiveInteger_List;
+	}
+
+	public void setIfcPositiveInteger(IfcPositiveInteger value){
+		this.IfcPositiveInteger_List.add(value);
+	}
+
 }

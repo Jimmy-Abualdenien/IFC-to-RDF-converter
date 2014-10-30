@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAlarmTypeEnum
+public class IfcAlarmTypeEnum extends Thing
 {
 	public enum IfcAlarmTypeEnum_value{BELL, BREAKGLASSBUTTON, LIGHT, MANUALPULLBOX, SIREN, WHISTLE, USERDEFINED, NOTDEFINED};
 	private IfcAlarmTypeEnum_value value;
+
+	public IfcAlarmTypeEnum_value getIfcAlarmTypeEnum() {
+		return value;
+	}
+
+	public void setIfcAlarmTypeEnum(IfcAlarmTypeEnum_value value){
+		this.value=value;
+	}
+
 }

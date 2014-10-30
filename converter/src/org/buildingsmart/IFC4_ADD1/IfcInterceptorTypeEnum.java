@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcInterceptorTypeEnum
+public class IfcInterceptorTypeEnum extends Thing
 {
 	public enum IfcInterceptorTypeEnum_value{CYCLONIC, GREASE, OIL, PETROL, USERDEFINED, NOTDEFINED};
 	private IfcInterceptorTypeEnum_value value;
+
+	public IfcInterceptorTypeEnum_value getIfcInterceptorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcInterceptorTypeEnum(IfcInterceptorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

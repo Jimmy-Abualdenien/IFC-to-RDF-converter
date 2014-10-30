@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLampTypeEnum
+public class IfcLampTypeEnum extends Thing
 {
 	public enum IfcLampTypeEnum_value{COMPACTFLUORESCENT, FLUORESCENT, HALOGEN, HIGHPRESSUREMERCURY, HIGHPRESSURESODIUM, LED, METALHALIDE, OLED, TUNGSTENFILAMENT, USERDEFINED, NOTDEFINED};
 	private IfcLampTypeEnum_value value;
+
+	public IfcLampTypeEnum_value getIfcLampTypeEnum() {
+		return value;
+	}
+
+	public void setIfcLampTypeEnum(IfcLampTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -30,8 +30,7 @@ public class IfcGridAxis extends Thing
 	private IfcLabel AxisTag;
 	private IfcCurve AxisCurve;
 	private IfcBoolean SameSense_of_IfcGridAxis;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcGrid> PartOfW= new ArrayList<IfcGrid>();
 	private List<IfcGrid> PartOfV= new ArrayList<IfcGrid>();
 	private List<IfcGrid> PartOfU= new ArrayList<IfcGrid>();

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWorkScheduleTypeEnum
+public class IfcWorkScheduleTypeEnum extends Thing
 {
 	public enum IfcWorkScheduleTypeEnum_value{ACTUAL, BASELINE, PLANNED, USERDEFINED, NOTDEFINED};
 	private IfcWorkScheduleTypeEnum_value value;
+
+	public IfcWorkScheduleTypeEnum_value getIfcWorkScheduleTypeEnum() {
+		return value;
+	}
+
+	public void setIfcWorkScheduleTypeEnum(IfcWorkScheduleTypeEnum_value value){
+		this.value=value;
+	}
+
 }

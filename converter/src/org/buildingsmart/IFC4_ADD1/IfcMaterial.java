@@ -30,8 +30,7 @@ public class IfcMaterial extends IfcMaterialDefinition
 	private IfcLabel Name_of_IfcMaterial;
 	private IfcText Description_of_IfcMaterial;
 	private IfcLabel Category_of_IfcMaterial;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcMaterialDefinitionRepresentation> HasRepresentation= new ArrayList<IfcMaterialDefinitionRepresentation>();
 	private List<IfcMaterialRelationship> IsRelatedWith= new ArrayList<IfcMaterialRelationship>();
 	private List<IfcMaterialRelationship> RelatesTo= new ArrayList<IfcMaterialRelationship>();

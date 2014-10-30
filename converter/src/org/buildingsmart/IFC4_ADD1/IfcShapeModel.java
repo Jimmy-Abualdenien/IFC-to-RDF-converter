@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcShapeModel extends IfcRepresentation 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcShapeAspect> OfShapeAspect= new ArrayList<IfcShapeAspect>();
 
 

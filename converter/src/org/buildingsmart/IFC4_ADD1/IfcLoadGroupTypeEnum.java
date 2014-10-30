@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLoadGroupTypeEnum
+public class IfcLoadGroupTypeEnum extends Thing
 {
 	public enum IfcLoadGroupTypeEnum_value{LOAD_GROUP, LOAD_CASE, LOAD_COMBINATION, USERDEFINED, NOTDEFINED};
 	private IfcLoadGroupTypeEnum_value value;
+
+	public IfcLoadGroupTypeEnum_value getIfcLoadGroupTypeEnum() {
+		return value;
+	}
+
+	public void setIfcLoadGroupTypeEnum(IfcLoadGroupTypeEnum_value value){
+		this.value=value;
+	}
+
 }

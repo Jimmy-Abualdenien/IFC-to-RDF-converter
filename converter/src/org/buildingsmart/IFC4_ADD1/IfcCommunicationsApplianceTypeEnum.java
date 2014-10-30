@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCommunicationsApplianceTypeEnum
+public class IfcCommunicationsApplianceTypeEnum extends Thing
 {
 	public enum IfcCommunicationsApplianceTypeEnum_value{ANTENNA, COMPUTER, FAX, GATEWAY, MODEM, NETWORKAPPLIANCE, NETWORKBRIDGE, NETWORKHUB, PRINTER, REPEATER, ROUTER, SCANNER, USERDEFINED, NOTDEFINED};
 	private IfcCommunicationsApplianceTypeEnum_value value;
+
+	public IfcCommunicationsApplianceTypeEnum_value getIfcCommunicationsApplianceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCommunicationsApplianceTypeEnum(IfcCommunicationsApplianceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

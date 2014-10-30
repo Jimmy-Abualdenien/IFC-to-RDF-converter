@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcStructuralItem extends IfcProduct implements IfcStructuralActivityAssignmentSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsStructuralActivity> AssignedStructuralActivity= new ArrayList<IfcRelConnectsStructuralActivity>();
 
 

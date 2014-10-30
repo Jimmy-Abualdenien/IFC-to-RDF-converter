@@ -28,8 +28,7 @@ public class IfcControl extends IfcObject
 {
 	// The property attributes
 	private IfcIdentifier Identification_of_IfcControl;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToControl> Controls= new ArrayList<IfcRelAssignsToControl>();
 
 

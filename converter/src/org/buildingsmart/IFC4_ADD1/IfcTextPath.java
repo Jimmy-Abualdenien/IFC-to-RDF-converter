@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTextPath
+public class IfcTextPath extends Thing
 {
 	public enum IfcTextPath_value{LEFT, RIGHT, UP, DOWN};
 	private IfcTextPath_value value;
+
+	public IfcTextPath_value getIfcTextPath() {
+		return value;
+	}
+
+	public void setIfcTextPath(IfcTextPath_value value){
+		this.value=value;
+	}
+
 }

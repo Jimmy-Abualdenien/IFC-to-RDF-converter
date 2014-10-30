@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcProjectionElementTypeEnum
+public class IfcProjectionElementTypeEnum extends Thing
 {
 	public enum IfcProjectionElementTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcProjectionElementTypeEnum_value value;
+
+	public IfcProjectionElementTypeEnum_value getIfcProjectionElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcProjectionElementTypeEnum(IfcProjectionElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -28,8 +28,7 @@ public class IfcSpatialElement extends IfcProduct
 {
 	// The property attributes
 	private IfcLabel LongName_of_IfcSpatialElement;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelContainedInSpatialStructure> ContainsElements= new ArrayList<IfcRelContainedInSpatialStructure>();
 	private List<IfcRelServicesBuildings> ServicedBySystems= new ArrayList<IfcRelServicesBuildings>();
 	private List<IfcRelReferencedInSpatialStructure> ReferencesElements= new ArrayList<IfcRelReferencedInSpatialStructure>();

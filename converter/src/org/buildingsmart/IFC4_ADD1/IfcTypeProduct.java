@@ -29,8 +29,7 @@ public class IfcTypeProduct extends IfcTypeObject implements IfcProductSelect
 	// The property attributes
 	private List<IfcRepresentationMap> RepresentationMaps = new ArrayList<IfcRepresentationMap>();
 	private IfcLabel Tag_of_IfcTypeProduct;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToProduct> ReferencedBy= new ArrayList<IfcRelAssignsToProduct>();
 
 

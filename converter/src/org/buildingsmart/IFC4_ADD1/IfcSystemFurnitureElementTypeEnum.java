@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSystemFurnitureElementTypeEnum
+public class IfcSystemFurnitureElementTypeEnum extends Thing
 {
 	public enum IfcSystemFurnitureElementTypeEnum_value{PANEL, WORKSURFACE, USERDEFINED, NOTDEFINED};
 	private IfcSystemFurnitureElementTypeEnum_value value;
+
+	public IfcSystemFurnitureElementTypeEnum_value getIfcSystemFurnitureElementTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSystemFurnitureElementTypeEnum(IfcSystemFurnitureElementTypeEnum_value value){
+		this.value=value;
+	}
+
 }

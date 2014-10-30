@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcSwitchingDeviceTypeEnum
+public class IfcSwitchingDeviceTypeEnum extends Thing
 {
 	public enum IfcSwitchingDeviceTypeEnum_value{CONTACTOR, DIMMERSWITCH, EMERGENCYSTOP, KEYPAD, MOMENTARYSWITCH, SELECTORSWITCH, STARTER, SWITCHDISCONNECTOR, TOGGLESWITCH, USERDEFINED, NOTDEFINED};
 	private IfcSwitchingDeviceTypeEnum_value value;
+
+	public IfcSwitchingDeviceTypeEnum_value getIfcSwitchingDeviceTypeEnum() {
+		return value;
+	}
+
+	public void setIfcSwitchingDeviceTypeEnum(IfcSwitchingDeviceTypeEnum_value value){
+		this.value=value;
+	}
+
 }

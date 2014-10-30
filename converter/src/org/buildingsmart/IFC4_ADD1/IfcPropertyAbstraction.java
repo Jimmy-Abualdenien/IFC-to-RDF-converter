@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcPropertyAbstraction extends Thing implements IfcResourceObjectSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReferences= new ArrayList<IfcExternalReferenceRelationship>();
 
 

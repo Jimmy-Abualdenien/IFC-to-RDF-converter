@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBuildingElementPartTypeEnum
+public class IfcBuildingElementPartTypeEnum extends Thing
 {
 	public enum IfcBuildingElementPartTypeEnum_value{INSULATION, PRECASTPANEL, USERDEFINED, NOTDEFINED};
 	private IfcBuildingElementPartTypeEnum_value value;
+
+	public IfcBuildingElementPartTypeEnum_value getIfcBuildingElementPartTypeEnum() {
+		return value;
+	}
+
+	public void setIfcBuildingElementPartTypeEnum(IfcBuildingElementPartTypeEnum_value value){
+		this.value=value;
+	}
+
 }

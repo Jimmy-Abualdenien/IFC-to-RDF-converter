@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPermitTypeEnum
+public class IfcPermitTypeEnum extends Thing
 {
 	public enum IfcPermitTypeEnum_value{ACCESS, BUILDING, WORK, USERDEFINED, NOTDEFINED};
 	private IfcPermitTypeEnum_value value;
+
+	public IfcPermitTypeEnum_value getIfcPermitTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPermitTypeEnum(IfcPermitTypeEnum_value value){
+		this.value=value;
+	}
+
 }

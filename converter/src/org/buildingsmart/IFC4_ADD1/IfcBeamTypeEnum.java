@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBeamTypeEnum
+public class IfcBeamTypeEnum extends Thing
 {
 	public enum IfcBeamTypeEnum_value{BEAM, JOIST, HOLLOWCORE, LINTEL, SPANDREL, T_BEAM, USERDEFINED, NOTDEFINED};
 	private IfcBeamTypeEnum_value value;
+
+	public IfcBeamTypeEnum_value getIfcBeamTypeEnum() {
+		return value;
+	}
+
+	public void setIfcBeamTypeEnum(IfcBeamTypeEnum_value value){
+		this.value=value;
+	}
+
 }

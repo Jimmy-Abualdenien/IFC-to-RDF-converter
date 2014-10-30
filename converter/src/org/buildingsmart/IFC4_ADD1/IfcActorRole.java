@@ -30,8 +30,7 @@ public class IfcActorRole extends Thing implements IfcResourceObjectSelect
 	private IfcRoleEnum Role;
 	private IfcLabel UserDefinedRole;
 	private IfcText Description_of_IfcActorRole;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReference= new ArrayList<IfcExternalReferenceRelationship>();
 
 

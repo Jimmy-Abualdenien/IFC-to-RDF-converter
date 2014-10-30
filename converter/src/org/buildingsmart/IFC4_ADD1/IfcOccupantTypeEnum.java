@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcOccupantTypeEnum
+public class IfcOccupantTypeEnum extends Thing
 {
 	public enum IfcOccupantTypeEnum_value{ASSIGNEE, ASSIGNOR, LESSEE, LESSOR, LETTINGAGENT, OWNER, TENANT, USERDEFINED, NOTDEFINED};
 	private IfcOccupantTypeEnum_value value;
+
+	public IfcOccupantTypeEnum_value getIfcOccupantTypeEnum() {
+		return value;
+	}
+
+	public void setIfcOccupantTypeEnum(IfcOccupantTypeEnum_value value){
+		this.value=value;
+	}
+
 }

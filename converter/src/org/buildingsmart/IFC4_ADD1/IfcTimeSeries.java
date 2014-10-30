@@ -35,8 +35,7 @@ public class IfcTimeSeries extends Thing implements IfcObjectReferenceSelect, If
 	private IfcDataOriginEnum DataOrigin_of_IfcTimeSeries;
 	private IfcLabel UserDefinedDataOrigin_of_IfcTimeSeries;
 	private IfcUnit Unit_of_IfcTimeSeries;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcExternalReferenceRelationship> HasExternalReference= new ArrayList<IfcExternalReferenceRelationship>();
 
 

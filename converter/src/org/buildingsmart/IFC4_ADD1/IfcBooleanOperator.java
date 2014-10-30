@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBooleanOperator
+public class IfcBooleanOperator extends Thing
 {
 	public enum IfcBooleanOperator_value{UNION, INTERSECTION, DIFFERENCE};
 	private IfcBooleanOperator_value value;
+
+	public IfcBooleanOperator_value getIfcBooleanOperator() {
+		return value;
+	}
+
+	public void setIfcBooleanOperator(IfcBooleanOperator_value value){
+		this.value=value;
+	}
+
 }

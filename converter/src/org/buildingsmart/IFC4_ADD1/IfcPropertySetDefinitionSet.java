@@ -27,4 +27,13 @@ import java.util.*;
 public class IfcPropertySetDefinitionSet extends Thing implements IfcPropertySetDefinitionSelect
 {
 	private List<IfcPropertySetDefinition> IfcPropertySetDefinition_List = new ArrayList<IfcPropertySetDefinition>();
+
+	public List<IfcPropertySetDefinition> getIfcPropertySetDefinition() {
+		return IfcPropertySetDefinition_List;
+	}
+
+	public void setIfcPropertySetDefinition(IfcPropertySetDefinition value){
+		this.IfcPropertySetDefinition_List.add(value);
+	}
+
 }

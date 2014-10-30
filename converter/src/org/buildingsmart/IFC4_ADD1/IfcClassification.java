@@ -34,8 +34,7 @@ public class IfcClassification extends IfcExternalInformation implements IfcClas
 	private IfcText Description_of_IfcClassification;
 	private IfcURIReference Location_of_IfcClassification;
 	private List<IfcIdentifier> ReferenceTokens = new ArrayList<IfcIdentifier>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssociatesClassification> ClassificationForObjects= new ArrayList<IfcRelAssociatesClassification>();
 	private List<IfcClassificationReference> HasReferences= new ArrayList<IfcClassificationReference>();
 

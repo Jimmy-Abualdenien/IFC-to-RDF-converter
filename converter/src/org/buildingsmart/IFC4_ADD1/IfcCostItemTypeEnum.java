@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCostItemTypeEnum
+public class IfcCostItemTypeEnum extends Thing
 {
 	public enum IfcCostItemTypeEnum_value{USERDEFINED, NOTDEFINED};
 	private IfcCostItemTypeEnum_value value;
+
+	public IfcCostItemTypeEnum_value getIfcCostItemTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCostItemTypeEnum(IfcCostItemTypeEnum_value value){
+		this.value=value;
+	}
+
 }

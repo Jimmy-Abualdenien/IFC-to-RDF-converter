@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTendonAnchorTypeEnum
+public class IfcTendonAnchorTypeEnum extends Thing
 {
 	public enum IfcTendonAnchorTypeEnum_value{COUPLER, FIXED_END, TENSIONING_END, USERDEFINED, NOTDEFINED};
 	private IfcTendonAnchorTypeEnum_value value;
+
+	public IfcTendonAnchorTypeEnum_value getIfcTendonAnchorTypeEnum() {
+		return value;
+	}
+
+	public void setIfcTendonAnchorTypeEnum(IfcTendonAnchorTypeEnum_value value){
+		this.value=value;
+	}
+
 }

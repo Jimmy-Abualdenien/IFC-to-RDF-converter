@@ -30,8 +30,7 @@ public class IfcTypeResource extends IfcTypeObject implements IfcResourceSelect
 	private IfcIdentifier Identification_of_IfcTypeResource;
 	private IfcText LongDescription_of_IfcTypeResource;
 	private IfcLabel ResourceType;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToResource> ResourceOf= new ArrayList<IfcRelAssignsToResource>();
 
 

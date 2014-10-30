@@ -31,8 +31,7 @@ public class IfcGrid extends IfcProduct
 	private List<IfcGridAxis> VAxes = new ArrayList<IfcGridAxis>();
 	private List<IfcGridAxis> WAxes = new ArrayList<IfcGridAxis>();
 	private IfcGridTypeEnum PredefinedType_of_IfcGrid;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelContainedInSpatialStructure> ContainedInStructure= new ArrayList<IfcRelContainedInSpatialStructure>();
 
 

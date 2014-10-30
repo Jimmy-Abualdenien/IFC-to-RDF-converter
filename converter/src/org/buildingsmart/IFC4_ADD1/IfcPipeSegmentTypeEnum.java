@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPipeSegmentTypeEnum
+public class IfcPipeSegmentTypeEnum extends Thing
 {
 	public enum IfcPipeSegmentTypeEnum_value{CULVERT, FLEXIBLESEGMENT, RIGIDSEGMENT, GUTTER, SPOOL, USERDEFINED, NOTDEFINED};
 	private IfcPipeSegmentTypeEnum_value value;
+
+	public IfcPipeSegmentTypeEnum_value getIfcPipeSegmentTypeEnum() {
+		return value;
+	}
+
+	public void setIfcPipeSegmentTypeEnum(IfcPipeSegmentTypeEnum_value value){
+		this.value=value;
+	}
+
 }

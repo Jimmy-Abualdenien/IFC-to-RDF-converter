@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcWindowTypeEnum
+public class IfcWindowTypeEnum extends Thing
 {
 	public enum IfcWindowTypeEnum_value{WINDOW, SKYLIGHT, LIGHTDOME, USERDEFINED, NOTDEFINED};
 	private IfcWindowTypeEnum_value value;
+
+	public IfcWindowTypeEnum_value getIfcWindowTypeEnum() {
+		return value;
+	}
+
+	public void setIfcWindowTypeEnum(IfcWindowTypeEnum_value value){
+		this.value=value;
+	}
+
 }

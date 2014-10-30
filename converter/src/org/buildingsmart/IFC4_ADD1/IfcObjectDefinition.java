@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcObjectDefinition extends IfcRoot implements IfcDefinitionSelect
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssigns> HasAssignments= new ArrayList<IfcRelAssigns>();
 	private List<IfcRelNests> Nests= new ArrayList<IfcRelNests>();
 	private List<IfcRelNests> IsNestedBy= new ArrayList<IfcRelNests>();

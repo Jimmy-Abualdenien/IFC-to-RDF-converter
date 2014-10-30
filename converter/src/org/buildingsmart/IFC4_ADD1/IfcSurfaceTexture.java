@@ -32,8 +32,7 @@ public class IfcSurfaceTexture extends IfcPresentationItem
 	private IfcIdentifier Mode_of_IfcSurfaceTexture;
 	private IfcCartesianTransformationOperator2D TextureTransform;
 	private List<IfcIdentifier> Parameter_of_IfcSurfaceTexture = new ArrayList<IfcIdentifier>();
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcTextureCoordinate> IsMappedBy= new ArrayList<IfcTextureCoordinate>();
 	private List<IfcSurfaceStyleWithTextures> UsedInStyles= new ArrayList<IfcSurfaceStyleWithTextures>();
 

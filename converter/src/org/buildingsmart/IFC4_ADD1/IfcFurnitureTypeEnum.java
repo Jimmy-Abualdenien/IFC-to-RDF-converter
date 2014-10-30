@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcFurnitureTypeEnum
+public class IfcFurnitureTypeEnum extends Thing
 {
 	public enum IfcFurnitureTypeEnum_value{CHAIR, TABLE, DESK, BED, FILECABINET, SHELF, SOFA, USERDEFINED, NOTDEFINED};
 	private IfcFurnitureTypeEnum_value value;
+
+	public IfcFurnitureTypeEnum_value getIfcFurnitureTypeEnum() {
+		return value;
+	}
+
+	public void setIfcFurnitureTypeEnum(IfcFurnitureTypeEnum_value value){
+		this.value=value;
+	}
+
 }

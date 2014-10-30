@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcGlobalOrLocalEnum
+public class IfcGlobalOrLocalEnum extends Thing
 {
 	public enum IfcGlobalOrLocalEnum_value{GLOBAL_COORDS, LOCAL_COORDS};
 	private IfcGlobalOrLocalEnum_value value;
+
+	public IfcGlobalOrLocalEnum_value getIfcGlobalOrLocalEnum() {
+		return value;
+	}
+
+	public void setIfcGlobalOrLocalEnum(IfcGlobalOrLocalEnum_value value){
+		this.value=value;
+	}
+
 }

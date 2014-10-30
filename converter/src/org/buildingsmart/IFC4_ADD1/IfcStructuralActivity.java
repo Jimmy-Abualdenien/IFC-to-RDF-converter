@@ -29,8 +29,7 @@ public class IfcStructuralActivity extends IfcProduct
 	// The property attributes
 	private IfcStructuralLoad AppliedLoad;
 	private IfcGlobalOrLocalEnum GlobalOrLocal;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelConnectsStructuralActivity> AssignedToStructuralItem= new ArrayList<IfcRelConnectsStructuralActivity>();
 
 

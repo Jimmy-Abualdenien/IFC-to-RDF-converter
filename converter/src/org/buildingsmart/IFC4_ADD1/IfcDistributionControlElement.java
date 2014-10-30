@@ -26,8 +26,7 @@ import java.util.*;
 
 public class IfcDistributionControlElement extends IfcDistributionElement 
 {
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelFlowControlElements> AssignedToFlowElement= new ArrayList<IfcRelFlowControlElements>();
 
 

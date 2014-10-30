@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcCableCarrierSegmentTypeEnum
+public class IfcCableCarrierSegmentTypeEnum extends Thing
 {
 	public enum IfcCableCarrierSegmentTypeEnum_value{CABLELADDERSEGMENT, CABLETRAYSEGMENT, CABLETRUNKINGSEGMENT, CONDUITSEGMENT, USERDEFINED, NOTDEFINED};
 	private IfcCableCarrierSegmentTypeEnum_value value;
+
+	public IfcCableCarrierSegmentTypeEnum_value getIfcCableCarrierSegmentTypeEnum() {
+		return value;
+	}
+
+	public void setIfcCableCarrierSegmentTypeEnum(IfcCableCarrierSegmentTypeEnum_value value){
+		this.value=value;
+	}
+
 }

@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBSplineSurfaceForm
+public class IfcBSplineSurfaceForm extends Thing
 {
 	public enum IfcBSplineSurfaceForm_value{PLANE_SURF, CYLINDRICAL_SURF, CONICAL_SURF, SPHERICAL_SURF, TOROIDAL_SURF, SURF_OF_REVOLUTION, RULED_SURF, GENERALISED_CONE, QUADRIC_SURF, SURF_OF_LINEAR_EXTRUSION, UNSPECIFIED};
 	private IfcBSplineSurfaceForm_value value;
+
+	public IfcBSplineSurfaceForm_value getIfcBSplineSurfaceForm() {
+		return value;
+	}
+
+	public void setIfcBSplineSurfaceForm(IfcBSplineSurfaceForm_value value){
+		this.value=value;
+	}
+
 }

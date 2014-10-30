@@ -30,8 +30,7 @@ public class IfcTypeProcess extends IfcTypeObject implements IfcProcessSelect
 	private IfcIdentifier Identification_of_IfcTypeProcess;
 	private IfcText LongDescription_of_IfcTypeProcess;
 	private IfcLabel ProcessType;
- // The inverse attributes
-
+	// The inverse attributes
 	private List<IfcRelAssignsToProcess> OperatesOn= new ArrayList<IfcRelAssignsToProcess>();
 
 

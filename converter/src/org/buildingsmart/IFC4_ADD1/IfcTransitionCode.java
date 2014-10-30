@@ -24,8 +24,17 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcTransitionCode
+public class IfcTransitionCode extends Thing
 {
 	public enum IfcTransitionCode_value{DISCONTINUOUS, CONTINUOUS, CONTSAMEGRADIENT, CONTSAMEGRADIENTSAMECURVATURE};
 	private IfcTransitionCode_value value;
+
+	public IfcTransitionCode_value getIfcTransitionCode() {
+		return value;
+	}
+
+	public void setIfcTransitionCode(IfcTransitionCode_value value){
+		this.value=value;
+	}
+
 }
