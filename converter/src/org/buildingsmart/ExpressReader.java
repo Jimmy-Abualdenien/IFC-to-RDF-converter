@@ -81,7 +81,7 @@ public class ExpressReader {
 	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
 
 	public ExpressReader(String expressSchemaName, String fileName) {
-		Namespace.IFC = "http://buildingsmart.org/ontology/"
+		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/"
 				+ expressSchemaName + "#";
 		this.expressSchemaName = expressSchemaName;
 		this.expressFile = fileName;
@@ -128,8 +128,10 @@ public class ExpressReader {
 
 			logger = new BufferedWriter(new FileWriter(logFile));
 
-			ExpressReader er = new ExpressReader("IFC2X3_TC1",
-					"samples\\IFC2X3_TC1.exp");// "IFC4RC4","samples\\IFC4RC4.exp");
+			//ExpressReader er = new ExpressReader("IFC2X3_TC1",
+			//		"samples\\IFC2X3_TC1.exp");
+			//ExpressReader er = new ExpressReader("IFC4RC4","samples\\IFC4RC4.exp");
+			ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
 			er.readSpec();
 			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
