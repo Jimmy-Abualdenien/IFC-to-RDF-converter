@@ -87,21 +87,21 @@ public class OWLWriter {
 			out.write(getOwl_header());
 
 			writePrimaryTypes(out);
-			writeNamedIndividuals(out);
-			writeHelperClasses(out);
-
-			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
-					.iterator();
-			writeTypesToOWL(it_type, out);
-
-			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
-					.iterator();
-			writeEntitiesToOWL(it, out);
-
-			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
-				PropertyVO property = entry.getValue();
-				outputOWLproperty(out, property);
-			}
+//			writeNamedIndividuals(out);
+//			writeHelperClasses(out);
+//
+//			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
+//					.iterator();
+//			writeTypesToOWL(it_type, out);
+//
+//			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
+//					.iterator();
+//			writeEntitiesToOWL(it, out);
+//
+//			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
+//				PropertyVO property = entry.getValue();
+//				outputOWLproperty(out, property);
+//			}
 
 			out.close();
 
@@ -284,7 +284,7 @@ public class OWLWriter {
 			out.write("ifc:has_" + pairs.getKey() + "\r\n");
 			out.write("\trdf:type owl:DatatypeProperty, owl:FunctionalProperty ;"
 					+ "\r\n");
-			out.write("\trdfs:label \"ifc:has_" + pairs.getKey() + "\" ;"
+			out.write("\trdfs:label \"has_" + pairs.getKey() + "\" ;"
 					+ "\r\n");
 			out.write("\trdfs:range xsd:" + pairs.getKey() + " ;" + "\r\n");
 			out.write("\trdfs:domain " + "\r\n");
