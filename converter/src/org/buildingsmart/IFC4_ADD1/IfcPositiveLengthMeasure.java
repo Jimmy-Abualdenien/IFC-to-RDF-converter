@@ -24,6 +24,6 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPositiveLengthMeasure extends IfcLengthMeasure implements IfcHatchLineDistanceSelect, IfcSizeSelect, IfcMeasureValue
+public class IfcPositiveLengthMeasure extends IfcLengthMeasure implements IfcHatchLineDistanceSelect, IfcMeasureValue, IfcSizeSelect
 {
 }

@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcClosedShell extends IfcConnectedFaceSet implements IfcShell, IfcSolidOrShell
+public class IfcClosedShell extends IfcConnectedFaceSet implements IfcSolidOrShell, IfcShell
 {
 
 

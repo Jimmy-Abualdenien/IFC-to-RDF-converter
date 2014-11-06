@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcAppliedValue extends Thing implements IfcObjectReferenceSelect, IfcResourceObjectSelect, IfcMetricValueSelect
+public class IfcAppliedValue extends Thing implements IfcResourceObjectSelect, IfcObjectReferenceSelect, IfcMetricValueSelect
 {
 	// The property attributes
 	private IfcLabel Name_of_IfcAppliedValue;

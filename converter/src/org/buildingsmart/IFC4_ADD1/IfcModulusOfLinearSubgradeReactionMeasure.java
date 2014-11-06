@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcModulusOfLinearSubgradeReactionMeasure extends Thing implements IfcModulusOfTranslationalSubgradeReactionSelect, IfcDerivedMeasureValue
+public class IfcModulusOfLinearSubgradeReactionMeasure extends Thing implements IfcDerivedMeasureValue, IfcModulusOfTranslationalSubgradeReactionSelect
 {
 	private Double double_value;
 

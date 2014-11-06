@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPoint extends IfcGeometricRepresentationItem implements IfcPointOrVertexPoint, IfcGeometricSetSelect
+public class IfcPoint extends IfcGeometricRepresentationItem implements IfcGeometricSetSelect, IfcPointOrVertexPoint
 {
 
 

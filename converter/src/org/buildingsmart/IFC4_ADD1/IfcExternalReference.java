@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcExternalReference extends Thing implements IfcObjectReferenceSelect, IfcResourceObjectSelect, IfcLightDistributionDataSourceSelect
+public class IfcExternalReference extends Thing implements IfcLightDistributionDataSourceSelect, IfcResourceObjectSelect, IfcObjectReferenceSelect
 {
 	// The property attributes
 	private IfcURIReference Location_of_IfcExternalReference;

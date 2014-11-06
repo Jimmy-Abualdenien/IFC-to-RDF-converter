@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPlaneAngleMeasure extends Thing implements IfcBendingParameterSelect, IfcMeasureValue
+public class IfcPlaneAngleMeasure extends Thing implements IfcMeasureValue, IfcBendingParameterSelect
 {
 	private Double double_value;
 

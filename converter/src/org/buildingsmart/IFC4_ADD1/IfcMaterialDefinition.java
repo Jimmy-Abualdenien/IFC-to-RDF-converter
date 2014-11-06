@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcMaterialDefinition extends Thing implements IfcObjectReferenceSelect, IfcResourceObjectSelect, IfcMaterialSelect
+public class IfcMaterialDefinition extends Thing implements IfcResourceObjectSelect, IfcObjectReferenceSelect, IfcMaterialSelect
 {
 	// The inverse attributes
 	private List<IfcRelAssociatesMaterial> AssociatedTo= new ArrayList<IfcRelAssociatesMaterial>();

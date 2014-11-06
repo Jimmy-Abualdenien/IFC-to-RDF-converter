@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcBoolean extends Thing implements IfcSimpleValue, IfcTranslationalStiffnessSelect, IfcRotationalStiffnessSelect, IfcWarpingStiffnessSelect, IfcModulusOfSubgradeReactionSelect, IfcModulusOfTranslationalSubgradeReactionSelect, IfcModulusOfRotationalSubgradeReactionSelect
+public class IfcBoolean extends Thing implements IfcRotationalStiffnessSelect, IfcSimpleValue, IfcModulusOfRotationalSubgradeReactionSelect, IfcTranslationalStiffnessSelect, IfcWarpingStiffnessSelect, IfcModulusOfTranslationalSubgradeReactionSelect, IfcModulusOfSubgradeReactionSelect
 {
 	private Boolean boolean_value;
 

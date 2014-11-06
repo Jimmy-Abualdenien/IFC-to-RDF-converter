@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcVector extends IfcGeometricRepresentationItem implements IfcHatchLineDistanceSelect, IfcVectorOrDirection
+public class IfcVector extends IfcGeometricRepresentationItem implements IfcVectorOrDirection, IfcHatchLineDistanceSelect
 {
 	// The property attributes
 	private IfcDirection Orientation_of_IfcVector;

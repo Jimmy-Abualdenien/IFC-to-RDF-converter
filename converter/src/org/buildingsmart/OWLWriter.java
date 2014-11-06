@@ -87,21 +87,21 @@ public class OWLWriter {
 			out.write(getOwl_header());
 
 			writePrimaryTypes(out);
-//			writeNamedIndividuals(out);
-//			writeHelperClasses(out);
-//
-//			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
-//					.iterator();
-//			writeTypesToOWL(it_type, out);
-//
-//			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
-//					.iterator();
-//			writeEntitiesToOWL(it, out);
-//
-//			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
-//				PropertyVO property = entry.getValue();
-//				outputOWLproperty(out, property);
-//			}
+			writeNamedIndividuals(out);
+			writeHelperClasses(out);
+
+			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
+					.iterator();
+			writeTypesToOWL(it_type, out);
+
+			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
+					.iterator();
+			writeEntitiesToOWL(it, out);
+
+			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
+				PropertyVO property = entry.getValue();
+				outputOWLproperty(out, property);
+			}
 
 			out.close();
 
@@ -345,7 +345,7 @@ public class OWLWriter {
 		out.write("\trdfs:subPropertyOf  ifc:isFollowedBy ." + "\r\n\r\n");
 
 		out.write("ifc:isFollowedBy" + "\r\n");
-		out.write("\trdf:type owl:ObjectProperty, owl:FunctionalProperty ;"
+		out.write("\trdf:type owl:ObjectProperty, owl:TransitiveProperty ;"
 				+ "\r\n");
 		out.write("\trdfs:label \"isFollowedBy\" ;" + "\r\n");
 		out.write("\trdfs:range ifc:List ;" + "\r\n");
@@ -1372,8 +1372,8 @@ public class OWLWriter {
 				// + "@prefix dce: <" + Namespace.DCE + "> .\r\n"
 				// + "@prefix dct: <" + Namespace.DCT + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
-				+ "ifc:\r\n" + "	rdf:type owl:Thing ;\r\n"
-				+ "	rdf:type owl:Ontology "// ;\r\n"
+				+ "ifc:\r\n"// + "	rdf:type owl:Thing ;\r\n"
+				+ "\trdf:type owl:Ontology "// ;\r\n"
 				// + "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
 				// + "	dce:format \"\"\"OWL Full\"\"\"@en ;\r\n"
 				// + " dce:identifier \"\"\"ifc\"\"\"@en ;\r\n"

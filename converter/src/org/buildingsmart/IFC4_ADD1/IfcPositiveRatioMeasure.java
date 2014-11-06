@@ -24,6 +24,6 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPositiveRatioMeasure extends IfcRatioMeasure implements IfcSizeSelect, IfcMeasureValue
+public class IfcPositiveRatioMeasure extends IfcRatioMeasure implements IfcMeasureValue, IfcSizeSelect
 {
 }

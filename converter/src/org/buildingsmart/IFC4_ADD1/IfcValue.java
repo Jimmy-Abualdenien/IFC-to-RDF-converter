@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public interface IfcValue extends IfcMetricValueSelect
+public interface IfcValue extends IfcAppliedValueSelect
 {
 	//interface for
 	//IfcDerivedMeasureValue

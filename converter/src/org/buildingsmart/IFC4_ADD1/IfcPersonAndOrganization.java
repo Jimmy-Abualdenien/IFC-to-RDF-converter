@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcPersonAndOrganization extends Thing implements IfcActorSelect, IfcObjectReferenceSelect, IfcResourceObjectSelect
+public class IfcPersonAndOrganization extends Thing implements IfcActorSelect, IfcResourceObjectSelect, IfcObjectReferenceSelect
 {
 	// The property attributes
 	private IfcPerson ThePerson;

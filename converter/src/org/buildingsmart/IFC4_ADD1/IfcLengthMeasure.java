@@ -24,7 +24,7 @@ import java.util.*;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class IfcLengthMeasure extends Thing implements IfcBendingParameterSelect, IfcSizeSelect, IfcMeasureValue
+public class IfcLengthMeasure extends Thing implements IfcMeasureValue, IfcBendingParameterSelect, IfcSizeSelect
 {
 	private Double double_value;
 
