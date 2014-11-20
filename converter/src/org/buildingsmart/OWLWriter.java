@@ -87,21 +87,21 @@ public class OWLWriter {
 			out.write(getOwl_header());
 
 			writePrimaryTypes(out);
-			writeNamedIndividuals(out);
-			writeHelperClasses(out);
+			//writeNamedIndividuals(out);
+			//writeHelperClasses(out);
 
-			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
-					.iterator();
-			writeTypesToOWL(it_type, out);
+			//Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
+			//		.iterator();
+			//writeTypesToOWL(it_type, out);
 
-			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
-					.iterator();
-			writeEntitiesToOWL(it, out);
+			//Iterator<Entry<String, EntityVO>> it = entities.entrySet()
+			//		.iterator();
+			//writeEntitiesToOWL(it, out);
 
-			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
-				PropertyVO property = entry.getValue();
-				outputOWLproperty(out, property);
-			}
+//			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
+//				PropertyVO property = entry.getValue();
+//				outputOWLproperty(out, property);
+//			}
 
 			out.close();
 
@@ -1369,15 +1369,24 @@ public class OWLWriter {
 				+ "@prefix rdfs: <"
 				+ Namespace.RDFS
 				+ "> .\r\n"
-				// + "@prefix dce: <" + Namespace.DCE + "> .\r\n"
+				+ "@prefix dce: <" + Namespace.DCE + "> .\r\n"
 				// + "@prefix dct: <" + Namespace.DCT + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
-				+ "ifc:\r\n"// + "	rdf:type owl:Thing ;\r\n"
-				+ "\trdf:type owl:Ontology "// ;\r\n"
+				+ "ifc:\r\n"
+				+ "\trdf:type owl:Ontology ;\r\n"
 				// + "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
 				// + "	dce:format \"\"\"OWL Full\"\"\"@en ;\r\n"
 				// + " dce:identifier \"\"\"ifc\"\"\"@en ;\r\n"
 				// + "	dce:language \"\"\"English\"\"\"@en .\r\n"
+				+ " dce:creator \"Pieter Pauwels\" ;\r\n"
+				+ " dce:creator \"Walter Terkaj\" ;\r\n"
+				+ " dce:contributor \"Aleksandra Sojic\" ;\r\n"
+				+ " dce:isBasedOn \"http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc4-release/ifc4-release-summary\" ;\r\n"
+				+ " dce:title \"" + expressSchemaName + "\" ;\r\n"
+				+ " dce:description \"Conceptual data schema and exchange file format for Building Information Model (BIM) data\" ;\r\n"
+				+ " dce:format \"ttl\" ;\r\n"
+				+ " dce:identifier \"" + expressSchemaName + "\" ;\r\n"
+				+ " dce:language \"English\""
 				+ ". \r\n\r\n";
 		return s;
 	}
