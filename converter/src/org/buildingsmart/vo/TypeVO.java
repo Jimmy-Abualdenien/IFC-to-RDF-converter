@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package org.buildingsmart.vo;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,17 +29,20 @@ public class TypeVO {
 	private List<String> select_entities = new LinkedList<String>();
 	private List<String> enum_entities = new LinkedList<String>();
 	private int[] listCardinalities = new int[2];
+	private static List<TypeVO> listOfTypes = new ArrayList<TypeVO>();
 
 	public TypeVO(String name) {
 		super();
 		this.name = name;
 		this.primarytype = name;
+		listOfTypes.add(this);
 	}
 
 	public TypeVO(String name, String primarytype) {
 		super();
 		this.name = name;
 		this.primarytype = primarytype;
+		listOfTypes.add(this);
 	}
 
 	public String getName() {
@@ -79,6 +83,14 @@ public class TypeVO {
 
 	public void setListCardinalities(int[] listCardinalities) {
 		this.listCardinalities = listCardinalities;
+	}
+	
+	public static boolean checkIfType(String ptype){
+		for(TypeVO pt : listOfTypes){
+			if(pt.name.equalsIgnoreCase(ptype))
+				return true;
+		}
+		return false;		
 	}
 
 	@Override

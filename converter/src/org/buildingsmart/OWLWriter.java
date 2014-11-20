@@ -86,13 +86,17 @@ public class OWLWriter {
 			out.write("@prefix ifc: <" + Namespace.IFC + "> .\r\n");
 			out.write(getOwl_header());
 
-//			writePrimaryTypes(out);
+			writePrimaryTypes(out);
 //			writeNamedIndividuals(out);
 //			writeHelperClasses(out);
 
+			Iterator<Entry<String, TypeVO>> it_type = types.entrySet()
+					.iterator();
+			writeTypesToOWL(it_type, out);
+			
 //			Iterator<Entry<String, EntityVO>> it = entities.entrySet()
-//					.iterator();
-//			writeEntitiesToOWL(it, out);
+//			.iterator();
+//	writeEntitiesToOWL(it, out);
 //
 //			for (Map.Entry<String, PropertyVO> entry : properties.entrySet()) {
 //				PropertyVO property = entry.getValue();
@@ -1339,8 +1343,35 @@ public class OWLWriter {
 					// typeVO
 					out.write("ifc:" + tvo.getName() + "\r\n");
 					out.write("\trdf:type owl:Class ;" + "\r\n");
-					out.write("\trdfs:subClassOf ifc:" + tvo.getPrimarytype()
+					String ptype = tvo.getPrimarytype();
+					if(PrimaryTypeVO.checkIfPType(ptype))
+						out.write("\trdfs:subClassOf ifc:" + tvo.getPrimarytype()
 							+ " .\r\n\r\n");
+					else{
+						if(TypeVO.checkIfType(ptype)){
+							out.write("\trdfs:subClassOf ifc:" + tvo.getPrimarytype()
+									+ " .\r\n\r\n");
+						}
+						else{
+							PrimaryTypeVO t = PrimaryTypeVO.getClosestResemblance(ptype);
+							if(t==null)
+								System.out.println("OWLWriter::writeTypesToOWL - Did not find useful primarytype: " + ptype);
+							out.write("\trdfs:subClassOf ifc:" + t.getPTypeName()
+								+ " ;\r\n");
+							
+							out.write("\trdfs:subClassOf " +"\r\n");
+							out.write("\t\t[" +"\r\n");
+							out.write("\t\t\trdf:type owl:Restriction ;" +"\r\n");
+							out.write("\t\t\towl:onProperty ifc:has_" + t.getXSDType() +" ;\r\n");
+							out.write("\t\t\towl:allValuesFrom " +"\r\n");
+							out.write("\t\t\t\t[" +"\r\n");
+							out.write("\t\t\t\t\trdf:type rdfs:Datatype ;" +"\r\n");
+							out.write("\t\t\t\t\towl:onDatatype xsd:" + t.getXSDType() + " ;" +"\r\n");
+							out.write("\t\t\t\t\towl:withRestrictions ( [ xsd:length "+t.getAdditionalRestriction(ptype)+" ] )" +"\r\n");
+							out.write("\t\t\t\t]" +"\r\n");
+							out.write("\t\t] ." +"\r\n\r\n");
+						}
+					}
 				}
 			}
 		}
@@ -1366,24 +1397,19 @@ public class OWLWriter {
 				+ Namespace.RDFS
 				+ "> .\r\n"
 				+ "@prefix dce: <" + Namespace.DCE + "> .\r\n"
-				// + "@prefix dct: <" + Namespace.DCT + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
 				+ "ifc:\r\n"
 				+ "\trdf:type owl:Ontology ;\r\n"
-				// + "	dce:title \"\"\"" + expressSchemaName + "\"\"\"@en ;\r\n"
-				// + "	dce:format \"\"\"OWL Full\"\"\"@en ;\r\n"
-				// + " dce:identifier \"\"\"ifc\"\"\"@en ;\r\n"
-				// + "	dce:language \"\"\"English\"\"\"@en .\r\n"
-				+ " dce:creator \"Pieter Pauwels\" ;\r\n"
-				+ " dce:creator \"Walter Terkaj\" ;\r\n"
-				+ " dce:contributor \"Aleksandra Sojic\" ;\r\n"
-				+ " dce:isBasedOn \"http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc4-release/ifc4-release-summary\" ;\r\n"
-				+ " dce:title \"" + expressSchemaName + "\" ;\r\n"
-				+ " dce:description \"Conceptual data schema and exchange file format for Building Information Model (BIM) data\" ;\r\n"
-				+ " dce:format \"ttl\" ;\r\n"
-				+ " dce:identifier \"" + expressSchemaName + "\" ;\r\n"
-				+ " dce:language \"English\""
-				+ ". \r\n\r\n";
+				+ "\towl:versionIRI <http://www.buildingsmart-tech.org/ifcOWL/" + expressSchemaName + "/> ;\r\n"
+				+ "\tdce:creator \"Pieter Pauwels\" ;\r\n"
+				+ "\tdce:creator \"Walter Terkaj\" ;\r\n"
+				+ "\tdce:contributor \"Aleksandra Sojic\" ;\r\n"
+				+ "\tdce:isBasedOn \"http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc4-release/ifc4-release-summary\" ;\r\n"
+				+ "\tdce:title \"" + expressSchemaName + "\" ;\r\n"
+				+ "\tdce:description \"Conceptual data schema and exchange file format for Building Information Model (BIM) data\" ;\r\n"
+				+ "\tdce:format \"ttl\" ;\r\n"
+				+ "\tdce:identifier \"" + expressSchemaName + "\" ;\r\n"
+				+ "\tdce:language \"English\" . \r\n\r\n";
 		return s;
 	}
 }

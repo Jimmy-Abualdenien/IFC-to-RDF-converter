@@ -616,6 +616,10 @@ public class ExpressReader {
 					state = TYPE_LIST;
 				else {
 					// primarytypes like REAL/INTEGER/STRING/...
+					if(formatClassName(txt).equalsIgnoreCase("NUMBER") || formatClassName(txt).equalsIgnoreCase("REAL") || 
+							formatClassName(txt).equalsIgnoreCase("INTEGER") || formatClassName(txt).equalsIgnoreCase("LOGICAL") || 
+							formatClassName(txt).equalsIgnoreCase("BOOLEAN") || formatClassName(txt).equalsIgnoreCase("STRING") || 
+							formatClassName(txt).equalsIgnoreCase("BINARY"))
 					new PrimaryTypeVO(formatClassName(txt));
 					state = INIT_STATE;
 				}
