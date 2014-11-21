@@ -30,6 +30,7 @@ public class PropertyVO {
 	private propertyType type; 
 	private boolean optional = false;
 
+	private boolean isArray = false;
 	private boolean isSet = false;
 	private boolean isList = false;
 	private int minCardinality = -1;
@@ -105,6 +106,14 @@ public class PropertyVO {
 
 	public void setType(propertyType type) {
 		this.type = type;
+	}
+	
+	public boolean isArray() {
+		return isArray;
+	}
+
+	public void setArray(boolean isArray) {
+		this.isArray = isArray;
 	}
 	
 	public boolean isSet() {

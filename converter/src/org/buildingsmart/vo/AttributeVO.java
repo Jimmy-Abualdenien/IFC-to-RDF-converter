@@ -23,7 +23,8 @@ public class AttributeVO {
 	private String name;
 	private String originalName;
 	private EntityVO domain;
-	
+
+	private boolean array = false;
 	private boolean set = false;
 	private boolean list = false;
 	private int minCard = -1;
@@ -43,11 +44,12 @@ public class AttributeVO {
 	private InverseVO points_from;
 //	new AttributeVO(tmp_entity_name, type, is_set,
 //			is_list,is_listoflist,tmp_mincard,tmp_maxcard,tmp_listoflist_mincard,tmp_listoflist_maxcard,is_optional));
-	public AttributeVO(String name, TypeVO type, boolean is_set, boolean is_list, boolean is_listoflist, int minCard, int maxCard, int tmp_listoflist_mincard, int tmp_listoflist_maxcard, boolean is_optional) {
+	public AttributeVO(String name, TypeVO type, boolean is_array, boolean is_set, boolean is_list, boolean is_listoflist, int minCard, int maxCard, int tmp_listoflist_mincard, int tmp_listoflist_maxcard, boolean is_optional) {
 		super();
 		this.name = name;
 		this.type = type;
 		this.reverse_pointer = false;
+		this.array = is_array;
 		this.set = is_set;
 		this.list = is_list;
 		this.setMinCard(minCard);
@@ -58,6 +60,14 @@ public class AttributeVO {
 		this.setMaxCard_listoflist(tmp_listoflist_maxcard);
 	}
 
+	public boolean isArray() {
+		return array;
+	}
+
+	public void setArray(boolean array) {
+		this.set = array;
+	}
+	
 	public boolean isSet() {
 		return set;
 	}

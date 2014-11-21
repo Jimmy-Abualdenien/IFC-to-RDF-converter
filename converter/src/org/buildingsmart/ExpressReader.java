@@ -237,6 +237,7 @@ public class ExpressReader {
 				prop.setName(attr.getName());
 				prop.setOriginalName(attr.getOriginalName());
 				prop.setDomain(attr.getDomain());
+				prop.setArray(attr.isArray());
 				prop.setSet(attr.isSet());
 				prop.setList(attr.isList());
 				prop.setListOfList(attr.isListOfList());
@@ -527,6 +528,7 @@ public class ExpressReader {
 	private static final int TYPE_ENUMERATION = 103;
 	private static final int TYPE_ENUMERATION_OF = 104;
 	private static final int TYPE_LIST = 105;
+	private static final int TYPE_ARRAY = 106;
 
 	private static final int ENTITY_STATE = 2;
 	private static final int ENTITY_READY = 201;
@@ -561,6 +563,7 @@ public class ExpressReader {
 	private Set<String> current_sibling_set;
 
 	private boolean is_set = false;
+	private boolean is_array = false;
 	private boolean is_list = false;
 	private int tmp_mincard = -1; // cardinality of the targeted list, not of
 									// the property
@@ -611,7 +614,9 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("ENUMERATION")) {
 				state = TYPE_ENUMERATION;
 			} else if (isAllUpper(txt.substring(0, txt.length() - 1))) {
-				if (txt.startsWith("ARRAY") || txt.startsWith("SET")
+				if (txt.startsWith("ARRAY"))
+					state = TYPE_ARRAY;
+				else if (txt.startsWith("SET")
 						|| txt.startsWith("LIST"))
 					state = TYPE_LIST;
 				else {
@@ -633,6 +638,19 @@ public class ExpressReader {
 			current_type.setPrimarytype(txt);
 			break;
 
+		case TYPE_ARRAY:
+			if (!txt.endsWith(";")) {
+				if (current_type != null)
+					current_type.setPrimarytype(current_type.getPrimarytype()
+							+ " " + txt);
+			} else {
+				if (current_type != null)
+					current_type.setPrimarytype(current_type.getPrimarytype()
+							+ " " + txt);
+				state = INIT_STATE;
+			}
+			break;
+		
 		case TYPE_LIST:
 			if (!txt.endsWith(";")) {
 				if (current_type != null)
@@ -694,6 +712,7 @@ public class ExpressReader {
 			break;
 
 		case ENTITY_STATE:
+			is_array = false;
 			is_set = false;
 			is_list = false;
 			is_optional = false;
@@ -740,6 +759,8 @@ public class ExpressReader {
 				state = INIT_STATE;
 			} else if (txt.equalsIgnoreCase("OPTIONAL")) {
 				is_optional = true;
+			} else if (txt.equalsIgnoreCase("ARRAY")) {
+				is_array = true;
 			} else if (txt.equalsIgnoreCase("SET")) {
 				is_set = true;
 			} else if (txt.equalsIgnoreCase("LIST")) {
@@ -780,7 +801,7 @@ public class ExpressReader {
 							"CLASS");
 				}
 				current_entity.getAttributes().add(
-						new AttributeVO(tmp_entity_name, type, is_set, is_list,
+						new AttributeVO(tmp_entity_name, type, is_array, is_set, is_list,
 								is_listoflist, tmp_mincard, tmp_maxcard,
 								tmp_listoflist_mincard, tmp_listoflist_maxcard,
 								is_optional));
