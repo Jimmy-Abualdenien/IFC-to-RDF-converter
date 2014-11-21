@@ -107,7 +107,6 @@ public class ExpressReader {
 	
 			this.rearrangeAttributes();
 			this.rearrangeProperties();
-			this.rearrangeInverses();
 			System.out.println("Ended reading the EXPRESS file and building internals");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -140,7 +139,6 @@ public class ExpressReader {
 
 			er.rearrangeAttributes();
 			er.rearrangeProperties();
-			er.rearrangeInverses();
 			er.unpackSelectTypes();
 			// er.printIFCClassesInLog();
 
@@ -221,6 +219,136 @@ public class ExpressReader {
 		logger.write("Named individuals generated" + "\r\n" + "\r\n");
 	}
 
+	private void rearrangeAttributes() throws IOException {
+		logger.write("Generating list of attributes for : " + attributes.size()
+				+ "attributes \r\n");
+		ArrayList<String> doublegeneratedattributes = new ArrayList<String>();
+		HashMap<String, AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
+		//ArrayList<String> doublegeneratedinverseprops = new ArrayList<String>();
+		HashMap<String, PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
+		
+		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, EntityVO> pairs = iter.next();
+			EntityVO evo = pairs.getValue();
+			for (int n = 0; n < evo.getAttributes().size(); n++) {
+				AttributeVO attr = evo.getAttributes().get(n);
+				attr.setDomain(evo);
+
+				if (!doublegeneratedattributes.contains(attr.getName())) {
+					if (alreadygeneratedattributes.containsKey(attr.getName())) {
+						doublegeneratedattributes.add(attr.getName());
+						AttributeVO firstattr = (AttributeVO) alreadygeneratedattributes
+								.get(attr.getName());
+						firstattr.setOriginalName(firstattr.getName());
+						firstattr.setName(firstattr.getName() + "_of_"
+								+ firstattr.getDomain().getName());
+						attr.setOriginalName(attr.getName());
+						attr.setName(attr.getName() + "_of_"
+								+ attr.getDomain().getName());
+					} else if (alreadygeneratedinverseprops.containsKey(attr.getName())) {
+						doublegeneratedattributes.add(attr.getName());
+						PropertyVO firstprop = (PropertyVO) alreadygeneratedinverseprops
+								.get(attr.getName());
+						firstprop.setOriginalName(firstprop.getName());
+						firstprop.setName(firstprop.getName() + "_of_"
+								+ firstprop.getDomain().getName());
+						attr.setOriginalName(attr.getName());
+						attr.setName(attr.getName() + "_of_"
+								+ attr.getDomain().getName());
+					} 
+					else {
+						// no name change
+						alreadygeneratedattributes.put(attr.getName(), attr);
+						attr.setOriginalName(attr.getName());
+					}
+				} else {
+					attr.setOriginalName(attr.getName());
+					attr.setName(attr.getName() + "_of_" + evo.getName());
+					// enumIndividuals.add(new NamedIndividualVO(vo.getName(),
+					// vo.getName() + "_" + vo.getEnum_entities().get(n),
+					// vo.getEnum_entities().get(n)));
+				}
+				// write outcome
+				// logger.write(evo.getName() +" - " + attr.getName() + " - " +
+				// attr.getType().getName() + " --- isSet: " + attr.isSet() +
+				// " - isList: " + attr.isList() + "\r\n");
+			}
+			
+			for (int n = 0; n < evo.getInverses().size(); n++) {
+				InverseVO inv = evo.getInverses().get(n);
+				PropertyVO prop = new PropertyVO();
+				inv.setAssociatedProperty(prop);
+				prop.setName(formatProperty(inv.getName(), false));
+				prop.setDomain(evo);
+				prop.setRange(inv.getClassRange());
+				prop.setSet(inv.isSet());
+//				if (inv.isSet() == true && inv.getMaxCard() != 1){
+//					prop.setList(true);
+//				}
+//				else{
+//					prop.setList(false);					
+//				}
+
+				prop.setMinCardinality(inv.getMinCard());
+				prop.setMaxCardinality(inv.getMaxCard());
+
+				if (!doublegeneratedattributes.contains(prop.getName())) {
+					if (alreadygeneratedattributes.containsKey(prop.getName())) {
+						doublegeneratedattributes.add(prop.getName());
+						AttributeVO firstattr = (AttributeVO) alreadygeneratedattributes
+								.get(prop.getName());
+						firstattr.setOriginalName(firstattr.getName());
+						firstattr.setName(firstattr.getName() + "_of_"
+								+ firstattr.getDomain().getName());
+						prop.setOriginalName(prop.getName());
+						prop.setName(prop.getName() + "_of_"
+								+ prop.getDomain().getName());
+					} else if (alreadygeneratedinverseprops.containsKey(prop.getName())) {
+						doublegeneratedattributes.add(prop.getName());
+						PropertyVO firstprop = (PropertyVO) alreadygeneratedinverseprops
+								.get(prop.getName());
+						firstprop.setOriginalName(firstprop.getName());
+						firstprop.setName(firstprop.getName() + "_of_"
+								+ firstprop.getDomain().getName());
+						prop.setOriginalName(prop.getName());
+						prop.setName(prop.getName() + "_of_"
+								+ prop.getDomain().getName());
+					} 
+					else {
+						// no name change
+						alreadygeneratedinverseprops.put(prop.getName(), prop);
+						prop.setOriginalName(prop.getName());
+					}
+				} else {
+					prop.setOriginalName(prop.getName());
+					prop.setName(prop.getName() + "_of_" + evo.getName());
+				}
+
+				properties.put(prop.getName(), prop);
+
+				PropertyVO inverseOfInv = properties.get(inv
+						.getInverseOfProperty());
+				if (inverseOfInv == null) {
+					inverseOfInv = properties.get(inv.getInverseOfProperty()
+							+ "_of_" + prop.getRange());
+				}
+				if (inverseOfInv != null) {
+					prop.setInverseProp(inverseOfInv);
+					inverseOfInv.setInverseProp(prop);
+				} else {
+					inverseOfInv = properties.get(inv.getInverseOfProperty()
+							+ "_of_" + prop.getRange());
+					System.out.println("Warning: inverses not added for "
+							+ prop.getDomain().getName() + " - "
+							+ prop.getName() + " - " + prop.getRange()
+							+ " || INVERSE OF " + inv.getInverseOfProperty());
+				}
+			}
+			
+		}
+	}
+	
 	private void rearrangeProperties() {
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
@@ -267,133 +395,7 @@ public class ExpressReader {
 			}
 		}
 	}
-
-	private void rearrangeInverses() {
-		ArrayList<String> doublegeneratedinverseprops = new ArrayList<String>();
-		HashMap<String, PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
-		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, EntityVO> pairs = it.next();
-			EntityVO evo = pairs.getValue();
-
-			for (int n = 0; n < evo.getInverses().size(); n++) {
-				InverseVO inv = evo.getInverses().get(n);
-				PropertyVO prop = new PropertyVO();
-				inv.setAssociatedProperty(prop);
-				prop.setName(formatProperty(inv.getName(), false));
-				prop.setDomain(evo);
-				prop.setRange(inv.getClassRange());
-				prop.setSet(inv.isSet());
-//				if (inv.isSet() == true && inv.getMaxCard() != 1){
-//					prop.setList(true);
-//				}
-//				else{
-//					prop.setList(false);					
-//				}
-
-				prop.setMinCardinality(inv.getMinCard());
-				prop.setMaxCardinality(inv.getMaxCard());
-
-				if (!doublegeneratedinverseprops.contains(prop.getName())) {
-					if (alreadygeneratedinverseprops
-							.containsKey(prop.getName())) {
-						doublegeneratedinverseprops.add(prop.getName());
-						PropertyVO firstprop = (PropertyVO) alreadygeneratedinverseprops
-								.get(prop.getName());
-						firstprop.setOriginalName(firstprop.getName());
-						firstprop.setName(firstprop.getName() + "_of_"
-								+ firstprop.getDomain().getName());
-						prop.setOriginalName(prop.getName());
-						prop.setName(prop.getName() + "_of_" + evo.getName());
-					} else {
-						// no name change
-						alreadygeneratedinverseprops.put(prop.getName(), prop);
-						prop.setOriginalName(prop.getName());
-					}
-				} else {
-					prop.setOriginalName(prop.getName());
-					prop.setName(prop.getName() + "_of_" + evo.getName());
-				}
-
-				properties.put(prop.getName(), prop);
-
-				PropertyVO inverseOfInv = properties.get(inv
-						.getInverseOfProperty());
-				if (inverseOfInv == null) {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
-							+ "_of_" + prop.getRange());
-				}
-				if (inverseOfInv != null) {
-					prop.setInverseProp(inverseOfInv);
-					inverseOfInv.setInverseProp(prop);
-				} else {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
-							+ "_of_" + prop.getRange());
-					System.out.println("Warning: inverses not added for "
-							+ prop.getDomain().getName() + " - "
-							+ prop.getName() + " - " + prop.getRange()
-							+ " || INVERSE OF " + inv.getInverseOfProperty());
-				}
-			}
-		}
-	}
-
-	private void rearrangeAttributes() throws IOException {
-		logger.write("Generating list of attributes for : " + attributes.size()
-				+ "attributes \r\n");
-		ArrayList<String> doublegeneratedattributes = new ArrayList<String>();
-		HashMap<String, AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
-		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
-		while (iter.hasNext()) {
-			Entry<String, EntityVO> pairs = iter.next();
-			EntityVO evo = pairs.getValue();
-			for (int n = 0; n < evo.getAttributes().size(); n++) {
-				AttributeVO attr = evo.getAttributes().get(n);
-				attr.setDomain(evo);
-
-				if (!doublegeneratedattributes.contains(attr.getName())) {
-					if (alreadygeneratedattributes.containsKey(attr.getName())) {
-						doublegeneratedattributes.add(attr.getName());
-						AttributeVO firstattr = (AttributeVO) alreadygeneratedattributes
-								.get(attr.getName());
-						firstattr.setOriginalName(firstattr.getName());
-						firstattr.setName(firstattr.getName() + "_of_"
-								+ firstattr.getDomain().getName());
-						attr.setOriginalName(attr.getName());
-						attr.setName(attr.getName() + "_of_"
-								+ attr.getDomain().getName());
-					} else {
-						// no name change
-						alreadygeneratedattributes.put(attr.getName(), attr);
-						attr.setOriginalName(attr.getName());
-					}
-				} else {
-					attr.setOriginalName(attr.getName());
-					attr.setName(attr.getName() + "_of_" + evo.getName());
-					// enumIndividuals.add(new NamedIndividualVO(vo.getName(),
-					// vo.getName() + "_" + vo.getEnum_entities().get(n),
-					// vo.getEnum_entities().get(n)));
-				}
-				// write outcome
-				// logger.write(evo.getName() +" - " + attr.getName() + " - " +
-				// attr.getType().getName() + " --- isSet: " + attr.isSet() +
-				// " - isList: " + attr.isList() + "\r\n");
-			}
-		}
-		// Iterator<Entry<String, EntityVO>> iter1 =
-		// entities.entrySet().iterator();
-		// while (iter1.hasNext()) {
-		// Entry<String, EntityVO> pairs = iter1.next();
-		// EntityVO evo = pairs.getValue();
-		// for (int n = 0; n < evo.getAttributes().size(); n++) {
-		// AttributeVO attr = evo.getAttributes().get(n);
-		// logger.write(evo.getName() +" - " + attr.getName() + " - " +
-		// attr.getType().getName() + " --- isSet: " + attr.isSet() +
-		// " - isList: " + attr.isList() + "\r\n");
-		// }
-		// }
-	}
-
+	
 	// CONVERTING
 	private void readSpec() {
 		try {
