@@ -81,8 +81,7 @@ public class ExpressReader {
 	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
 
 	public ExpressReader(String expressSchemaName, String fileName) {
-		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/"
-				+ expressSchemaName + "#";
+		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL" + "#";
 		this.expressSchemaName = expressSchemaName;
 		this.expressFile = fileName;
 
@@ -107,6 +106,7 @@ public class ExpressReader {
 	
 			this.rearrangeAttributes();
 			this.rearrangeProperties();
+			this.addInverses();
 			System.out.println("Ended reading the EXPRESS file and building internals");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -325,30 +325,11 @@ public class ExpressReader {
 					prop.setName(prop.getName() + "_of_" + evo.getName());
 				}
 
-				properties.put(prop.getName(), prop);
-
-				PropertyVO inverseOfInv = properties.get(inv
-						.getInverseOfProperty());
-				if (inverseOfInv == null) {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
-							+ "_of_" + prop.getRange());
-				}
-				if (inverseOfInv != null) {
-					prop.setInverseProp(inverseOfInv);
-					inverseOfInv.setInverseProp(prop);
-				} else {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
-							+ "_of_" + prop.getRange());
-					System.out.println("Warning: inverses not added for "
-							+ prop.getDomain().getName() + " - "
-							+ prop.getName() + " - " + prop.getRange()
-							+ " || INVERSE OF " + inv.getInverseOfProperty());
-				}
-			}
-			
+				properties.put(prop.getName(), prop);				
+			}			
 		}
 	}
-	
+		
 	private void rearrangeProperties() {
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
@@ -392,6 +373,36 @@ public class ExpressReader {
 				}
 
 				properties.put(prop.getName(), prop);
+			}
+		}
+	}
+	
+	private void addInverses() {
+		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, EntityVO> pairs = iter.next();
+			EntityVO evo = pairs.getValue();
+			for (int n = 0; n < evo.getInverses().size(); n++) {
+				InverseVO inv = evo.getInverses().get(n);
+				PropertyVO prop = inv.getAssociatedProperty();
+				
+				PropertyVO inverseOfInv = properties.get(inv
+						.getInverseOfProperty());
+				if (inverseOfInv == null) {
+					inverseOfInv = properties.get(inv.getInverseOfProperty()
+							+ "_of_" + prop.getRange());
+				}
+				if (inverseOfInv != null) {
+					prop.setInverseProp(inverseOfInv);
+					inverseOfInv.setInverseProp(prop);
+				} else {
+					inverseOfInv = properties.get(inv.getInverseOfProperty()
+							+ "_of_" + prop.getRange());
+					System.out.println("Warning: inverses not added for "
+							+ prop.getDomain().getName() + " - "
+							+ prop.getName() + " - " + prop.getRange()
+							+ " || INVERSE OF " + inv.getInverseOfProperty());
+				}
 			}
 		}
 	}
