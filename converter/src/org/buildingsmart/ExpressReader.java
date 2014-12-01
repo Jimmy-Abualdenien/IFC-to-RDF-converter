@@ -81,7 +81,7 @@ public class ExpressReader {
 	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
 
 	public ExpressReader(String expressSchemaName, String fileName) {
-		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL" + "#";
+		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 		this.expressSchemaName = expressSchemaName;
 		this.expressFile = fileName;
 
@@ -139,6 +139,7 @@ public class ExpressReader {
 
 			er.rearrangeAttributes();
 			er.rearrangeProperties();
+			er.addInverses();
 			er.unpackSelectTypes();
 			// er.printIFCClassesInLog();
 
@@ -224,7 +225,6 @@ public class ExpressReader {
 				+ "attributes \r\n");
 		ArrayList<String> doublegeneratedattributes = new ArrayList<String>();
 		HashMap<String, AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
-		//ArrayList<String> doublegeneratedinverseprops = new ArrayList<String>();
 		HashMap<String, PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
 		
 		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
@@ -279,16 +279,11 @@ public class ExpressReader {
 				InverseVO inv = evo.getInverses().get(n);
 				PropertyVO prop = new PropertyVO();
 				inv.setAssociatedProperty(prop);
+								
 				prop.setName(formatProperty(inv.getName(), false));
 				prop.setDomain(evo);
 				prop.setRange(inv.getClassRange());
-				prop.setSet(inv.isSet());
-//				if (inv.isSet() == true && inv.getMaxCard() != 1){
-//					prop.setList(true);
-//				}
-//				else{
-//					prop.setList(false);					
-//				}
+				prop.setSet(inv.isSet());				
 
 				prop.setMinCardinality(inv.getMinCard());
 				prop.setMaxCardinality(inv.getMaxCard());
@@ -325,7 +320,7 @@ public class ExpressReader {
 					prop.setName(prop.getName() + "_of_" + evo.getName());
 				}
 
-				properties.put(prop.getName(), prop);				
+				properties.put(prop.getName(), prop);
 			}			
 		}
 	}
@@ -379,29 +374,46 @@ public class ExpressReader {
 	
 	private void addInverses() {
 		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
+		ArrayList<PropertyVO> listOfAddedObjectProperties = new ArrayList<PropertyVO>();
 		while (iter.hasNext()) {
 			Entry<String, EntityVO> pairs = iter.next();
 			EntityVO evo = pairs.getValue();
 			for (int n = 0; n < evo.getInverses().size(); n++) {
-				InverseVO inv = evo.getInverses().get(n);
-				PropertyVO prop = inv.getAssociatedProperty();
-				
+				InverseVO inv = evo.getInverses().get(n);				
+				PropertyVO prop = inv.getAssociatedProperty();				
 				PropertyVO inverseOfInv = properties.get(inv
-						.getInverseOfProperty());
+						.getInverseOfProperty());			
 				if (inverseOfInv == null) {
 					inverseOfInv = properties.get(inv.getInverseOfProperty()
 							+ "_of_" + prop.getRange());
+				}	
+
+				if(!listOfAddedObjectProperties.contains(inverseOfInv)){	
+					listOfAddedObjectProperties.add(inverseOfInv);
+					if (inverseOfInv != null) {
+						prop.setInverseProp(inverseOfInv);
+						inverseOfInv.setInverseProp(prop);
+					} else {
+						inverseOfInv = properties.get(inv.getInverseOfProperty()
+								+ "_of_" + prop.getRange());
+						System.out.println("Warning: inverses not added for "
+								+ prop.getDomain().getName() + " - "
+								+ prop.getName() + " - " + prop.getRange()
+								+ " || INVERSE OF " + inv.getInverseOfProperty());
+					}
+					
+					if(inverseOfInv.isList() || inverseOfInv.isListOfList() || inverseOfInv.isArray()){
+						//Property needs to be deleted again to counter inconsistencies in the eventual OWL ontology
+						System.out.println("removing property: " + prop.getName() + " - removing inverses of property: " + inverseOfInv.getName());
+						properties.remove(prop.getName());
+						inverseOfInv.setInverseProp(null);
+						listOfAddedObjectProperties.remove(inverseOfInv);
+					}
 				}
-				if (inverseOfInv != null) {
-					prop.setInverseProp(inverseOfInv);
-					inverseOfInv.setInverseProp(prop);
-				} else {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
-							+ "_of_" + prop.getRange());
-					System.out.println("Warning: inverses not added for "
-							+ prop.getDomain().getName() + " - "
-							+ prop.getName() + " - " + prop.getRange()
-							+ " || INVERSE OF " + inv.getInverseOfProperty());
+				else{
+					System.out.println("removing property: " + prop.getName() + " - removing inverses of property: " + inverseOfInv.getName());	
+					properties.remove(prop.getName());
+					inverseOfInv.setInverseProp(null);
 				}
 			}
 		}
