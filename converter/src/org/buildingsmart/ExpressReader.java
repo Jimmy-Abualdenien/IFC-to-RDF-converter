@@ -167,24 +167,24 @@ public class ExpressReader {
 	}
 
 	private void generateNamedIndividuals() throws IOException {
-		logger.write("Generating named individuals" + "\r\n");
+//		logger.write("Generating named individuals" + "\r\n");
 		ArrayList<String> doublegeneratednamedindividuals = new ArrayList<String>();
 		HashMap<String, NamedIndividualVO> alreadygeneratednamedindividuals = new HashMap<String, NamedIndividualVO>();
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
 			TypeVO vo = entry.getValue();
-			logger.write("found : " + vo.toString() + "\r\n");
+//			logger.write("found : " + vo.toString() + "\r\n");
 			// List of all TYPE:SELECT -entries
 			for (int n = 0; n < vo.getSelect_entities().size(); n++) {
 				EntityVO evo = entities.get(vo.getSelect_entities().get(n));
 				if (evo != null) {
-					logger.write("EntityVO element found for " + vo.getName()
-							+ " : " + evo.getName() + "\r\n");
+//					logger.write("EntityVO element found for " + vo.getName()
+//							+ " : " + evo.getName() + "\r\n");
 				} else {
-					logger.write("No entityVO element found for "
-							+ vo.getSelect_entities().get(n) + " ( "
-							+ vo.getName()
-							+ " ) --> the SELECT type refers to another Type"
-							+ "\r\n");
+//					logger.write("No entityVO element found for "
+//							+ vo.getSelect_entities().get(n) + " ( "
+//							+ vo.getName()
+//							+ " ) --> the SELECT type refers to another Type"
+//							+ "\r\n");
 				}
 			}
 			for (int n = 0; n < vo.getEnum_entities().size(); n++) {
@@ -217,12 +217,12 @@ public class ExpressReader {
 							vo.getEnum_entities().get(n)));
 			}
 		}
-		logger.write("Named individuals generated" + "\r\n" + "\r\n");
+//		logger.write("Named individuals generated" + "\r\n" + "\r\n");
 	}
 
 	private void rearrangeAttributes() throws IOException {
-		logger.write("Generating list of attributes for : " + attributes.size()
-				+ "attributes \r\n");
+//		logger.write("Generating list of attributes for : " + attributes.size()
+//				+ "attributes \r\n");
 		ArrayList<String> doublegeneratedattributes = new ArrayList<String>();
 		HashMap<String, AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
 		HashMap<String, PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
@@ -231,6 +231,7 @@ public class ExpressReader {
 		while (iter.hasNext()) {
 			Entry<String, EntityVO> pairs = iter.next();
 			EntityVO evo = pairs.getValue();
+			
 			for (int n = 0; n < evo.getAttributes().size(); n++) {
 				AttributeVO attr = evo.getAttributes().get(n);
 				attr.setDomain(evo);
@@ -306,6 +307,8 @@ public class ExpressReader {
 						firstprop.setOriginalName(firstprop.getName());
 						firstprop.setName(firstprop.getName() + "_of_"
 								+ firstprop.getDomain().getName());
+						properties.remove(firstprop.getOriginalName());
+						properties.put(firstprop.getName(),firstprop);
 						prop.setOriginalName(prop.getName());
 						prop.setName(prop.getName() + "_of_"
 								+ prop.getDomain().getName());
@@ -326,6 +329,7 @@ public class ExpressReader {
 	}
 		
 	private void rearrangeProperties() {
+				
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
@@ -373,47 +377,93 @@ public class ExpressReader {
 	}
 	
 	private void addInverses() {
+
+		int i = 1;
+		Iterator<Entry<String, PropertyVO>> pr = properties.entrySet().iterator();
+		while (pr.hasNext()) {
+			Entry<String, PropertyVO> ps = pr.next();
+			PropertyVO p = ps.getValue();
+			try {
+				logger.write(i + " - property found : " + p.getName() + " - " + ps.getKey() + "\r\n");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			i++;
+		}
+		try {
+			logger.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("_______");
+		
 		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
 		ArrayList<PropertyVO> listOfAddedObjectProperties = new ArrayList<PropertyVO>();
 		while (iter.hasNext()) {
 			Entry<String, EntityVO> pairs = iter.next();
 			EntityVO evo = pairs.getValue();
 			for (int n = 0; n < evo.getInverses().size(); n++) {
-				InverseVO inv = evo.getInverses().get(n);				
-				PropertyVO prop = inv.getAssociatedProperty();				
+				
+				InverseVO inv = evo.getInverses().get(n);						
+				PropertyVO prop = inv.getAssociatedProperty();	
 				PropertyVO inverseOfInv = properties.get(inv
-						.getInverseOfProperty());			
+						.getInverseOfProperty());		
+				
 				if (inverseOfInv == null) {
 					inverseOfInv = properties.get(inv.getInverseOfProperty()
 							+ "_of_" + prop.getRange());
 				}	
-
-				if(!listOfAddedObjectProperties.contains(inverseOfInv)){	
+				
+				if(!listOfAddedObjectProperties.contains(inverseOfInv) && inverseOfInv!=null){	
 					listOfAddedObjectProperties.add(inverseOfInv);
-					if (inverseOfInv != null) {
 						prop.setInverseProp(inverseOfInv);
 						inverseOfInv.setInverseProp(prop);
-					} else {
-						inverseOfInv = properties.get(inv.getInverseOfProperty()
-								+ "_of_" + prop.getRange());
-						System.out.println("Warning: inverses not added for "
-								+ prop.getDomain().getName() + " - "
-								+ prop.getName() + " - " + prop.getRange()
-								+ " || INVERSE OF " + inv.getInverseOfProperty());
-					}
 					
 					if(inverseOfInv.isList() || inverseOfInv.isListOfList() || inverseOfInv.isArray()){
 						//Property needs to be deleted again to counter inconsistencies in the eventual OWL ontology
-						System.out.println("removing property: " + prop.getName() + " - removing inverses of property: " + inverseOfInv.getName());
+						//System.out.println("removing property 1: " + prop.getName() + " - removing inverses of property: " + inverseOfInv.getName());
 						properties.remove(prop.getName());
 						inverseOfInv.setInverseProp(null);
 						listOfAddedObjectProperties.remove(inverseOfInv);
 					}
 				}
 				else{
-					System.out.println("removing property: " + prop.getName() + " - removing inverses of property: " + inverseOfInv.getName());	
-					properties.remove(prop.getName());
-					inverseOfInv.setInverseProp(null);
+					PropertyVO origprop = inverseOfInv;
+					if(origprop!=null){			
+						PropertyVO originv = inverseOfInv.getInverseProperty();			 
+						 if(originv!=null){
+							 // + " - removing inverses of property: " + origprop.getName());	
+							 System.out.println("removing property 2 from property list: " + originv.getName());
+							 if(properties.remove(originv.getName())==null){
+								 System.out.println("could not remove property 2 from list: " + originv.getName());
+								 properties.remove(originv.getOriginalName());
+							 }
+							 System.out.println("removing property 2 from property list: " + origprop.getName());
+							 //if(properties.remove(origprop.getName())==null)
+							 //	 System.out.println("could not remove property 2 from list: " + origprop.getName());
+							 //origprop.setInverseProp(null);
+							 //System.out.println("removed inverses of property: " + origprop.getName());
+							 originv.setInverseProp(null);
+							 System.out.println("removed inverses of property: " + originv.getName());
+						 }	
+						 else{
+							 System.out.println("removing property 3: " + origprop.getName());	
+							 origprop.setInverseProp(null);								
+						 }
+						 
+						 System.out.println("removing property 4: " + prop.getName());	
+						 if(properties.remove(prop.getName())==null)
+							 System.out.println("could not remove property 4 from list: " + prop.getName());
+						 inverseOfInv.setInverseProp(null);
+						 System.out.println("removed inverses of property: " + inverseOfInv.getName());
+					}	
+					else{
+						System.out.println("removing property 5: " + prop.getName());	
+						properties.remove(prop.getName());							
+					}
 				}
 			}
 		}
@@ -452,15 +502,15 @@ public class ExpressReader {
 
 	// WRITING ATTRIBUTE AND INVERSE STRUCTURE
 	private void generate_derived_attribute_list() throws IOException {
-		logger.write("Generating derived attribute list" + "\r\n");
+//		logger.write("Generating derived attribute list" + "\r\n");
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
 			EntityVO evo = pairs.getValue();
-			logger.write("found : " + evo.toString() + "\r\n");
+//			logger.write("found : " + evo.toString() + "\r\n");
 			add_attribute_entries(evo, evo);
 		}
-		logger.write("derived attribute list generated" + "\r\n" + "\r\n");
+//		logger.write("derived attribute list generated" + "\r\n" + "\r\n");
 	}
 
 	private void add_attribute_entries(EntityVO evo, EntityVO top)
@@ -475,23 +525,23 @@ public class ExpressReader {
 			attributes.put(top.getName() + "#"
 					+ evo.getAttributes().get(n).getName(), evo.getAttributes()
 					.get(n));
-			logger.write("added attribute : " + top.getName() + "#"
-					+ evo.getAttributes().get(n).getName() + " - "
-					+ evo.getAttributes().get(n) + "\r\n");
+//			logger.write("added attribute : " + top.getName() + "#"
+//					+ evo.getAttributes().get(n).getName() + " - "
+//					+ evo.getAttributes().get(n) + "\r\n");
 			top.getDerived_attribute_list().add(evo.getAttributes().get(n));
 		}
 	}
 
 	private void generate_derived_inverse_list() throws IOException {
-		logger.write("Generating derived inverse list" + "\r\n");
+//		logger.write("Generating derived inverse list" + "\r\n");
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
 			EntityVO evo = (EntityVO) pairs.getValue();
-			logger.write("found : " + evo.toString() + "\r\n");
+//			logger.write("found : " + evo.toString() + "\r\n");
 			add_inverse_entries(evo, evo);
 		}
-		logger.write("derived inverse list generated" + "\r\n" + "\r\n");
+//		logger.write("derived inverse list generated" + "\r\n" + "\r\n");
 	}
 
 	private void add_inverse_entries(EntityVO evo, EntityVO top)
@@ -506,11 +556,11 @@ public class ExpressReader {
 			AttributeVO avo = attributes.get(evo.getInverses().get(n)
 					.getClassRange()
 					+ "#" + evo.getInverses().get(n).getInverseOfProperty());
-			logger.write("found attributeVO : " + avo.toString() + "\r\n");
+//			logger.write("found attributeVO : " + avo.toString() + "\r\n");
 			boolean unique = false;
 			if (avo != null) {
 				InverseVO ivo = evo.getInverses().get(n);
-				logger.write("found inverseVO : " + ivo.toString() + "\r\n");
+//				logger.write("found inverseVO : " + ivo.toString() + "\r\n");
 				if (ivo.getMaxCard() == 1)
 					if (!avo.isSet())
 						avo.setOne2One(true);
@@ -1108,23 +1158,23 @@ public class ExpressReader {
 
 	// printer methods
 	private void iterateAndPrint() throws IOException {
-		logger.write("iterating through all entities" + "\r\n");
+//		logger.write("iterating through all entities" + "\r\n");
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
 			EntityVO evo = pairs.getValue();
 			if (evo.getSuperclass() != null) {
-				logger.write(pairs.getKey() + " s:" + evo.getSuperclass()
-						+ "\r\n");
+//				logger.write(pairs.getKey() + " s:" + evo.getSuperclass()
+//						+ "\r\n");
 				EntityVO sup = entities.get(evo.getName());
 				if (sup != null)
 					printEntity(sup);
 			} else
-				logger.write(pairs.getKey() + "\r\n");
+//				logger.write(pairs.getKey() + "\r\n");
 
 			printEntity(evo);
 		}
-		logger.write("iterated through all entities" + "\r\n" + "\r\n");
+//		logger.write("iterated through all entities" + "\r\n" + "\r\n");
 	}
 
 	private void printEntity(EntityVO evo) throws IOException {
@@ -1135,8 +1185,8 @@ public class ExpressReader {
 		}
 
 		for (int n = 0; n < evo.getAttributes().size(); n++) {
-			logger.write("   " + evo.getName() + " , "
-					+ evo.getAttributes().get(n) + "\r\n");
+//			logger.write("   " + evo.getName() + " , "
+//					+ evo.getAttributes().get(n) + "\r\n");
 		}
 	}
 

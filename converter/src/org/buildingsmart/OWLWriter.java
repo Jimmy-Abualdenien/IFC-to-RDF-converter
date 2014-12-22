@@ -82,8 +82,9 @@ public class OWLWriter {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter("out\\"
 					+ expressSchemaName + ".ttl"));
-			out.write("@prefix : <" + Namespace.IFC + "> .\r\n");
-			out.write("@prefix ifc: <" + Namespace.IFC + "> .\r\n");
+			out.write("@base <" + Namespace.IFC + "> .\r\n");
+			out.write("@prefix : <" + Namespace.IFC + "#> .\r\n");
+			out.write("@prefix ifc: <" + Namespace.IFC + "#> .\r\n");
 			out.write(getOwl_header());
 
 			writePrimaryTypes(out);
@@ -111,7 +112,7 @@ public class OWLWriter {
 
 	private void outputOWLproperty(BufferedWriter out, PropertyVO property) {
 		try {
-			if (property.isList()) {
+			if (property.isList() || property.isArray()) {
 				out.write("ifc:" + property.getName() + "\r\n");
 				out.write("\trdfs:label \"" + property.getOriginalName()
 						+ "\" ;\r\n");
@@ -441,7 +442,7 @@ public class OWLWriter {
 			// Writing properties
 			for (int n = 0; n < evo.getAttributes().size(); n++) {
 				AttributeVO attr = evo.getAttributes().get(n);
-				if(properties.containsKey(attr.getName()))
+				if(properties.containsKey(attr.getName()))// || properties.containsKey(prop.getOriginalName())
 					writeRegularProperty(attr,out);
 			}
 
@@ -449,7 +450,7 @@ public class OWLWriter {
 			for (int n = 0; n < evo.getInverses().size(); n++) {
 				PropertyVO prop = evo.getInverses().get(n)
 						.getAssociatedProperty();
-				if(properties.containsKey(prop.getName()))
+				if(properties.containsKey(prop.getName()))// || properties.containsKey(prop.getOriginalName())
 					writeInverseProperty(prop, out);
 			}
 
@@ -1497,6 +1498,14 @@ public class OWLWriter {
 						out.write("\trdfs:subClassOf" + "\r\n");
 						out.write("\t\t[" + "\r\n");
 						out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+						out.write("\t\t\towl:onProperty ifc:hasListContent ;"
+								+ "\r\n");
+						out.write("\t\t\towl:someValuesFrom ifc:" + content
+								+ "\r\n");
+						out.write("\t\t] ;" + "\r\n");
+						out.write("\trdfs:subClassOf" + "\r\n");
+						out.write("\t\t[" + "\r\n");
+						out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 						out.write("\t\t\towl:onProperty ifc:isFollowedBy ;"
 								+ "\r\n");
 						out.write("\t\t\towl:allValuesFrom ifc:" + content
@@ -1541,19 +1550,16 @@ public class OWLWriter {
 						out.write("\t\t\t"
 									+ "owl:minQualifiedCardinality \"" + 1 + "\"^^xsd:nonNegativeInteger ;"
 									+ "\r\n");
-						out.write("\t\t\towl:onProperty ifc:hasSet"
+						out.write("\t\t\towl:onProperty ifc:hasSet ;"
 									+ "\r\n");
 						out.write("\t\t\t" + "owl:onClass ifc:"
 								 + content + "\r\n");							
 						out.write("\t\t] ." + "\r\n" + "\r\n");
 						
 						out.write("ifc:hasSet" + "\r\n");
-						out.write("\trdf:type owl:DatatypeProperty, owl:FunctionalProperty ;"
+						out.write("\trdf:type owl:ObjectProperty ;"
 								+ "\r\n");
-						out.write("\trdfs:label \"hasSet" + "\" ;"
-								+ "\r\n");
-						out.write("\trdfs:range ifc:" + content + " ;" + "\r\n");
-						out.write("\trdfs:domain ifc:" + tvo.getName() + " ." + "\r\n" + "\r\n");
+						out.write("\trdfs:label \"hasSet" + "\" ." + "\r\n" + "\r\n");
 				}
 				else {
 					// typeVO
@@ -1573,19 +1579,19 @@ public class OWLWriter {
 							if(t==null)
 								System.out.println("OWLWriter::writeTypesToOWL - Did not find useful primarytype: " + ptype);
 							out.write("\trdfs:subClassOf ifc:" + t.getPTypeName()
-								+ " ;\r\n");
+								+ " .\r\n\r\n");
 							
-							out.write("\trdfs:subClassOf " +"\r\n");
-							out.write("\t\t[" +"\r\n");
-							out.write("\t\t\trdf:type owl:Restriction ;" +"\r\n");
-							out.write("\t\t\towl:onProperty ifc:has_" + t.getXSDType() +" ;\r\n");
-							out.write("\t\t\towl:allValuesFrom " +"\r\n");
-							out.write("\t\t\t\t[" +"\r\n");
-							out.write("\t\t\t\t\trdf:type rdfs:Datatype ;" +"\r\n");
-							out.write("\t\t\t\t\towl:onDatatype xsd:" + t.getXSDType() + " ;" +"\r\n");
-							out.write("\t\t\t\t\towl:withRestrictions ( [ xsd:length "+t.getAdditionalRestriction(ptype)+" ] )" +"\r\n");
-							out.write("\t\t\t\t]" +"\r\n");
-							out.write("\t\t] ." +"\r\n\r\n");
+//							out.write("\trdfs:subClassOf " +"\r\n");
+//							out.write("\t\t[" +"\r\n");
+//							out.write("\t\t\trdf:type owl:Restriction ;" +"\r\n");
+//							out.write("\t\t\towl:onProperty ifc:has_" + t.getXSDType() +" ;\r\n");
+//							out.write("\t\t\towl:allValuesFrom " +"\r\n");
+//							out.write("\t\t\t\t[" +"\r\n");
+//							out.write("\t\t\t\t\trdf:type rdfs:Datatype ;" +"\r\n");
+//							out.write("\t\t\t\t\towl:onDatatype xsd:" + t.getXSDType() + " ;" +"\r\n");
+//							out.write("\t\t\t\t\towl:withRestrictions ( [ xsd:length "+t.getAdditionalRestriction(ptype)+" ] )" +"\r\n");
+//							out.write("\t\t\t\t]" +"\r\n");
+//							out.write("\t\t] ." +"\r\n\r\n");
 						}
 					}
 				}
@@ -1606,27 +1612,31 @@ public class OWLWriter {
 
 	private String getOwl_header() {
 		String s = "";
-		s += "@prefix xsd: <" + Namespace.XSD + "> .\r\n" + "@prefix owl: <"
-				+ Namespace.OWL
-				+ "> .\r\n"
-				+ "@prefix rdfs: <"
-				+ Namespace.RDFS
-				+ "> .\r\n"
+		s += "@prefix xsd: <" + Namespace.XSD + "> .\r\n" 
+				+ "@prefix owl: <" + Namespace.OWL + "> .\r\n"
+				+ "@prefix rdfs: <"	+ Namespace.RDFS + "> .\r\n"
 				+ "@prefix dce: <" + Namespace.DCE + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n" + "\r\n"
-				+ "ifc:\r\n"
+				+ "<" + Namespace.IFC + ">\r\n"
 				+ "\trdf:type owl:Ontology ;\r\n"
 				+ "\towl:versionIRI <http://www.buildingsmart-tech.org/ifcOWL/" + expressSchemaName + "> ;\r\n"
-				+ "\trdfs:comment \"Ontology automatically generated from the EXPRESS schema '"+expressSchemaName + "' using the 'IFC-to-RDF' converter developed by Pieter Pauwels (pipauwel.pauwels@ugent.be), based on the earlier versions from Jyrki Oraskari (jyrki.oraskari@aalto.fi) and Davy Van Deursen (davy.vandeursen@ugent.be)" + "\r\n"
+				+ "\trdfs:comment \"Ontology automatically generated from the EXPRESS schema '"+expressSchemaName + "' using the 'IFC-to-RDF' converter developed by Pieter Pauwels (pipauwel.pauwels@ugent.be), based on the earlier versions from Jyrki Oraskari (jyrki.oraskari@aalto.fi) and Davy Van Deursen (davy.vandeursen@ugent.be)\" ;" + "\r\n"
 				+ "\tdce:creator \"Pieter Pauwels (pipauwel.pauwels@ugent.be)\" ;\r\n"
 				+ "\tdce:creator \"Walter Terkaj  (walter.terkaj@itia.cnr.it)\" ;\r\n"
 				+ "\tdce:contributor \"Aleksandra Sojic (aleksandra.sojic@itia.cnr.it)\" ;\r\n"
-				+ "\tdce:isBasedOn \"http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc4-release/ifc4-release-summary\" ;\r\n"
 				+ "\tdce:title \"" + expressSchemaName + "\" ;\r\n"
 				+ "\tdce:description \"OWL ontology for the IFC conceptual data schema and exchange file format for Building Information Model (BIM) data\" ;\r\n"
 				+ "\tdce:format \"ttl\" ;\r\n"
 				+ "\tdce:identifier \"" + expressSchemaName + "\" ;\r\n"
 				+ "\tdce:language \"en\" . \r\n\r\n";
+		
+		s += "dce:creator \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
+		s += "dce:description \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
+		s += "dce:contributor \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
+		s += "dce:title \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
+		s += "dce:format \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
+		s += "dce:identifier \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
+		s += "dce:language \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
 		return s;
 	}
 }
