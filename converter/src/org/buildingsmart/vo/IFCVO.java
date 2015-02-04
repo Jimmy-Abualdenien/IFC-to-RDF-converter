@@ -29,13 +29,12 @@ import java.util.Map;
  */
 
 public class IFCVO {
+	
     private Long line_num ;	
 	private String name = null;
 	private LinkedList<Object> list = new LinkedList<Object>();	
 	private Map<String,LinkedList<IFCVO>> inverse_pointer_sets = new HashMap<String,LinkedList<IFCVO>>();
 	private boolean touched = false;
-	//private int maxlevel=0;	
-	//private String gid=null;
 	
 	public IFCVO() {}
 	
@@ -84,26 +83,8 @@ public class IFCVO {
 		touched=false;
 	}
 	
-//	public String getGid() {
-//		return gid;
-//	}
-//	
-//	public void setGid(String gid) {
-//		this.gid = gid;
-//	}
-	
-//	public int getMaxlevel() {
-//		return maxlevel;
-//	}
-//	
-//	public void setMaxlevel(int maxlevel) {
-//		this.maxlevel = maxlevel;
-//	}
-	
 	@Override
 	public String toString() {
-//	    return "IFC_X3_VO [line_num=" + line_num + ", name=" + name + ", list=" + list + ", inverse_pointer_sets=" + inverse_pointer_sets + ", maxlevel=" + maxlevel + ", touched=" + touched
-//		    + ", gid=" + gid + "]";
 	    return "IFC_X3_VO [line_num=" + line_num + ", name=" + name + ", list=" + list + ", inverse_pointer_sets=" + getInverse_pointer_sets() + ", touched=" + touched
 			    + "]";
 	}
