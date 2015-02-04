@@ -10,6 +10,10 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.Map;
+
+import org.buildingsmart.vo.EntityVO;
+import org.buildingsmart.vo.TypeVO;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -105,9 +109,6 @@ public class IfcReader {
 
 	public static void convert(String express_schema, String ifc_file, String output_file, String baseURI) {
 		long t0 = System.currentTimeMillis();
-		
-		//ExpressReader er = new ExpressReader(express_schema, express_file);
-		//er.readAndBuild();
 		
 		//CONVERSION
 		IfcConvertor conv = new IfcConvertor(express_schema, ifc_file, output_file, baseURI);

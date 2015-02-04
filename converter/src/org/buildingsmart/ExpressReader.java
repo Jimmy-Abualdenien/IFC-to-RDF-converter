@@ -86,9 +86,9 @@ public class ExpressReader {
 		this.expressFile = fileName;
 
 		// prepare dirs
-		File theDir = new File("src\\org\\buildingsmart\\" + expressSchemaName);
-		if (!theDir.exists())
-			theDir.mkdir();
+//		File theDir = new File("src\\org\\buildingsmart\\" + expressSchemaName);
+//		if (!theDir.exists())
+//			theDir.mkdir();
 	}
 	
 	public void readAndBuild(){
@@ -127,9 +127,9 @@ public class ExpressReader {
 
 			logger = new BufferedWriter(new FileWriter(logFile));
 
-			ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
+			//ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
 			//ExpressReader er = new ExpressReader("IFC4RC4","samples\\IFC4RC4.exp");
-			//ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
+			ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
 			er.readSpec();
 			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
