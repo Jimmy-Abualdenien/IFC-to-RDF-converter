@@ -2,31 +2,36 @@ package org.buildingsmart;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Stack;
 
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFCVO;
+import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.TypeVO;
 
-import com.hp.hpl.jena.graph.GraphUtil;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.InfModel;
+import com.hp.hpl.jena.ontology.OntProperty;
+import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
-
-import fi.ni.rdf.Namespace;
+import com.hp.hpl.jena.rdf.model.ResourceFactory;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 public class IfcConvertor {
 
@@ -67,7 +72,7 @@ public class IfcConvertor {
 	public Model parseModel(){
 		//setup models
 		om=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		om.read("samples\\" + express_schema + ".ttl"); //TODO: to replace by exact location
+		om.read("samples\\" + express_schema + ".ttl");
 		im = ModelFactory.createDefaultModel();
 		im.setNsPrefix("ifcowl", ontNS);
 		im.setNsPrefix("inst", baseURI);
@@ -227,7 +232,7 @@ public class IfcConvertor {
 						continue;
 					if (s.charAt(0) == '#') {
 						Object or = linemap.get(toLong(s.substring(1)));
-						System.out.println("1 - created object " + s.substring(1) + " - " + i);
+//						System.out.println("1 - created object " + s.substring(1) + " - " + i);
 						vo.getList().set(i, or);
 					}
 				}
@@ -236,14 +241,14 @@ public class IfcConvertor {
 					LinkedList<Object> tmp_list = (LinkedList<Object>) o;
 					for (int j = 0; j < tmp_list.size(); j++) {
 						Object o1 = tmp_list.get(j);
-						System.out.println("2 - created tmpobject ");
+//						System.out.println("2 - created tmpobject ");
 						if (String.class.isInstance(o1)) {
 							String s = (String) o1;
 							if (s.length() < 1)
 								continue;
 							if (s.charAt(0) == '#') {
 								Object or = linemap.get(toLong(s.substring(1)));
-								System.out.println("3 - created object " + s.substring(1) + " - " + i);
+//								System.out.println("3 - created object " + s.substring(1) + " - " + i);
 								if (or == null) {
 									System.err
 											.println("Reference to non-existing line in the IFC file.");
@@ -256,7 +261,7 @@ public class IfcConvertor {
 							LinkedList<Object> tmp2_list = (LinkedList<Object>) o1;
 							for (int j2 = 0; j2 < tmp2_list.size(); j2++) {
 								Object o2 = tmp2_list.get(j2);
-								System.out.println("4 - created tmp_object ");
+//								System.out.println("4 - created tmp_object ");
 								if (String.class.isInstance(o2)) {
 									String s = (String) o2;
 									if (s.length() < 1)
@@ -264,7 +269,7 @@ public class IfcConvertor {
 									if (s.charAt(0) == '#') {
 										Object or = linemap.get(toLong(s
 												.substring(1)));
-										System.out.println("5 - created object " + s.substring(1) + " - " + i);
+//										System.out.println("5 - created object " + s.substring(1) + " - " + i);
 										if (or == null) {
 											System.err
 													.println("Reference to non-existing line in the IFC file.");
@@ -288,49 +293,31 @@ public class IfcConvertor {
 			System.out.println(vo);			
 			String typeName = ent.get(vo.getName()).getName();			
 			OntClass cl = om.getOntClass(ontNS + typeName);
-			im.createResource(baseURI + typeName + "_" + vo.getLine_num(), cl);
+			Resource r = im.createResource(baseURI + typeName + "_" + vo.getLine_num(), cl);
 			
-			FillProperties("root", vo, vo, 0);
+			FillProperties("root", vo, vo, r, cl, 0);
 		}
 
 		//TODO: inverses
-//		try {
-//			for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
-//				IFCVO vo = entry.getValue();
-//				if (vo.getInverse_pointer_sets().size() > 0) {
-//					for (Map.Entry<String, LinkedList<IFCVO>> inverse_set : vo.getInverse_pointer_sets()
-//							.entrySet()) {
-//						LinkedList<IFCVO> li = inverse_set.getValue();
-//						String subject = filter_illegal_chars(":"
-//								+ ifc_filename + "_" + vo.getLine_num());
-//						for (int i = 0; i < li.size(); i++) {
-//							IFCVO ivo = li.get(i);
-//							addLiteralValue(vo.getLine_num(),
-//									ivo.getLine_num(), subject,
-//									inverse_set.getKey());
-//						}
-//					} // for map inverse_set
-//				} // if
-//			} // for map linemap
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 	
 	private void FillProperties(String name, IFCVO vo,
-			IFCVO level_up_vo, int level) {
+			IFCVO level_up_vo, Resource r, OntClass cl, int level) {
+		
 		
 		EntityVO evo = ent.get(ExpressReader.formatClassName(vo.getName()));
 		if (evo == null)
 			System.err.println("Does not exist: " + vo.getName());
 		
-		//we have the base resource... im.createResource was just called
 		String subject = evo.getName() + "_" + vo.getLine_num();
+		System.out.println("subject : " + subject);
 		
 		// Somebody has pointed here from above:
 		if (vo != level_up_vo) {
 			String level_up_subject = evo.getName() + "_"
 						+ level_up_vo.getLine_num();
+			System.out.println("level_up_subject" + level_up_subject);
+
 
 			//TODO - addLiteralValue(level_up_vo.getLine_num(), vo.getLine_num(),
 					//level_up_subject, name);
@@ -338,37 +325,92 @@ public class IfcConvertor {
 		if (vo.is_touched())
 			return;
 		
-//		TODO::
 //		TypeVO typeremembrance = null;
-//		int attribute_pointer = 0;
-//		for (int i = 0; i < vo.getList().size(); i++) {
-//			Object o = vo.getList().get(i);
-//			if (String.class.isInstance(o)) {
-//				if (!((String) o).equals("$")) { 
-//					// Do not print out empty values
-//
-//					if (types.get(ExpressReader.formatClassName((String) o)) == null) {
-//
-//						if ((evo != null)
-//								&& (evo.getDerived_attribute_list() != null)
-//								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-//							addLiteralValue(
-//									vo.getLine_num(),
-//									subject,
-//									evo.getDerived_attribute_list()
-//											.get(attribute_pointer).getName(),
-//									"\'" + filter_extras((String) o) + "'");
-//						}
-//
-//						attribute_pointer++;
-//					}
-//					else{
-//						typeremembrance = types.get(ExpressReader.formatClassName((String) o));
-//						//System.out.println("Found a reference to : " + types.get(ExpressReader.formatClassName((String) o)) + " for " + vo.getName());
-//					}
-//				} else
-//					attribute_pointer++;
-//			} else if (IFCVO.class.isInstance(o)) {
+		int attribute_pointer = 0;
+		for (int i = 0; i < vo.getList().size(); i++) {
+			Object o = vo.getList().get(i);
+			if (String.class.isInstance(o)) {
+				if (!((String) o).equals("$") && !((String) o).equals("*")) { 
+
+					if (typ.get(ExpressReader.formatClassName((String) o)) == null) {
+						if ((evo != null)
+								&& (evo.getDerived_attribute_list() != null)
+								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+							
+							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+							String literalString = filter_extras((String) o);
+							//System.out.println("1a - Found statement : " + vo.getName() + propURI + " - " + literalString);							
+							
+							OntProperty p = om.getOntProperty(propURI);
+							OntResource range = p.getRange();
+							if(range.isClass()){
+								//Check for ENUM
+								if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
+									System.out.println("TODO: found ENUM property: " + p + " - " + range.getLocalName() + " - " + literalString);
+								}								
+								//Check for SELECT
+								else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
+									System.out.println("TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
+								}								
+								else {
+									//regular property that should be one 'level' deep or that points directly to integer, long, or ...
+									System.out.println("found has_value literal class property: " + p + " - " + range.getLocalName());
+									Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
+									IDcounter++;
+									r.addProperty(p, r1);
+									
+									String xsdType;
+									if(range.asClass().getSuperClass()!=null && range.asClass().getSuperClass().getLocalName()!=null){
+										if(PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getLocalName()) != null){
+											xsdType = PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getLocalName()).getXSDType();
+											OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
+											if(xsdType.equalsIgnoreCase("integer"))
+												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
+											else if(xsdType.equalsIgnoreCase("double"))
+													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
+											else if(xsdType.equalsIgnoreCase("hexBinary"))
+												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
+											else if(xsdType.equalsIgnoreCase("boolean"))
+												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDboolean));	
+											else if(xsdType.equalsIgnoreCase("string"))
+												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
+											else
+												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));		
+										}
+										else
+											System.out.println("unhandled option");
+									}
+									else {
+										xsdType = PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getLocalName()).getXSDType();
+										OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);
+										if(xsdType.equalsIgnoreCase("integer"))
+											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
+										else if(xsdType.equalsIgnoreCase("double"))
+											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
+										else if(xsdType.equalsIgnoreCase("hexBinary"))
+											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
+										else if(xsdType.equalsIgnoreCase("boolean"))
+											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDboolean));	
+										else if(xsdType.equalsIgnoreCase("string"))
+											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
+										else
+											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));
+									}
+								}									
+							}
+							else {
+								System.out.println("found other kind of property: " + p + " - " + range.getLocalName());									
+							}
+						}
+						attribute_pointer++;
+					}
+					else{
+//						typeremembrance = typ.get(ExpressReader.formatClassName((String) o));
+						System.out.println("2 - Found a reference to : " + typ.get(ExpressReader.formatClassName((String) o)) + " for " + vo.getName());
+					}
+				} else
+					attribute_pointer++;
+			} else if (IFCVO.class.isInstance(o)) {
 //				if ((evo != null)
 //						&& (evo.getDerived_attribute_list() != null)
 //						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
@@ -384,8 +426,8 @@ public class IfcConvertor {
 //							level + 1);
 //					System.out.println("1!" + evo);
 //				}
-//				attribute_pointer++;
-//			} else if (LinkedList.class.isInstance(o)) {
+				attribute_pointer++;
+			} else if (LinkedList.class.isInstance(o)) {
 //				@SuppressWarnings("unchecked")
 //				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
 //				StringBuffer local_txt = new StringBuffer();
@@ -455,12 +497,10 @@ public class IfcConvertor {
 //										+ local_txt.toString() + "\'");
 //					}
 //				}
-//				attribute_pointer++;
-//			}
-//		}
-	
+				attribute_pointer++;
+			}
+		}	
 	}
-	
 	
 	//HELPER METHODS	
 		private String filter_extras(String txt) {
