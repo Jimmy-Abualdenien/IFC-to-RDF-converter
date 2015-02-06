@@ -325,7 +325,7 @@ public class IfcConvertor {
 		if (vo.is_touched())
 			return;
 		
-//		TypeVO typeremembrance = null;
+		TypeVO typeremembrance = null;
 		int attribute_pointer = 0;
 		for (int i = 0; i < vo.getList().size(); i++) {
 			Object o = vo.getList().get(i);
@@ -354,7 +354,7 @@ public class IfcConvertor {
 								}								
 								else {
 									//regular property that should be one 'level' deep or that points directly to integer, long, or ...
-									System.out.println("creating has_value literal class property: " + p + " - " + range.getLocalName());
+									System.out.println("INFO: creating has_value literal class property: " + p + " - " + range.getLocalName());
 									
 									Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
 									IDcounter++;
@@ -379,7 +379,7 @@ public class IfcConvertor {
 												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));		
 										}
 										else
-											System.out.println("unhandled option");
+											System.out.println("WARNING: unhandled option");
 									}
 									else {
 										xsdType = PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getLocalName()).getXSDType();
@@ -400,14 +400,15 @@ public class IfcConvertor {
 								}									
 							}
 							else {
-								System.out.println("found other kind of property: " + p + " - " + range.getLocalName());									
+								System.out.println("INFO: found other kind of property: " + p + " - " + range.getLocalName());									
 							}
 						}
 						attribute_pointer++;
 					}
 					else{
-//						typeremembrance = typ.get(ExpressReader.formatClassName((String) o));
-						System.out.println("2 - Found a reference to : " + typ.get(ExpressReader.formatClassName((String) o)) + " for " + vo.getName());
+						typeremembrance = typ.get(ExpressReader.formatClassName((String) o));
+						System.out.println("INFO: Found a reference to : " + typ.get(ExpressReader.formatClassName((String) o)) + " for " + vo.getName());
+						System.out.println("INFO: Needs to be put in a list");
 					}
 				} else
 					attribute_pointer++;
@@ -419,49 +420,46 @@ public class IfcConvertor {
 					EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
 					
 					OntProperty p = om.getOntProperty(propURI);
-					OntResource range = p.getRange();
+					OntResource range = p.getRange();					
 					
-					System.out.println("creating class property: " + p + " - " + range.getLocalName());
-					
-					if(!evorange.getName().equalsIgnoreCase(range.getLocalName())){
-						System.out.println("----WARNING: ranges are not equal! " + evorange.getName() + " versus " + range.getLocalName());	
-					}
-					
-					
-					Resource r1 = im.getResource(baseURI + range.getLocalName() + "_" + ((IFCVO) o).getLine_num());
+					Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num());
 					if(r1 == null){
-						r1 = im.createResource(baseURI + range.getLocalName() + "_" + ((IFCVO) o).getLine_num(), range.asResource());
+						r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num(), range.asResource());
 						r.addProperty(p, r1);				
 					}
 					else{
 						r.addProperty(p, r1);				
 					}
-					System.out.println("created class property: " + p + " - " + r1.getLocalName());
+					System.out.println("INFO: created class property: " + p + " - " + r1.getLocalName());
 					
 				} else {
-					System.out.println("33a - Found IFCVO class instance : ------ for " + ((IFCVO) o).getName() + " - level: " + (level + 1));
+					System.out.println("WARNING: Found IFCVO class instance with evo == null (should not happen): ------ for " + ((IFCVO) o).getName() + " - level: " + (level + 1));
 //					fillJavaClassInstanceValues("-", (IFCVO) o, vo,
 //							level + 1);
 //					System.out.println("1!" + evo);
 				}
 				attribute_pointer++;
 			} else if (LinkedList.class.isInstance(o)) {
+				System.out.println("TODO - linkedlist : ");
 //				@SuppressWarnings("unchecked")
-//				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
-//				StringBuffer local_txt = new StringBuffer();
-//				for (int j = 0; j < tmp_list.size(); j++) {
-//					Object o1 = tmp_list.get(j);
-//					if (String.class.isInstance(o1)) {
-//						if (types.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null) {
-//							typeremembrance = types.get(ExpressReader.formatClassName((String) o1));	
-//						}
-//						else{
-//							if (j > 0 && typeremembrance == null)
-//								local_txt.append("_, ");
-//							local_txt.append(filter_extras((String) o1));							
-//						}
-//					}
-//					if (IFCVO.class.isInstance(o1)) {
+				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
+				StringBuffer local_txt = new StringBuffer();
+				
+				//process list
+				for (int j = 0; j < tmp_list.size(); j++) {
+					Object o1 = tmp_list.get(j);
+					if (String.class.isInstance(o1)) {
+						System.out.println("TODO - linkedlist - string : " + ExpressReader.formatClassName((String) o1) + " -> " + " - ");
+						if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null) {
+							typeremembrance = typ.get(ExpressReader.formatClassName((String) o1));	
+						}
+						else{
+							if (j > 0 && typeremembrance == null)
+								local_txt.append("_, ");
+							local_txt.append(filter_extras((String) o1));							
+						}
+					}
+					if (IFCVO.class.isInstance(o1)) {
 //						if ((evo != null)
 //								&& (evo.getDerived_attribute_list() != null)
 //								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
@@ -477,8 +475,8 @@ public class IfcConvertor {
 //									vo, level + 1);
 //							System.out.println("2!" + evo);
 //						}
-//					}
-//					if(LinkedList.class.isInstance(o1) && typeremembrance != null){
+					}
+					if(LinkedList.class.isInstance(o1) && typeremembrance != null){
 //						LinkedList<Object> tmp_list_inlist = (LinkedList<Object>) o1;
 //						for(int jj = 0; jj<tmp_list_inlist.size(); jj++){
 //							Object o2 = tmp_list_inlist.get(jj);
@@ -486,10 +484,11 @@ public class IfcConvertor {
 //								local_txt.append(filter_extras((String) o2));
 //							}
 //						}
-//					}
-//				}
-//
-//				if (local_txt.length() > 0) {
+					}
+				}
+
+				//interpret parse
+				if (local_txt.length() > 0) {
 //					if(typeremembrance != null){
 //						//System.out.println("retrieved the required value : " + typeremembrance.getName() + " - " + local_txt);
 //						if ((evo != null)
@@ -514,7 +513,7 @@ public class IfcConvertor {
 //										.get(attribute_pointer).getName(), "'"
 //										+ local_txt.toString() + "\'");
 //					}
-//				}
+				}
 				attribute_pointer++;
 			}
 		}	
