@@ -290,7 +290,7 @@ public class IfcConvertor {
 		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
 			IFCVO vo = entry.getValue();
 			//create class instance
-			System.out.println(vo);			
+			//System.out.println(vo);			
 			String typeName = ent.get(vo.getName()).getName();			
 			OntClass cl = om.getOntClass(ontNS + typeName);
 			Resource r = im.createResource(baseURI + typeName + "_" + vo.getLine_num(), cl);
@@ -302,8 +302,7 @@ public class IfcConvertor {
 	}
 	
 	private void FillProperties(String name, IFCVO vo,
-			IFCVO level_up_vo, Resource r, OntClass cl, int level) {
-		
+			IFCVO level_up_vo, Resource r, OntClass cl, int level) {		
 		
 		EntityVO evo = ent.get(ExpressReader.formatClassName(vo.getName()));
 		if (evo == null)
@@ -313,15 +312,16 @@ public class IfcConvertor {
 		System.out.println("subject : " + subject);
 		
 		// Somebody has pointed here from above:
-		if (vo != level_up_vo) {
-			String level_up_subject = evo.getName() + "_"
-						+ level_up_vo.getLine_num();
-			System.out.println("level_up_subject" + level_up_subject);
-
-
-			//TODO - addLiteralValue(level_up_vo.getLine_num(), vo.getLine_num(),
-					//level_up_subject, name);
-		}
+		// NOT SURE IF THIS IS NECESSARY
+//		if (vo != level_up_vo) {
+//			String level_up_subject = evo.getName() + "_"
+//						+ level_up_vo.getLine_num();
+//			System.out.println("level_up_subject" + level_up_subject);
+//
+//
+//			//TODO - addLiteralValue(level_up_vo.getLine_num(), vo.getLine_num(),
+//					//level_up_subject, name);
+//		}
 		if (vo.is_touched())
 			return;
 		
@@ -354,7 +354,8 @@ public class IfcConvertor {
 								}								
 								else {
 									//regular property that should be one 'level' deep or that points directly to integer, long, or ...
-									System.out.println("found has_value literal class property: " + p + " - " + range.getLocalName());
+									System.out.println("creating has_value literal class property: " + p + " - " + range.getLocalName());
+									
 									Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
 									IDcounter++;
 									r.addProperty(p, r1);
@@ -411,21 +412,38 @@ public class IfcConvertor {
 				} else
 					attribute_pointer++;
 			} else if (IFCVO.class.isInstance(o)) {
-//				if ((evo != null)
-//						&& (evo.getDerived_attribute_list() != null)
-//						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-//					fillJavaClassInstanceValues(evo.getDerived_attribute_list()
-//							.get(attribute_pointer).getName(), (IFCVO) o,
-//							vo, level + 1);
-//					addIFCAttribute(
-//							vo,
-//							evo.getDerived_attribute_list().get(
-//									attribute_pointer), (IFCVO) o);
-//				} else {
+				if ((evo != null)
+						&& (evo.getDerived_attribute_list() != null)
+						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
+					
+					OntProperty p = om.getOntProperty(propURI);
+					OntResource range = p.getRange();
+					
+					System.out.println("creating class property: " + p + " - " + range.getLocalName());
+					
+					if(!evorange.getName().equalsIgnoreCase(range.getLocalName())){
+						System.out.println("----WARNING: ranges are not equal! " + evorange.getName() + " versus " + range.getLocalName());	
+					}
+					
+					
+					Resource r1 = im.getResource(baseURI + range.getLocalName() + "_" + ((IFCVO) o).getLine_num());
+					if(r1 == null){
+						r1 = im.createResource(baseURI + range.getLocalName() + "_" + ((IFCVO) o).getLine_num(), range.asResource());
+						r.addProperty(p, r1);				
+					}
+					else{
+						r.addProperty(p, r1);				
+					}
+					System.out.println("created class property: " + p + " - " + r1.getLocalName());
+					
+				} else {
+					System.out.println("33a - Found IFCVO class instance : ------ for " + ((IFCVO) o).getName() + " - level: " + (level + 1));
 //					fillJavaClassInstanceValues("-", (IFCVO) o, vo,
 //							level + 1);
 //					System.out.println("1!" + evo);
-//				}
+				}
 				attribute_pointer++;
 			} else if (LinkedList.class.isInstance(o)) {
 //				@SuppressWarnings("unchecked")
