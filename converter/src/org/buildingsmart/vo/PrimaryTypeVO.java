@@ -17,7 +17,6 @@ public class PrimaryTypeVO {
 			pTypeName = pTypeName.substring(0, pTypeName.length() - 1);
 		if (getPrimaryTypeVO(pTypeName) == null) {
 			this.pTypeName = pTypeName;
-			this.setXSDType();
 			listOfPrimaryTypes.add(this);
 		}
 	}
@@ -79,26 +78,6 @@ public class PrimaryTypeVO {
 		return "XSDTYPE";
 	}
 
-	private void setXSDType() {
-		String XSDType;
-		if (pTypeName.equalsIgnoreCase("REAL"))
-			XSDType = "double";
-		else if (pTypeName.equalsIgnoreCase("BINARY"))
-			XSDType = "hexBinary";
-		else if (pTypeName.equalsIgnoreCase("BOOLEAN"))
-			XSDType = "boolean";
-		else if (pTypeName.equalsIgnoreCase("INTEGER"))
-			XSDType = "integer";
-		else if (pTypeName.equalsIgnoreCase("NUMBER"))
-			XSDType = "integer";
-		else if (pTypeName.equalsIgnoreCase("STRING"))
-			XSDType = "string";
-		else if (pTypeName.equalsIgnoreCase("LOGICAL"))
-			XSDType = "boolean";
-		else
-			XSDType = "XSDTYPE";
-	}
-
 	public String getJAVAType() {
 		if (pTypeName.equalsIgnoreCase("REAL"))
 			return "Double";
@@ -115,25 +94,5 @@ public class PrimaryTypeVO {
 		else if (pTypeName.equalsIgnoreCase("LOGICAL"))
 			return "Boolean";
 		return "JAVAType";
-	}
-
-	public void setJAVAType() {
-		String JAVAType;
-		if (pTypeName.equalsIgnoreCase("REAL"))
-			JAVAType = "Double";
-		else if (pTypeName.equalsIgnoreCase("BINARY"))
-			JAVAType = "org.apache.axis2.databinding.types.xsd.HexBinary";
-		else if (pTypeName.equalsIgnoreCase("BOOLEAN"))
-			JAVAType = "Boolean";
-		else if (pTypeName.equalsIgnoreCase("INTEGER"))
-			JAVAType = "Integer";
-		else if (pTypeName.equalsIgnoreCase("NUMBER"))
-			JAVAType = "Integer";
-		else if (pTypeName.equalsIgnoreCase("STRING"))
-			JAVAType = "String";
-		else if (pTypeName.equalsIgnoreCase("LOGICAL"))
-			JAVAType = "Boolean";
-		else
-			JAVAType = "JAVATypeTYPE";
 	}
 }
