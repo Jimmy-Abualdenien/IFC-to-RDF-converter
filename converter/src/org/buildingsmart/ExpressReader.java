@@ -97,7 +97,7 @@ public class ExpressReader {
 			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 			File logFile = new File("out//log_" + timeLog + ".txt");
 			System.out.println(logFile.getCanonicalPath());		
-			logger = new BufferedWriter(new FileWriter(logFile));
+//			logger = new BufferedWriter(new FileWriter(logFile));
 			
 			this.readSpec();
 			this.buildExpressStructure();
@@ -117,19 +117,19 @@ public class ExpressReader {
 	public static void main(String[] args) throws IOException {
 		try {
 			// create a temporary file
-			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
-					.format(Calendar.getInstance().getTime());
-			File logFile = new File("out//log_" + timeLog + ".txt");
+//			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
+//					.format(Calendar.getInstance().getTime());
+//			File logFile = new File("out//log_" + timeLog + ".txt");
 
 			// This will output the full path where the file will be written
 			// to...
-			System.out.println(logFile.getCanonicalPath());
+//			System.out.println(logFile.getCanonicalPath());
 
-			logger = new BufferedWriter(new FileWriter(logFile));
+//			logger = new BufferedWriter(new FileWriter(logFile));
 
-			//ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
+			ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
 			//ExpressReader er = new ExpressReader("IFC4RC4","samples\\IFC4RC4.exp");
-			ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
+//			ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
 			er.readSpec();
 			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
@@ -159,7 +159,7 @@ public class ExpressReader {
 		} finally {
 			try {
 				// Close the writer regardless of what happens...
-				logger.close();
+				//logger.close();
 			} catch (Exception e) {
 			}
 		}
@@ -382,20 +382,20 @@ public class ExpressReader {
 		while (pr.hasNext()) {
 			Entry<String, PropertyVO> ps = pr.next();
 			PropertyVO p = ps.getValue();
-			try {
-				logger.write(i + " - property found : " + p.getName() + " - " + ps.getKey() + "\r\n");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+//			try {
+//				logger.write(i + " - property found : " + p.getName() + " - " + ps.getKey() + "\r\n");
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			i++;
 		}
-		try {
-			logger.flush();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			logger.flush();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		System.out.println("_______");
 		
@@ -479,6 +479,10 @@ public class ExpressReader {
 				String strLine;
 				while ((strLine = br.readLine()) != null) {
 					if (strLine.length() > 0) {
+						if(strLine.contains("Pixel"))
+							System.out.println("stop here");
+						if(strLine.contains("STRING(255)"))
+							System.out.println("stop here");
 						parse_level(strLine);
 					}
 				}
@@ -650,6 +654,10 @@ public class ExpressReader {
 	private int tmp_listoflist_maxcard = -1;
 
 	private void state_machine(String txt) {
+
+		if(txt.equalsIgnoreCase("	Pixel : LIST [1:?] OF BINARY(32);"))
+			System.out.println("stop here");
+		
 		switch (state) {
 		case INIT_STATE:
 			if (txt.equalsIgnoreCase("TYPE"))
@@ -828,7 +836,7 @@ public class ExpressReader {
 			break;
 
 		// 2.1 PROPERTIES
-		case ENTITY_READY:
+		case ENTITY_READY:			
 			if (txt.equalsIgnoreCase("END_ENTITY;")) {
 				state = INIT_STATE;
 			} else if (txt.equalsIgnoreCase("OPTIONAL")) {
@@ -869,17 +877,43 @@ public class ExpressReader {
 			} else if (txt.contains(";")) {
 				tmp_entity_type = ExpressReader.formatClassName(txt.substring(
 						0, txt.length() - 1));
-				TypeVO type = types.get(tmp_entity_type);
-				if (type == null) {
-					type = new TypeVO(txt.substring(0, txt.length() - 1),
-							"CLASS");
+				
+				String txt_filtered = filter_PTypeExtras(txt);
+				if(txt_filtered.equalsIgnoreCase("NUMBER") || txt_filtered.equalsIgnoreCase("REAL") || 
+						txt_filtered.equalsIgnoreCase("INTEGER") || txt_filtered.equalsIgnoreCase("LOGICAL") || 
+						txt_filtered.equalsIgnoreCase("BOOLEAN") || txt_filtered.equalsIgnoreCase("STRING") || 
+						txt_filtered.equalsIgnoreCase("BINARY")){
+					// primarytypes like REAL/INTEGER/STRING/...
+					System.out.println("Filtering : " + txt + " -> " + txt_filtered);
+					new PrimaryTypeVO(formatClassName(txt_filtered));
+					tmp_entity_type = txt_filtered;
+					TypeVO type = types.get(tmp_entity_type);
+					
+					if (type == null) {
+						type = new TypeVO(txt_filtered,
+								"CLASS");
+					}
+					current_entity.getAttributes().add(
+							new AttributeVO(tmp_entity_name, type, is_array, is_set, is_list,
+									is_listoflist, tmp_mincard, tmp_maxcard,
+									tmp_listoflist_mincard, tmp_listoflist_maxcard,
+									is_optional));
+					state = ENTITY_STATE;
 				}
-				current_entity.getAttributes().add(
-						new AttributeVO(tmp_entity_name, type, is_array, is_set, is_list,
-								is_listoflist, tmp_mincard, tmp_maxcard,
-								tmp_listoflist_mincard, tmp_listoflist_maxcard,
-								is_optional));
-				state = ENTITY_STATE;
+				else{
+					TypeVO type = types.get(tmp_entity_type);
+					
+					if (type == null) {
+						type = new TypeVO(txt.substring(0, txt.length() - 1),
+								"CLASS");
+					}
+					current_entity.getAttributes().add(
+							new AttributeVO(tmp_entity_name, type, is_array, is_set, is_list,
+									is_listoflist, tmp_mincard, tmp_maxcard,
+									tmp_listoflist_mincard, tmp_listoflist_maxcard,
+									is_optional));
+					state = ENTITY_STATE;
+				}
 			}
 			break;
 
@@ -1095,6 +1129,46 @@ public class ExpressReader {
 		}
 		return sb.toString();
 	}
+	
+	static public String filter_PTypeExtras(String txt) {
+		StringBuffer sb = new StringBuffer();
+		for (int n = 0; n < txt.length(); n++) {
+			char ch = txt.charAt(n);
+			switch (ch) {
+			case '0':
+				break;
+			case '1':
+				break;
+			case '2':
+				break;
+			case '3':
+				break;
+			case '4':
+				break;
+			case '5':
+				break;
+			case '6':
+				break;
+			case '7':
+				break;
+			case '8':
+				break;
+			case '9':
+				break;
+			case '(':
+				break;
+			case ';':
+				break;
+			case ',':
+				break;
+			case ')':
+				break;
+			default:
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
+	}
 
 	private void parse_level(String txt) {
 		StringTokenizer st = new StringTokenizer(txt);
@@ -1130,7 +1204,6 @@ public class ExpressReader {
 	// return isSubClassOf_this(entities.get(class_name), superclass_name);
 	// }
 
-	@SuppressWarnings("unused")
 	private void unpackSelectTypes() {
 		// if a select type is referred to by another select type -> replace it
 		// by the elements of the latter!
