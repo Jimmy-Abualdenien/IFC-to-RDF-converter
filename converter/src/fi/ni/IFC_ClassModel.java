@@ -303,7 +303,7 @@ public class IFC_ClassModel {
 			if (vp.getValue().getClass().equals(java.lang.Long.class))
 				toRet.append("^^xsd:integer");
 			if (vp.getValue().getClass().equals(java.lang.Double.class))
-				toRet.append("^^xsd:decimal");
+				toRet.append("^^xsd:double");
 			if (vp.getValue().getClass().equals(java.util.Date.class))
 				toRet.append("^^xsd:datetime");
 			if (vp.getValue().getClass().equals(java.lang.String.class))
