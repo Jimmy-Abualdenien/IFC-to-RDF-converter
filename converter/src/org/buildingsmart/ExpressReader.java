@@ -84,11 +84,6 @@ public class ExpressReader {
 		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 		this.expressSchemaName = expressSchemaName;
 		this.expressFile = fileName;
-
-		// prepare dirs
-//		File theDir = new File("src\\org\\buildingsmart\\" + expressSchemaName);
-//		if (!theDir.exists())
-//			theDir.mkdir();
 	}
 	
 	public void readAndBuild(){
@@ -127,8 +122,13 @@ public class ExpressReader {
 
 //			logger = new BufferedWriter(new FileWriter(logFile));
 
-			ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
-			//ExpressReader er = new ExpressReader("IFC4RC4","samples\\IFC4RC4.exp");
+			ExpressReader er = new ExpressReader("Ifc2x_all_lf","samples\\Ifc2x_all_lf.exp");
+//			ExpressReader er = new ExpressReader("IFC2X2_FINAL","samples\\IFC2X2_FINAL.exp");
+//			ExpressReader er = new ExpressReader("IFC2X2_PLATFORM","samples\\IFC2X2_PLATFORM.exp");
+//			ExpressReader er = new ExpressReader("IFC2X2_ADD1","samples\\IFC2X2_ADD1.exp");
+//			ExpressReader er = new ExpressReader("IFC2X3_Final","samples\\IFC2X3_Final.exp");
+//			ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
+//			ExpressReader er = new ExpressReader("IFC4","samples\\IFC4.exp");
 //			ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
 			er.readSpec();
 			System.out.println("Ended parsing the EXPRESS file");
@@ -629,10 +629,8 @@ public class ExpressReader {
 	private String tmp_inverse_name;
 	private String tmp_inverse_classnamerange;
 	private String tmp_inverse_inverseprop;
-	private int tmp_inverse_mincard = -1; // cardinality of the targeted list,
-											// not of the property
-	private int tmp_inverse_maxcard = -1; // cardinality of the targeted list,
-											// not of the property
+	private int tmp_inverse_mincard = 0;  //default value according to EXPRESS spec	
+	private int tmp_inverse_maxcard = -1;  //default value according to EXPRESS spec	
 	// private boolean tmp_inverse_is_one_valued = false;
 
 	private String tmp_entity_name;
@@ -643,20 +641,15 @@ public class ExpressReader {
 	private boolean is_set = false;
 	private boolean is_array = false;
 	private boolean is_list = false;
-	private int tmp_mincard = -1; // cardinality of the targeted list, not of
-									// the property
-	private int tmp_maxcard = -1; // cardinality of the targeted list, not of
-									// the property
+	private int tmp_mincard = 0; //default value according to EXPRESS spec	
+	private int tmp_maxcard = -1; //default value according to EXPRESS spec
 	private boolean is_optional = false;
 
 	private boolean is_listoflist = false;
-	private int tmp_listoflist_mincard = -1;
-	private int tmp_listoflist_maxcard = -1;
+	private int tmp_listoflist_mincard = 0;  //default value according to EXPRESS spec
+	private int tmp_listoflist_maxcard = -1; //default value according to EXPRESS spec
 
 	private void state_machine(String txt) {
-
-		if(txt.equalsIgnoreCase("	Pixel : LIST [1:?] OF BINARY(32);"))
-			System.out.println("stop here");
 		
 		switch (state) {
 		case INIT_STATE:
@@ -798,10 +791,10 @@ public class ExpressReader {
 			is_set = false;
 			is_list = false;
 			is_optional = false;
-			tmp_mincard = -1;
+			tmp_mincard = 0;
 			tmp_maxcard = -1;
 			is_listoflist = false;
-			tmp_listoflist_mincard = -1;
+			tmp_listoflist_mincard = 0;
 			tmp_listoflist_maxcard = -1;
 
 			if (txt.equalsIgnoreCase("SUBTYPE")) {
@@ -886,8 +879,7 @@ public class ExpressReader {
 					// primarytypes like REAL/INTEGER/STRING/...
 					System.out.println("Filtering : " + txt + " -> " + txt_filtered);
 					new PrimaryTypeVO(formatClassName(txt_filtered));
-					tmp_entity_type = txt_filtered;
-					TypeVO type = types.get(tmp_entity_type);
+					TypeVO type = types.get(txt_filtered);
 					
 					if (type == null) {
 						type = new TypeVO(txt_filtered,
@@ -973,7 +965,7 @@ public class ExpressReader {
 		// 2.4 INVERSE
 		case ENTITY_INVERSE_STATE:
 			is_set = false;
-			tmp_inverse_mincard = -1;
+			tmp_inverse_mincard = 0;
 			tmp_inverse_maxcard = -1;
 			if (txt.equalsIgnoreCase("WHERE")) {
 				state = ENTITY_WHERE;
