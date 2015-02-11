@@ -34,6 +34,7 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class IfcConvertor {
 
@@ -309,17 +310,6 @@ public class IfcConvertor {
 		String subject = evo.getName() + "_" + vo.getLine_num();
 		System.out.println("subject : " + subject);
 		
-		// Somebody has pointed here from above:
-		// NOT SURE IF THIS IS NECESSARY
-//		if (vo != level_up_vo) {
-//			String level_up_subject = evo.getName() + "_"
-//						+ level_up_vo.getLine_num();
-//			System.out.println("level_up_subject" + level_up_subject);
-//
-//
-//			//TODO - addLiteralValue(level_up_vo.getLine_num(), vo.getLine_num(),
-//					//level_up_subject, name);
-//		}
 		if (vo.is_touched())
 			return;
 		
@@ -343,11 +333,18 @@ public class IfcConvertor {
 							if(range.isClass()){
 								//Check for ENUM
 								if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
-									System.out.println("TODO: found ENUM property: " + p + " - " + range.getLocalName() + " - " + literalString);
+									for (ExtendedIterator<? extends OntResource> instances = range.asClass().listInstances(); instances.hasNext(); ) {
+							            OntResource rangeInstance = instances.next();
+							            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){
+							            	im.add(im.createStatement(r, p, rangeInstance));							            	
+							            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
+							            	break;
+							            }
+									}
 								}								
 								//Check for SELECT
 								else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
-									System.out.println("TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
+									System.out.println("1 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
 								}								
 								else {
 									//regular property that should be one 'level' deep or that points directly to integer, long, or ...
@@ -416,8 +413,6 @@ public class IfcConvertor {
 					}
 					else{
 						typeremembrance = typ.get(ExpressReader.formatClassName((String) o));
-//						System.out.println("INFO: Found a reference to : " + typ.get(ExpressReader.formatClassName((String) o)) + " for " + vo.getName());
-//						System.out.println("INFO: Needs to be put in a list");
 					}
 				} else
 					attribute_pointer++;
@@ -439,12 +434,9 @@ public class IfcConvertor {
 					else{
 						r.addProperty(p, r1);				
 					}
-					System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());					
+					//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());					
 				} else {
 					System.out.println("WARNING: Found IFCVO class instance with evo == null (should not happen): ------ for " + ((IFCVO) o).getName() + " - level: " + (level + 1));
-//					fillJavaClassInstanceValues("-", (IFCVO) o, vo,
-//							level + 1);
-//					System.out.println("1!" + evo);
 				}
 				attribute_pointer++;
 			} else if (LinkedList.class.isInstance(o)) {
@@ -474,8 +466,6 @@ public class IfcConvertor {
 							OntResource typerange = p.getRange();
 							
 							if(typerange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
-								//System.out.println("TODO: linkedLIST - class instances : " + evo.getDerived_attribute_list().get(attribute_pointer).getName()+ " -> " + ((IFCVO) o1).getName() + " - " + typerange.getLocalName());
-								
 								String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
 								OntResource listrange = om.getOntResource(listvaluepropURI);
 								
@@ -499,13 +489,10 @@ public class IfcConvertor {
 								else{
 									r.addProperty(p, r1);				
 								}
-								System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());									
+								//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());									
 							}
 						} else {
 							System.out.println("WARNING: linkedlist - empty class instances : -- -> " + " - " + ((IFCVO) o1).getName());
-//							fillJavaClassInstanceValues("-", (IFCVO) o1,
-//									vo, level + 1);
-//							System.out.println("2!" + evo);
 						}
 					}
 					if(LinkedList.class.isInstance(o1) && typeremembrance != null){
@@ -535,11 +522,17 @@ public class IfcConvertor {
 							OntProperty p = om.getOntProperty(propURI);
 							OntResource rclass = om.getOntResource(ontNS + typerange.getName());
 							
-							//OntResource range = p.getRange();
 							if(rclass.isClass()){
 								//Check for ENUM
 								if(rclass.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
-									System.out.println("TODO: found ENUM property: " + p + " - " + rclass.getLocalName() + " - " + local_txt);
+									for (ExtendedIterator<? extends OntResource> instances = rclass.asClass().listInstances(); instances.hasNext(); ) {
+							            OntResource rangeInstance = instances.next();
+							            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(local_txt.toString()))){
+							            	im.add(im.createStatement(r, p, rangeInstance));							            	
+							            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
+							            	break;
+							            }
+									}
 								}								
 								//Check for SELECT
 								else if(rclass.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
@@ -551,7 +544,7 @@ public class IfcConvertor {
 									Resource r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, rclass);
 									IDcounter++;
 									r.addProperty(p, r1);		
-									System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
+									//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
 									
 									String xsdType;
 									if(rclass.asClass().getSuperClass()!=null && rclass.asClass().getSuperClass().getLocalName()!=null){
@@ -578,7 +571,7 @@ public class IfcConvertor {
 												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString()));		
 											
 
-											System.out.println("OK: created has_value literal class property: " + valueProp + " - " + local_txt.toString());	
+											//System.out.println("OK: created has_value literal class property: " + valueProp + " - " + local_txt.toString());	
 										}
 										else
 											System.out.println("--WARNING: unhandled option");
@@ -606,7 +599,7 @@ public class IfcConvertor {
 											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString()));
 										
 
-										System.out.println("OK: created has_value literal class property: " + valueProp + " - " + local_txt.toString());	
+										//System.out.println("OK: created has_value literal class property: " + valueProp + " - " + local_txt.toString());	
 									}								
 								}									
 							}
@@ -655,7 +648,7 @@ public class IfcConvertor {
 											IDcounter++;
 											if(ii==0){
 												r.addProperty(p, r1);
-												System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
+												//System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
 											}
 										}	
 										//bindtheproperties
@@ -689,9 +682,9 @@ public class IfcConvertor {
 				entlist.add((IFCVO)tmp_list.get(i));
 				if (i == 0) {
 					r.addProperty(p, r1);
-					System.out.println("OK: added property: "
-							+ r.getLocalName() + " - " + p.getLocalName()
-							+ " - " + r1.getLocalName());
+//					System.out.println("OK: added property: "
+//							+ r.getLocalName() + " - " + p.getLocalName()
+//							+ " - " + r1.getLocalName());
 				}
 			}
 		}	
@@ -721,11 +714,11 @@ public class IfcConvertor {
 			else{
 				r.addProperty(listp, r1);				
 			}
-			System.out.println("OK: created class property: " + listp + " - " + r1.getLocalName());		
+			//System.out.println("OK: created class property: " + listp + " - " + r1.getLocalName());		
 																
 			if(i<reslist.size()-1){								
 				r.addProperty(isfollowed,reslist.get(i+1));
-				System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+				//System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
 			}	
 		}
 	}
@@ -746,7 +739,7 @@ public class IfcConvertor {
 					IDcounter++;
 					
 					r.addProperty(listp, r2);
-					System.out.println("OK: added property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r2.getLocalName());
+					//System.out.println("OK: added property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r2.getLocalName());
 						
 					if(xsdType.equalsIgnoreCase("integer"))
 						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value, XSDDatatype.XSDinteger));
@@ -767,11 +760,11 @@ public class IfcConvertor {
 					else
 						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value));		
 						
-					System.out.println("OK: added literal: " + r2.getLocalName() + " - " + valueProp.getLocalName() + " - " + value);
+					//System.out.println("OK: added literal: " + r2.getLocalName() + " - " + valueProp.getLocalName() + " - " + value);
 																		
 					if(i<listelements.size()-1){								
 						r.addProperty(isfollowed,reslist.get(i+1));
-						System.out.println("OK: added property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+						//System.out.println("OK: added property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
 					}	
 				}
 			}
@@ -779,7 +772,7 @@ public class IfcConvertor {
 				System.out.println("WARNING: unhandled option");
 		}
 		else {
-			System.out.println("WARNING:  unhandled option");	
+			System.out.println("WARNING: unhandled option");	
 		}
 	}
 	
@@ -792,6 +785,20 @@ public class IfcConvertor {
 				case '\'':
 					break;
 				case '=':
+					break;
+				default:
+					sb.append(ch);
+				}
+			}
+			return sb.toString();
+		}
+		
+		private String filter_points(String txt) {
+			StringBuffer sb = new StringBuffer();
+			for (int n = 0; n < txt.length(); n++) {
+				char ch = txt.charAt(n);
+				switch (ch) {
+				case '.':
 					break;
 				default:
 					sb.append(ch);
