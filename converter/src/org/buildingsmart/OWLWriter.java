@@ -687,6 +687,7 @@ public class OWLWriter {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void writeCardinalityRestrictionsForArray(AttributeVO attr,
 			BufferedWriter out) throws IOException {
 		// write cardinality restrictions for the referenced array
@@ -1223,6 +1224,7 @@ public class OWLWriter {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void writeTypesToOWL(Iterator<Entry<String, TypeVO>> it,
 			BufferedWriter out) throws IOException {
 		while (it.hasNext()) {
