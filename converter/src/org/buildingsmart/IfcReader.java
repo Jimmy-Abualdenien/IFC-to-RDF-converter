@@ -10,10 +10,8 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
-import java.util.Map;
 
-import org.buildingsmart.vo.EntityVO;
-import org.buildingsmart.vo.TypeVO;
+import net.sf.json.JSONObject;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -23,8 +21,6 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.reasoner.ValidityReport.Report;
-
-import net.sf.json.JSONObject;
 
 /*
  * IFCtoRDFConverter is the final interface for this code. Through this class, one is able to submit an IFC file and the EXPRESS schema it follows so that
@@ -135,9 +131,6 @@ public class IfcReader {
 				System.out.println(" - " + i.next());
 			}
 		}
-				
-		//IFC_ClassModel model = new IFC_ClassModel(ifc_file, er.getEntities(), er.getTypes(), model_version_name, express_schema);
-		//model.parseModel();
 		
 		if(valid==true){			
 			try {
