@@ -17,9 +17,7 @@ import org.buildingsmart.vo.IFCVO;
 import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.TypeVO;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.ontology.DatatypeProperty;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -28,11 +26,8 @@ import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -41,7 +36,6 @@ public class IfcConvertor {
 	//input variables
 	private String express_schema;
 	private String ifc_file;
-	private String output_file;
 	private String baseURI;
 	private String ontURI;
 	private String ontNS;
@@ -57,10 +51,9 @@ public class IfcConvertor {
 	private Model im;
 	
 	public IfcConvertor(String express_schema, String ifc_file, String output_file, String baseURI){
-		//Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 		this.express_schema = express_schema;
 		this.ifc_file = ifc_file;
-		this.output_file = output_file;
+		//this.output_file = output_file;
 		this.baseURI = baseURI;
 		
 		//PREPARATION
@@ -95,8 +88,6 @@ public class IfcConvertor {
 		mapEntries();		
 		createInstances();
 		
-		
-
 		// Save memory
 		linemap.clear();
 		linemap = null;
@@ -235,23 +226,21 @@ public class IfcConvertor {
 						continue;
 					if (s.charAt(0) == '#') {
 						Object or = linemap.get(toLong(s.substring(1)));
-//						System.out.println("1 - created object " + s.substring(1) + " - " + i);
 						vo.getList().set(i, or);
 					}
 				}
 				if (LinkedList.class.isInstance(o)) {
 					@SuppressWarnings("unchecked")
 					LinkedList<Object> tmp_list = (LinkedList<Object>) o;
+					
 					for (int j = 0; j < tmp_list.size(); j++) {
 						Object o1 = tmp_list.get(j);
-//						System.out.println("2 - created tmpobject ");
 						if (String.class.isInstance(o1)) {
 							String s = (String) o1;
 							if (s.length() < 1)
 								continue;
 							if (s.charAt(0) == '#') {
 								Object or = linemap.get(toLong(s.substring(1)));
-//								System.out.println("3 - created object " + s.substring(1) + " - " + i);
 								if (or == null) {
 									System.err
 											.println("Reference to non-existing line in the IFC file.");
@@ -264,7 +253,6 @@ public class IfcConvertor {
 							LinkedList<Object> tmp2_list = (LinkedList<Object>) o1;
 							for (int j2 = 0; j2 < tmp2_list.size(); j2++) {
 								Object o2 = tmp2_list.get(j2);
-//								System.out.println("4 - created tmp_object ");
 								if (String.class.isInstance(o2)) {
 									String s = (String) o2;
 									if (s.length() < 1)
@@ -272,7 +260,6 @@ public class IfcConvertor {
 									if (s.charAt(0) == '#') {
 										Object or = linemap.get(toLong(s
 												.substring(1)));
-//										System.out.println("5 - created object " + s.substring(1) + " - " + i);
 										if (or == null) {
 											System.err
 													.println("Reference to non-existing line in the IFC file.");
@@ -300,19 +287,20 @@ public class IfcConvertor {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void FillProperties(String name, IFCVO vo,
 			IFCVO level_up_vo, Resource r, OntClass cl, int level) {		
-		
+
 		EntityVO evo = ent.get(ExpressReader.formatClassName(vo.getName()));
 		if (evo == null)
 			System.err.println("Does not exist: " + vo.getName());
-		
+
 		String subject = evo.getName() + "_" + vo.getLine_num();
-		System.out.println("subject : " + subject);
-		
+		//System.out.println("subject : " + subject);
+
 		if (vo.is_touched())
 			return;
-		
+
 		TypeVO typeremembrance = null;
 		int attribute_pointer = 0;
 		for (int i = 0; i < vo.getList().size(); i++) {
@@ -324,89 +312,40 @@ public class IfcConvertor {
 						if ((evo != null)
 								&& (evo.getDerived_attribute_list() != null)
 								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-							
+
 							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
 							String literalString = filter_extras((String) o);					
-							
+
 							OntProperty p = om.getOntProperty(propURI);
 							OntResource range = p.getRange();
 							if(range.isClass()){
-								//Check for ENUM
 								if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
-									for (ExtendedIterator<? extends OntResource> instances = range.asClass().listInstances(); instances.hasNext(); ) {
-							            OntResource rangeInstance = instances.next();
-							            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){
-							            	im.add(im.createStatement(r, p, rangeInstance));							            	
-							            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
-							            	break;
-							            }
-									}
+									addEnumProperty(r,p,range,literalString);
 								}								
 								//Check for SELECT
 								else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
 									System.out.println("1 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
-								}								
+								}									
+								else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
+									System.out.println("1a - WARNING TODO: found LIST property: " + subject + " -- " + p + " - " + range.getLocalName() + " - " + literalString);
+								}	
 								else {
-									//regular property that should be one 'level' deep or that points directly to integer, long, or ...
-									//System.out.println("INFO: created has_value literal class property: " + p + " - " + range.getLocalName());
-									
 									Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
 									IDcounter++;
 									r.addProperty(p, r1);
-									
-									String xsdType;
-									if(range.asClass().getSuperClass()!=null && range.asClass().getSuperClass().getLocalName()!=null){
-										if(PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getLocalName()) != null){
-											xsdType = PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getLocalName()).getXSDType();
-											OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
-											if(xsdType.equalsIgnoreCase("integer"))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
-											else if(xsdType.equalsIgnoreCase("double"))
-													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
-											else if(xsdType.equalsIgnoreCase("hexBinary"))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
-											else if(xsdType.equalsIgnoreCase("boolean")){
-												if(literalString.equalsIgnoreCase(".F."))
-													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
-												else if(literalString.equalsIgnoreCase(".T."))
-														r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
-												else
-													System.out.println("WARNING: found odd boolean value: " + literalString);
-											}
-											else if(xsdType.equalsIgnoreCase("string"))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
-											else
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));		
-										}
-										else
-											System.out.println("WARNING: unhandled option");
-									}
-									else {
-										xsdType = PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getLocalName()).getXSDType();
+
+									String xsdType = getXSDTypeFromRange(range);
+									if(xsdType!=null){
 										OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);
-										if(xsdType.equalsIgnoreCase("integer"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
-										else if(xsdType.equalsIgnoreCase("double"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
-										else if(xsdType.equalsIgnoreCase("hexBinary"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
-										else if(xsdType.equalsIgnoreCase("boolean")){
-											if(literalString.equalsIgnoreCase(".F."))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
-											else if(literalString.equalsIgnoreCase(".T."))
-													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
-											else
-												System.out.println("WARNING: found odd boolean value: " + literalString);
-										}
-										else if(xsdType.equalsIgnoreCase("string"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
-										else
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));
-									}							
+										addLiteralToResource(r1,valueProp,xsdType,literalString);
+									}
+									else{
+										System.out.println("1b - WARNING TODO: this should not happen for: " + p + " - " + range.getLocalName() + " - " + literalString);
+									}
 								}									
 							}
 							else {
-								System.out.println("WARNING: found other kind of property: " + p + " - " + range.getLocalName());									
+								System.out.println("5 - WARNING: found other kind of property: " + p + " - " + range.getLocalName());									
 							}
 						}
 						attribute_pointer++;
@@ -422,26 +361,22 @@ public class IfcConvertor {
 						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
 					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
 					EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
-					
+
 					OntProperty p = om.getOntProperty(propURI);
 					OntResource rclass = om.getOntResource(evorange.getName());
-					
+
 					Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num());
-					if(r1 == null){
+					if(r1 == null)
 						r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num(), rclass);
-						r.addProperty(p, r1);				
-					}
-					else{
-						r.addProperty(p, r1);				
-					}
-					//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());					
-				} else {
-					System.out.println("WARNING: Found IFCVO class instance with evo == null (should not happen): ------ for " + ((IFCVO) o).getName() + " - level: " + (level + 1));
-				}
+					r.addProperty(p, r1);								
+				} 
 				attribute_pointer++;
 			} else if (LinkedList.class.isInstance(o)) {
 				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
 				StringBuffer local_txt = new StringBuffer();
+
+//				if(tmp_list.size()==0)
+//					attribute_pointer++;
 				
 				//process list
 				for (int j = 0; j < tmp_list.size(); j++) {
@@ -460,17 +395,17 @@ public class IfcConvertor {
 						if ((evo != null)
 								&& (evo.getDerived_attribute_list() != null)
 								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-							
+
 							String propURI = evo.getDerived_attribute_list().get(attribute_pointer).getName();
 							OntProperty p = om.getOntProperty(ontNS + propURI);
 							OntResource typerange = p.getRange();
-							
+
 							if(typerange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
 								String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
 								OntResource listrange = om.getOntResource(listvaluepropURI);
-								
+
 								if(listrange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
-									System.out.println("WARNING: Found unhandled ListOfList");
+									System.out.println("6 - WARNING: Found unhandled ListOfList");
 								}													
 								else{
 									fillClassInstanceList(tmp_list, typerange, p, r);
@@ -480,19 +415,12 @@ public class IfcConvertor {
 							else{
 								EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o1).getName()));								
 								OntResource rclass = om.getOntResource(ontNS + evorange.getName());
-								
+
 								Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num());
-								if(r1 == null){
+								if(r1 == null)
 									r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num(), rclass);
-									r.addProperty(p, r1);				
-								}
-								else{
-									r.addProperty(p, r1);				
-								}
-								//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());									
+								r.addProperty(p, r1);									
 							}
-						} else {
-							System.out.println("WARNING: linkedlist - empty class instances : -- -> " + " - " + ((IFCVO) o1).getName());
 						}
 					}
 					if(LinkedList.class.isInstance(o1) && typeremembrance != null){
@@ -508,104 +436,16 @@ public class IfcConvertor {
 
 				//interpret parse
 				if (local_txt.length() > 0) {
+					String literalString = local_txt.toString();
 					if(typeremembrance != null){
 						if ((evo != null)
 								&& (evo.getDerived_attribute_list() != null)
-								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {							
-							
-							if(local_txt.indexOf("_, ")!=-1)
-								System.out.println("WARNING: found list instead of single value.");						
+								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {				
 
 							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-							TypeVO typerange = typeremembrance;
-							
 							OntProperty p = om.getOntProperty(propURI);
-							OntResource rclass = om.getOntResource(ontNS + typerange.getName());
-							
-							if(rclass.isClass()){
-								//Check for ENUM
-								if(rclass.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
-									for (ExtendedIterator<? extends OntResource> instances = rclass.asClass().listInstances(); instances.hasNext(); ) {
-							            OntResource rangeInstance = instances.next();
-							            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(local_txt.toString()))){
-							            	im.add(im.createStatement(r, p, rangeInstance));							            	
-							            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
-							            	break;
-							            }
-									}
-								}								
-								//Check for SELECT
-								else if(rclass.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
-									System.out.println("TODO: found SELECT property: " + p + " - " + rclass.getLocalName() + " - " + local_txt);
-								}								
-								else {
-									//always creating a new list instance
-									//ideally, identical lists should be found and have only one URI
-									Resource r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, rclass);
-									IDcounter++;
-									r.addProperty(p, r1);		
-									//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
-									
-									String xsdType;
-									if(rclass.asClass().getSuperClass()!=null && rclass.asClass().getSuperClass().getLocalName()!=null){
-										if(PrimaryTypeVO.getPrimaryTypeVO(rclass.asClass().getSuperClass().getLocalName()) != null){
-											xsdType = PrimaryTypeVO.getPrimaryTypeVO(rclass.asClass().getSuperClass().getLocalName()).getXSDType();
-											OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
-											if(xsdType.equalsIgnoreCase("integer"))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDinteger));	
-											else if(xsdType.equalsIgnoreCase("double"))
-													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDdouble));	
-											else if(xsdType.equalsIgnoreCase("hexBinary"))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDhexBinary));	
-											else if(xsdType.equalsIgnoreCase("boolean")){
-												if(local_txt.toString().equalsIgnoreCase(".F."))
-													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
-												else if(local_txt.toString().equalsIgnoreCase(".T."))
-														r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
-												else
-													System.out.println("WARNING: found odd boolean value: " + local_txt.toString());
-											}
-											else if(xsdType.equalsIgnoreCase("string"))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDstring));	
-											else
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString()));		
-											
 
-											//System.out.println("OK: created has_value literal class property: " + valueProp + " - " + local_txt.toString());	
-										}
-										else
-											System.out.println("--WARNING: unhandled option");
-									}
-									else {
-										xsdType = PrimaryTypeVO.getPrimaryTypeVO(rclass.asClass().getLocalName()).getXSDType();
-										OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);
-										if(xsdType.equalsIgnoreCase("integer"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDinteger));	
-										else if(xsdType.equalsIgnoreCase("double"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDdouble));	
-										else if(xsdType.equalsIgnoreCase("hexBinary"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDhexBinary));	
-										else if(xsdType.equalsIgnoreCase("boolean")){
-											if(local_txt.toString().equalsIgnoreCase(".F."))
-												r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
-											else if(local_txt.toString().equalsIgnoreCase(".T."))
-													r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
-											else
-												System.out.println("WARNING: found odd boolean value: " + local_txt.toString());
-										}
-										else if(xsdType.equalsIgnoreCase("string"))
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString(), XSDDatatype.XSDstring));	
-										else
-											r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(local_txt.toString()));
-										
-
-										//System.out.println("OK: created has_value literal class property: " + valueProp + " - " + local_txt.toString());	
-									}								
-								}									
-							}
-							else {
-								System.out.println("WARNING: found other kind of property: " + p + " - " + rclass.getLocalName());									
-							}
+							addSinglePropertyFromTypeRemembrance(r, p, literalString, typeremembrance);
 						}
 						typeremembrance = null;
 					}
@@ -614,59 +454,174 @@ public class IfcConvertor {
 							&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
 						String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
 						OntProperty p = om.getOntProperty(propURI);
-						OntResource range = p.getRange();
-						
-						if(range.isClass()){
-							if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
-								//regular property that should be one 'level' deep or that points to a list of things ...
-								String val = local_txt.toString();				
-								if(val.contains("_, ")){
-									//we have a list of things
-									//build list of things
-									String[] elements = val.split("_, ");
-									List<String> el = new ArrayList<String>();
-									for(String element : elements){
-										if(element.startsWith("_") && element.endsWith("_"))
-											System.out.println("WARNING: Found list of enumerations");
-//										if(element.contains("_"))
-//											element = element.replaceAll("_", "");
-										el.add(element);
-									}
-									
-									String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);	
-									OntResource listrange = om.getOntResource(listvaluepropURI);
-									
-									if(listrange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
-										System.out.println("WARNING: Found unhandled ListOfList");
-									}					
-									else{
-										List<Resource> reslist = new ArrayList<Resource>();
-										//createrequirednumberofresources
-										for(int ii = 0; ii<el.size();ii++){	
-											Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
-											reslist.add(r1);
-											IDcounter++;
-											if(ii==0){
-												r.addProperty(p, r1);
-												//System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
-											}
-										}	
-										//bindtheproperties
-										AddRegularListProperties(reslist,el,listrange);	
-									}
-								}
-							}	
-							else {
-								System.out.println("WARNING: found other kind of property: " + p + " - " + range.getLocalName() + local_txt);	
-							}
+
+						if(literalString.contains("_, ")){
+							addRegularListProperty(r, p, literalString);
+						}
+						else{
+							//System.out.println("WARNING: odd behaviour: no list found where there should be one: " + r + " - " + p);
+							addRegularListProperty(r, p, literalString);
 						}
 					}
 				}
 				attribute_pointer++;
+			}	
+		}
+	}	
+	
+	private void addSinglePropertyFromTypeRemembrance(Resource r, OntProperty p, String literalString, TypeVO typeremembrance){				
+		OntResource range = om.getOntResource(ontNS + typeremembrance.getName());
+		
+		if(range.isClass()){
+			//Check for ENUM
+			if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
+				addEnumProperty(r,p,range,literalString);									
+			}								
+			//Check for SELECT
+			else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
+				System.out.println("9 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
+			}								
+			else {
+				//always creating a new list instance
+				//ideally, identical lists should be found and have only one URI
+				Resource r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, range);
+				IDcounter++;
+				r.addProperty(p, r1);		
+				//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
+				
+				String xsdType = getXSDTypeFromRange(range);
+				if(xsdType!=null){
+					OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
+					addLiteralToResource(r1,valueProp,xsdType,literalString);	
+				}
+			}									
+		}
+		else {
+			System.out.println("12 - WARNING: found other kind of property: " + p + " - " + range.getLocalName());									
+		}
+	}
+	
+	private String getXSDTypeFromRange(OntResource range){	
+		if(range.asClass().getSuperClass()!=null && range.asClass().getSuperClass().getLocalName()!=null){
+			if(PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getLocalName()) != null){
+				return PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getLocalName()).getXSDType();
 			}
+			else if(TypeVO.checkIfType(range.asClass().getSuperClass().getLocalName())){
+				//regular property that is likely two 'levels' deep...
+				if(range.asClass().getSuperClass().getSuperClass()!=null && range.asClass().getSuperClass().getSuperClass().getLocalName()!=null){
+					return PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getSuperClass().getSuperClass().getLocalName()).getXSDType();
+				}
+				else{
+					System.out.println("WARNING A: did not find XSDType for : " + range.getLocalName());	
+					return null;
+				}
+			}
+			else {
+				System.out.println("WARNING B: did not find XSDType for : " + range.getLocalName());
+				return null;
+			}
+		}
+		else if(PrimaryTypeVO.getPrimaryTypeVO(range.getLocalName()) != null){
+			return PrimaryTypeVO.getPrimaryTypeVO(range.asClass().getLocalName()).getXSDType();
+		}	
+		else {
+			//likely, the range of this property is an abstract class (
+			
+			System.out.println("WARNING C: did not find XSDType for : " + range.getLocalName());
+			return null;
 		}	
 	}
 	
+	private void addEnumProperty(Resource r, Property p, OntResource range, String literalString){
+		for (ExtendedIterator<? extends OntResource> instances = range.asClass().listInstances(); instances.hasNext(); ) {
+            OntResource rangeInstance = instances.next();
+            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){
+            	im.add(im.createStatement(r, p, rangeInstance));							            	
+            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
+            	break;
+            }
+		}
+	}
+	
+	private void addLiteralToResource(Resource r1, OntProperty valueProp, String xsdType, String literalString){
+		if(xsdType.equalsIgnoreCase("integer"))
+			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
+		else if(xsdType.equalsIgnoreCase("double"))
+			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
+		else if(xsdType.equalsIgnoreCase("hexBinary"))
+			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
+		else if(xsdType.equalsIgnoreCase("boolean")){
+			if(literalString.equalsIgnoreCase(".F."))
+				r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
+			else if(literalString.equalsIgnoreCase(".T."))
+					r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
+			else
+				System.out.println("4 - WARNING: found odd boolean value: " + literalString);
+		}
+		else if(xsdType.equalsIgnoreCase("string"))
+			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
+		else
+			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));
+	}
+	
+	//LIST HANDLING
+	private void addRegularListProperty(Resource r, OntProperty p, String literalString){
+		List<String> el = getListElements(literalString);
+
+		OntResource range = p.getRange();
+		if(range.isClass()){
+			OntResource listrange = getListContentType(range.asClass());
+			
+			if(listrange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
+				System.out.println("14 - WARNING: Found unhandled ListOfList");
+			}	
+			else{
+				List<Resource> reslist = new ArrayList<Resource>();
+				//createrequirednumberofresources
+				for(int ii = 0; ii<el.size();ii++){	
+					Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
+					reslist.add(r1);
+					IDcounter++;
+					if(ii==0){
+						r.addProperty(p, r1);
+						//System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
+					}
+				}	
+				//bindtheproperties
+				AddListInstanceProperties(reslist,el,listrange);	
+			}
+		}
+	}
+	
+	private List<String> getListElements(String literalString){
+		String[] elements = literalString.split("_, ");
+		List<String> el = new ArrayList<String>();
+		for(String element : elements){
+			if(element.startsWith("_") && element.endsWith("_"))
+				System.out.println("WARNING getListElements(): Found list of enumerations");
+			if(element.contains("_")){
+				System.out.println("WARNING getListElements(): Found '_' in list elements");
+				element = element.replaceAll("_", "");
+			}
+			el.add(element);
+		}
+		return el;
+	}
+	
+	private OntResource getListContentType(OntClass range){
+		if(range.hasSuperClass(om.getOntClass(ontNS + "List"))){
+			String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);	
+			return om.getOntResource(listvaluepropURI);
+		}
+		
+		OntClass cl = range.asClass().getSuperClass();
+		if(cl==null)
+			return null;
+		else{
+			return getListContentType(cl);
+		}
+	}
+		
 	private void fillClassInstanceList(LinkedList<Object> tmp_list, OntResource typerange, OntProperty p, Resource r){
 		List<Resource> reslist = new ArrayList<Resource>();
 		List<IFCVO> entlist = new ArrayList<IFCVO>();
@@ -682,9 +637,6 @@ public class IfcConvertor {
 				entlist.add((IFCVO)tmp_list.get(i));
 				if (i == 0) {
 					r.addProperty(p, r1);
-//					System.out.println("OK: added property: "
-//							+ r.getLocalName() + " - " + p.getLocalName()
-//							+ " - " + r1.getLocalName());
 				}
 			}
 		}	
@@ -707,14 +659,9 @@ public class IfcConvertor {
 			OntResource rclass = om.getOntResource(ontNS + evorange.getName());
 			
 			Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num());
-			if(r1 == null){
+			if(r1 == null)
 				r1 = im.createResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num(), rclass);
-				r.addProperty(listp, r1);				
-			}
-			else{
-				r.addProperty(listp, r1);				
-			}
-			//System.out.println("OK: created class property: " + listp + " - " + r1.getLocalName());		
+			r.addProperty(listp, r1);			
 																
 			if(i<reslist.size()-1){								
 				r.addProperty(isfollowed,reslist.get(i+1));
@@ -723,95 +670,69 @@ public class IfcConvertor {
 		}
 	}
 	
-	private void AddRegularListProperties(List<Resource> reslist, List<String> listelements, OntResource listrange){		
-		OntProperty listp = om.getOntProperty(ontNS + "hasListContent");
-		OntProperty isfollowed = om.getOntProperty(ontNS + "isFollowedBy");
+	private void AddListInstanceProperties(List<Resource> reslist, List<String> listelements, OntResource listrange){		
+		//GetListType
+		String xsdType = getXSDTypeFromRange(listrange);
+		if(xsdType!=null){
+			OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
+			//Adding Content only if found
+			for(int i = 0; i<reslist.size();i++){	
+				Resource r = reslist.get(i);
+				String literalString = listelements.get(i);
+				Resource r2 = im.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter, listrange.asResource());		
+				IDcounter++;
 
-		String xsdType;
-		if(listrange.asClass().getSuperClass()!=null && listrange.asClass().getSuperClass().getLocalName()!=null){
-			if(PrimaryTypeVO.getPrimaryTypeVO(listrange.asClass().getSuperClass().getLocalName()) != null){
-				xsdType = PrimaryTypeVO.getPrimaryTypeVO(listrange.asClass().getSuperClass().getLocalName()).getXSDType();
-				OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);
-				for(int i = 0; i<reslist.size();i++){	
-					Resource r = reslist.get(i);
-					String value = listelements.get(i);
-					Resource r2 = im.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter, listrange.asResource());		
-					IDcounter++;
-					
-					r.addProperty(listp, r2);
-					//System.out.println("OK: added property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r2.getLocalName());
-						
-					if(xsdType.equalsIgnoreCase("integer"))
-						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value, XSDDatatype.XSDinteger));
-					else if(xsdType.equalsIgnoreCase("double"))
-						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value, XSDDatatype.XSDdouble));	
-					else if(xsdType.equalsIgnoreCase("hexBinary"))
-						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value, XSDDatatype.XSDhexBinary));	
-					else if(xsdType.equalsIgnoreCase("boolean")){
-						if(value.equalsIgnoreCase(".F."))
-							r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
-						else if(value.equalsIgnoreCase(".T."))
-								r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
-						else
-							System.out.println("WARNING: found odd boolean value: " + value);
-					}
-					else if(xsdType.equalsIgnoreCase("string"))
-						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value, XSDDatatype.XSDstring));	
-					else
-						r2.addLiteral(valueProp, ResourceFactory.createTypedLiteral(value));		
-						
-					//System.out.println("OK: added literal: " + r2.getLocalName() + " - " + valueProp.getLocalName() + " - " + value);
-																		
-					if(i<listelements.size()-1){								
-						r.addProperty(isfollowed,reslist.get(i+1));
-						//System.out.println("OK: added property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
-					}	
-				}
+				r.addProperty(om.getOntProperty(ontNS + "hasListContent"), r2);
+				//System.out.println("OK: added property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r2.getLocalName());
+
+				addLiteralToResource(r2,valueProp,xsdType,literalString);
+
+				if(i<listelements.size()-1){								
+					r.addProperty(om.getOntProperty(ontNS + "isFollowedBy"),reslist.get(i+1));
+					//System.out.println("OK: added property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+				}	
 			}
-			else
-				System.out.println("WARNING: unhandled option");
-		}
-		else {
-			System.out.println("WARNING: unhandled option");	
-		}
+		}	
+		else
+			return;
 	}
 	
-	//HELPER METHODS	
-		private String filter_extras(String txt) {
-			StringBuffer sb = new StringBuffer();
-			for (int n = 0; n < txt.length(); n++) {
-				char ch = txt.charAt(n);
-				switch (ch) {
-				case '\'':
-					break;
-				case '=':
-					break;
-				default:
-					sb.append(ch);
-				}
-			}
-			return sb.toString();
-		}
-		
-		private String filter_points(String txt) {
-			StringBuffer sb = new StringBuffer();
-			for (int n = 0; n < txt.length(); n++) {
-				char ch = txt.charAt(n);
-				switch (ch) {
-				case '.':
-					break;
-				default:
-					sb.append(ch);
-				}
-			}
-			return sb.toString();
-		}
-		
-		private Long toLong(String txt) {
-			try {
-				return Long.valueOf(txt);
-			} catch (Exception e) {
-				return Long.MIN_VALUE;
+	// HELPER METHODS
+	private String filter_extras(String txt) {
+		StringBuffer sb = new StringBuffer();
+		for (int n = 0; n < txt.length(); n++) {
+			char ch = txt.charAt(n);
+			switch (ch) {
+			case '\'':
+				break;
+			case '=':
+				break;
+			default:
+				sb.append(ch);
 			}
 		}
+		return sb.toString();
+	}
+
+	private String filter_points(String txt) {
+		StringBuffer sb = new StringBuffer();
+		for (int n = 0; n < txt.length(); n++) {
+			char ch = txt.charAt(n);
+			switch (ch) {
+			case '.':
+				break;
+			default:
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
+	}
+
+	private Long toLong(String txt) {
+		try {
+			return Long.valueOf(txt);
+		} catch (Exception e) {
+			return Long.MIN_VALUE;
+		}
+	}
 }

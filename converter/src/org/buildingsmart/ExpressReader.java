@@ -1,12 +1,10 @@
 package org.buildingsmart;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
@@ -21,7 +19,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import fi.ni.rdf.Namespace;
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.InverseVO;
@@ -29,6 +26,8 @@ import org.buildingsmart.vo.NamedIndividualVO;
 import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.PropertyVO;
 import org.buildingsmart.vo.TypeVO;
+
+import fi.ni.rdf.Namespace;
 
 /*
  * ExpressReader reads EXPRESS file11 specification of the IFC files and creates 
@@ -68,8 +67,6 @@ public class ExpressReader {
 	private String expressSchemaName;
 	private String expressFile;
 
-	private static BufferedWriter logger = null;
-
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
 	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();
@@ -92,12 +89,10 @@ public class ExpressReader {
 			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 			File logFile = new File("out//log_" + timeLog + ".txt");
 			System.out.println(logFile.getCanonicalPath());		
-//			logger = new BufferedWriter(new FileWriter(logFile));
 			
 			this.readSpec();
 			this.buildExpressStructure();
 			this.generateNamedIndividuals();
-			this.iterateAndPrint();
 	
 			this.rearrangeAttributes();
 			this.rearrangeProperties();
@@ -111,18 +106,8 @@ public class ExpressReader {
 
 	public static void main(String[] args) throws IOException {
 		try {
-			// create a temporary file
-//			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
-//					.format(Calendar.getInstance().getTime());
-//			File logFile = new File("out//log_" + timeLog + ".txt");
-
-			// This will output the full path where the file will be written
-			// to...
-//			System.out.println(logFile.getCanonicalPath());
-
-//			logger = new BufferedWriter(new FileWriter(logFile));
-
-			ExpressReader er = new ExpressReader("Ifc2x_all_lf","samples\\Ifc2x_all_lf.exp");
+//			ExpressReader er = new ExpressReader("Ifc2x_all_lf","samples\\Ifc2x_all_lf.exp");
+			ExpressReader er = new ExpressReader("Ifc2x-add1_longform","samples\\Ifc2x-add1_longform.exp");
 //			ExpressReader er = new ExpressReader("IFC2X2_FINAL","samples\\IFC2X2_FINAL.exp");
 //			ExpressReader er = new ExpressReader("IFC2X2_PLATFORM","samples\\IFC2X2_PLATFORM.exp");
 //			ExpressReader er = new ExpressReader("IFC2X2_ADD1","samples\\IFC2X2_ADD1.exp");
@@ -134,58 +119,27 @@ public class ExpressReader {
 			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
 			er.generateNamedIndividuals();
-			er.iterateAndPrint();
 
 			er.rearrangeAttributes();
 			er.rearrangeProperties();
 			er.addInverses();
 			er.unpackSelectTypes();
-			// er.printIFCClassesInLog();
 
 			OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities,
 					er.types, er.siblings, er.enumIndividuals, er.properties);
 			ow.outputOWL();
 			System.out
 					.println("Ended converting the EXPRESS schema into corresponding OWL file");
-
-			//JAVAWriter jw = new JAVAWriter(er.expressSchemaName, er.entities,
-			//		er.types, er.selectTypesToExpand);
-			//jw.outputJavaClasses();
-			//System.out
-			//		.println("Ended converting the EXPRESS schema into corresponding JAVA Class Library");
-
 		} catch (Exception e) {
 			e.printStackTrace();
-		} finally {
-			try {
-				// Close the writer regardless of what happens...
-				//logger.close();
-			} catch (Exception e) {
-			}
-		}
+		} 
 	}
 
 	private void generateNamedIndividuals() throws IOException {
-//		logger.write("Generating named individuals" + "\r\n");
 		ArrayList<String> doublegeneratednamedindividuals = new ArrayList<String>();
 		HashMap<String, NamedIndividualVO> alreadygeneratednamedindividuals = new HashMap<String, NamedIndividualVO>();
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
-			TypeVO vo = entry.getValue();
-//			logger.write("found : " + vo.toString() + "\r\n");
-			// List of all TYPE:SELECT -entries
-			for (int n = 0; n < vo.getSelect_entities().size(); n++) {
-				EntityVO evo = entities.get(vo.getSelect_entities().get(n));
-				if (evo != null) {
-//					logger.write("EntityVO element found for " + vo.getName()
-//							+ " : " + evo.getName() + "\r\n");
-				} else {
-//					logger.write("No entityVO element found for "
-//							+ vo.getSelect_entities().get(n) + " ( "
-//							+ vo.getName()
-//							+ " ) --> the SELECT type refers to another Type"
-//							+ "\r\n");
-				}
-			}
+			TypeVO vo = entry.getValue();			
 			for (int n = 0; n < vo.getEnum_entities().size(); n++) {
 				if (!doublegeneratednamedindividuals.contains(vo
 						.getEnum_entities().get(n))) {
@@ -216,12 +170,9 @@ public class ExpressReader {
 							vo.getEnum_entities().get(n)));
 			}
 		}
-//		logger.write("Named individuals generated" + "\r\n" + "\r\n");
 	}
 
 	private void rearrangeAttributes() throws IOException {
-//		logger.write("Generating list of attributes for : " + attributes.size()
-//				+ "attributes \r\n");
 		ArrayList<String> doublegeneratedattributes = new ArrayList<String>();
 		HashMap<String, AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
 		HashMap<String, PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
@@ -265,14 +216,7 @@ public class ExpressReader {
 				} else {
 					attr.setOriginalName(attr.getName());
 					attr.setName(attr.getName() + "_of_" + evo.getName());
-					// enumIndividuals.add(new NamedIndividualVO(vo.getName(),
-					// vo.getName() + "_" + vo.getEnum_entities().get(n),
-					// vo.getEnum_entities().get(n)));
 				}
-				// write outcome
-				// logger.write(evo.getName() +" - " + attr.getName() + " - " +
-				// attr.getType().getName() + " --- isSet: " + attr.isSet() +
-				// " - isList: " + attr.isList() + "\r\n");
 			}
 			
 			for (int n = 0; n < evo.getInverses().size(); n++) {
@@ -321,7 +265,6 @@ public class ExpressReader {
 					prop.setOriginalName(prop.getName());
 					prop.setName(prop.getName() + "_of_" + evo.getName());
 				}
-
 				properties.put(prop.getName(), prop);
 			}			
 		}
@@ -366,39 +309,14 @@ public class ExpressReader {
 					prop.setType(PropertyVO.propertyType.TypeVO);
 				else {
 					prop.setType(PropertyVO.propertyType.TypeVO);
-//					 System.out.println("Found an alternative range type : "+
-//					 type_primaryType);
 				}
-
+				
 				properties.put(prop.getName(), prop);
 			}
 		}
 	}
 	
 	private void addInverses() {
-
-		int i = 1;
-		Iterator<Entry<String, PropertyVO>> pr = properties.entrySet().iterator();
-		while (pr.hasNext()) {
-			Entry<String, PropertyVO> ps = pr.next();
-			PropertyVO p = ps.getValue();
-//			try {
-//				logger.write(i + " - property found : " + p.getName() + " - " + ps.getKey() + "\r\n");
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-			i++;
-		}
-//		try {
-//			logger.flush();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		System.out.println("_______");
-		
 		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
 		ArrayList<PropertyVO> listOfAddedObjectProperties = new ArrayList<PropertyVO>();
 		while (iter.hasNext()) {
@@ -423,7 +341,6 @@ public class ExpressReader {
 					
 					if(inverseOfInv.isList() || inverseOfInv.isListOfList() || inverseOfInv.isArray()){
 						//Property needs to be deleted again to counter inconsistencies in the eventual OWL ontology
-						//System.out.println("removing property 1: " + prop.getName() + " - removing inverses of property: " + inverseOfInv.getName());
 						properties.remove(prop.getName());
 						inverseOfInv.setInverseProp(null);
 						listOfAddedObjectProperties.remove(inverseOfInv);
@@ -434,17 +351,12 @@ public class ExpressReader {
 					if(origprop!=null){			
 						PropertyVO originv = inverseOfInv.getInverseProperty();			 
 						 if(originv!=null){
-							 // + " - removing inverses of property: " + origprop.getName());	
 							 System.out.println("removing property 2 from property list: " + originv.getName());
 							 if(properties.remove(originv.getName())==null){
 								 System.out.println("could not remove property 2 from list: " + originv.getName());
 								 properties.remove(originv.getOriginalName());
 							 }
 							 System.out.println("removing property 2 from property list: " + origprop.getName());
-							 //if(properties.remove(origprop.getName())==null)
-							 //	 System.out.println("could not remove property 2 from list: " + origprop.getName());
-							 //origprop.setInverseProp(null);
-							 //System.out.println("removed inverses of property: " + origprop.getName());
 							 originv.setInverseProp(null);
 							 System.out.println("removed inverses of property: " + originv.getName());
 						 }	
@@ -505,15 +417,12 @@ public class ExpressReader {
 
 	// WRITING ATTRIBUTE AND INVERSE STRUCTURE
 	private void generate_derived_attribute_list() throws IOException {
-//		logger.write("Generating derived attribute list" + "\r\n");
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
 			EntityVO evo = pairs.getValue();
-//			logger.write("found : " + evo.toString() + "\r\n");
 			add_attribute_entries(evo, evo);
 		}
-//		logger.write("derived attribute list generated" + "\r\n" + "\r\n");
 	}
 
 	private void add_attribute_entries(EntityVO evo, EntityVO top)
@@ -528,23 +437,17 @@ public class ExpressReader {
 			attributes.put(top.getName() + "#"
 					+ evo.getAttributes().get(n).getName(), evo.getAttributes()
 					.get(n));
-//			logger.write("added attribute : " + top.getName() + "#"
-//					+ evo.getAttributes().get(n).getName() + " - "
-//					+ evo.getAttributes().get(n) + "\r\n");
 			top.getDerived_attribute_list().add(evo.getAttributes().get(n));
 		}
 	}
 
 	private void generate_derived_inverse_list() throws IOException {
-//		logger.write("Generating derived inverse list" + "\r\n");
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
 			EntityVO evo = (EntityVO) pairs.getValue();
-//			logger.write("found : " + evo.toString() + "\r\n");
 			add_inverse_entries(evo, evo);
 		}
-//		logger.write("derived inverse list generated" + "\r\n" + "\r\n");
 	}
 
 	private void add_inverse_entries(EntityVO evo, EntityVO top)
@@ -559,11 +462,9 @@ public class ExpressReader {
 			AttributeVO avo = attributes.get(evo.getInverses().get(n)
 					.getClassRange()
 					+ "#" + evo.getInverses().get(n).getInverseOfProperty());
-//			logger.write("found attributeVO : " + avo.toString() + "\r\n");
 			boolean unique = false;
 			if (avo != null) {
 				InverseVO ivo = evo.getInverses().get(n);
-//				logger.write("found inverseVO : " + ivo.toString() + "\r\n");
 				if (ivo.getMaxCard() == 1)
 					if (!avo.isSet())
 						avo.setOne2One(true);
@@ -572,10 +473,6 @@ public class ExpressReader {
 				avo.setReverse_pointer(true);
 				avo.setPoints_from(evo.getInverses().get(n));
 			}
-			// else
-			// System.err.println("reverse not found:"
-			// + evo.getInverses().get(n).getIfc_class() + "#"
-			// + evo.getInverses().get(n).getProperty());
 			evo.getInverses().get(n).setUnique(unique);
 			top.getDerived_inverse_list().add(evo.getInverses().get(n));
 		}
@@ -614,7 +511,6 @@ public class ExpressReader {
 	private static final int ENTITY_SUBTYPE_OF_STATE = 4;
 	private static final int ENTITY_UNIQUE = 50;
 	private static final int ENTITY_UNIQUE_TYPE = 51;
-	// private static final int ENTITY_ATTRIBUTE = 6;
 	private static final int ENTITY_WHERE = 7;
 	private static final int ENTITY_DERIVE = 8;
 	private static final int ENTITY_SUPERTYPE = 90;
@@ -631,7 +527,6 @@ public class ExpressReader {
 	private String tmp_inverse_inverseprop;
 	private int tmp_inverse_mincard = 0;  //default value according to EXPRESS spec	
 	private int tmp_inverse_maxcard = -1;  //default value according to EXPRESS spec	
-	// private boolean tmp_inverse_is_one_valued = false;
 
 	private String tmp_entity_name;
 	private String tmp_entity_type;
@@ -806,8 +701,6 @@ public class ExpressReader {
 				state = ENTITY_SUPERTYPE;
 			} else if (txt.equalsIgnoreCase("INVERSE")) {
 				state = ENTITY_INVERSE_STATE;
-				// } else if (txt.equalsIgnoreCase(":")) {
-				// state = ENTITY_ATTRIBUTE;
 			} else if (txt.equalsIgnoreCase("UNIQUE")) {
 				state = ENTITY_UNIQUE;
 			} else if (txt.equalsIgnoreCase("WHERE")) {
@@ -1000,12 +893,6 @@ public class ExpressReader {
 					if (!maxcard.equalsIgnoreCase("?"))
 						tmp_inverse_maxcard = Integer.parseInt(maxcard);
 				}
-
-				// if (txt.equals("[0:1]"))
-				// tmp_inverse_is_one_valued = true;
-				// if (txt.equals("[1:1]"))
-				// tmp_inverse_is_one_valued = true;
-
 				tmp_inverse_classnamerange = txt;
 			}
 			break;
@@ -1016,8 +903,6 @@ public class ExpressReader {
 			} else if (txt.equalsIgnoreCase("SUBTYPE")) {
 				state = ENTITY_SUBTYPE_STATE;
 			} else if (txt.contains(";")) {
-				// tmp_inverse_inverseprop = ExpressReader.formatProperty(txt
-				// .substring(0, txt.length() - 1));
 				tmp_inverse_inverseprop = txt.substring(0, txt.length() - 1);
 				current_entity.getInverses().add(
 						new InverseVO(tmp_inverse_name,
@@ -1050,9 +935,6 @@ public class ExpressReader {
 				state = ENTITY_SUBTYPE_STATE;
 			} else {
 				if (!txt.contains(",")) {
-					// String unique_attribute =
-					// ExpressReader.formatProperty(txt
-					// .substring(0, txt.length() - 1));
 					String unique_attribute = txt
 							.substring(0, txt.length() - 1);
 
@@ -1066,15 +948,6 @@ public class ExpressReader {
 				state = ENTITY_UNIQUE;
 			}
 			break;
-
-		// case ENTITY_ATTRIBUTE:
-		// if (txt.equalsIgnoreCase("END_ENTITY;")) {
-		// state = INIT_STATE;
-		// } else {
-		// if (txt.contains(";"))
-		// state = ENTITY_STATE;
-		// }
-		// break;
 
 		// 2.6 UNHANLDED WHERE AND DERIVE LINES
 		case ENTITY_WHERE:
@@ -1178,24 +1051,6 @@ public class ExpressReader {
 		return true;
 	}
 
-	// Additional methods
-	// private boolean isSubClassOf_this(EntityVO evo, String superclass_name) {
-	// if (evo.getName().equalsIgnoreCase(superclass_name))
-	// return true;
-	// if (evo.getSuperclass() != null) {
-	// EntityVO sup = entities.get(evo.getSuperclass());
-	// if (sup != null) {
-	// if (isSubClassOf_this(sup, superclass_name))
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
-	//
-	// public boolean isSubClassOf(String class_name, String superclass_name) {
-	// return isSubClassOf_this(entities.get(class_name), superclass_name);
-	// }
-
 	private void unpackSelectTypes() {
 		// if a select type is referred to by another select type -> replace it
 		// by the elements of the latter!
@@ -1207,94 +1062,9 @@ public class ExpressReader {
 					if (selectTypesToExpand_temp.get(i).getName()
 							.equalsIgnoreCase(selectEnt)) {
 						selectTypesToExpand.put(selectTypesToExpand_temp.get(i),vo);
-						//selectEnt extends selectTypesToExpand_temp.get(i)
-						// System.out.println("selecttype found in temp : " +
-						// selectEnt);
-//						vo.getSelect_entities().remove(n);
-//						for (String sel : selectTypesToExpand_temp.get(i)
-//								.getSelect_entities())
-//							vo.getSelect_entities().add(sel);
 					}
 				}
 			}
-		}
-	}
-
-	// printer methods
-	private void iterateAndPrint() throws IOException {
-//		logger.write("iterating through all entities" + "\r\n");
-		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, EntityVO> pairs = it.next();
-			EntityVO evo = pairs.getValue();
-			if (evo.getSuperclass() != null) {
-//				logger.write(pairs.getKey() + " s:" + evo.getSuperclass()
-//						+ "\r\n");
-				EntityVO sup = entities.get(evo.getName());
-				if (sup != null)
-					printEntity(sup);
-			} else
-//				logger.write(pairs.getKey() + "\r\n");
-
-			printEntity(evo);
-		}
-//		logger.write("iterated through all entities" + "\r\n" + "\r\n");
-	}
-
-	private void printEntity(EntityVO evo) throws IOException {
-		if (evo.getSuperclass() != null) {
-			EntityVO sup = entities.get(evo.getSuperclass().toLowerCase());
-			if (sup != null)
-				printEntity(sup);
-		}
-
-		for (int n = 0; n < evo.getAttributes().size(); n++) {
-//			logger.write("   " + evo.getName() + " , "
-//					+ evo.getAttributes().get(n) + "\r\n");
-		}
-	}
-
-	@SuppressWarnings("unused")
-	private void printIFCClassesInLog() throws IOException {
-		logger.write("iterating through all IFC Classes" + "\r\n");
-
-		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
-		while (it.hasNext()) {
-			Entry<String, EntityVO> pairs = it.next();
-			EntityVO evo = pairs.getValue();
-			if (evo.getSuperclass() != null)
-				logger.write(pairs.getKey() + " s:" + evo.getSuperclass()
-						+ "\r\n");
-			else
-				logger.write(pairs.getKey() + "\r\n");
-
-			for (int n = 0; n < evo.getDerived_attribute_list().size(); n++) {
-				if (evo.getDerived_attribute_list().get(n).isReverse_pointer())
-					logger.write(" "
-							+ evo.getDerived_attribute_list().get(n).getType()
-									.getName()
-							+ ":"
-							+ evo.getDerived_attribute_list().get(n).getType()
-									.getPrimarytype() + "   "
-							+ evo.getDerived_attribute_list().get(n).getName()
-							+ " CAN BE REVERSED" + "\r\n");
-				else
-					logger.write(" "
-							+ evo.getDerived_attribute_list().get(n).getType()
-									.getName()
-							+ ":"
-							+ evo.getDerived_attribute_list().get(n).getType()
-									.getPrimarytype() + "   "
-							+ evo.getDerived_attribute_list().get(n).getName()
-							+ "\r\n");
-			}
-			for (int n = 0; n < evo.getDerived_inverse_list().size(); n++) {
-				logger.write(" i:"
-						+ evo.getDerived_inverse_list().get(n).getName()
-						+ "\r\n");
-			}
-
-			logger.write("iterated through all IFC Classes" + "\r\n" + "\r\n");
 		}
 	}
 
