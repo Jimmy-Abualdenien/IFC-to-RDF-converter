@@ -215,6 +215,7 @@ function generateRDF(fspath, item, url){
 	var config = {'ifc_file': fspath+'/'+item+'.ifc'};
 	//config.ifc_file = fspath+'/'+item+'.ifc';
 	config.output_file = 'workspace/tmp/'+item+'.ttl';
+	console.log('output file: ' + config.output_file);
 	//config.model_name = item;
 	//config.path = settings.rdf_host+url+'#';
 	//{'express_file': 'workspace/IFC2X3.exp'};
@@ -238,29 +239,30 @@ function generateRDF(fspath, item, url){
 			});
 			
 			//Create RDF/XML representation
-			var file = fs.createWriteStream('workspace/tmp/'+item+'.rdf');
-			var args = clone(settings.cwm_command.args);
-			var l = args.length;
-			args[l] = '--ttl';
-			args[l+1] = 'workspace/tmp/'+item+'.ttl';
-			args[l+2] = '--rdf';
-			var cwm = spawn(settings.cwm_command.command, args);
-			cwm.stdout.on('data', function (data) {	file.write(data); });
-			cwm.stderr.on('data', function (data) {	console.log('stderr: ' + data) });
-			cwm.stdout.on('end', function (data) {	file.end(); });
-			cwm.on('exit', function(cwm_code) { 
-				if(cwm_code == 0){
-					var is_rdf = fs.createReadStream('workspace/tmp/'+item+'.rdf');
-					var os_rdf = fs.createWriteStream(fspath+'/'+item+'.rdf');
-					util.pump(is_rdf, os_rdf, function() {
-						counter++;
-						if(counter == 2){
-							fs.unlinkSync('workspace/tmp/'+item+'.ttl');
-							fs.unlinkSync('workspace/tmp/'+item+'.rdf');
-						}
-					});		
-				}
-			});
+			//This should be done using Jena, not CWM.
+			//var file = fs.createWriteStream('workspace/tmp/'+item+'.rdf');
+			//var args = clone(settings.cwm_command.args);
+			//var l = args.length;
+			//args[l] = '--ttl';
+			//args[l+1] = 'workspace/tmp/'+item+'.ttl';
+			//args[l+2] = '--rdf';
+			//var cwm = spawn(settings.cwm_command.command, args);
+			//cwm.stdout.on('data', function (data) {	file.write(data); });
+			//cwm.stderr.on('data', function (data) {	console.log('stderr: ' + data) });
+			//cwm.stdout.on('end', function (data) {	file.end(); });
+			//cwm.on('exit', function(cwm_code) { 
+			//	if(cwm_code == 0){
+			//		var is_rdf = fs.createReadStream('workspace/tmp/'+item+'.rdf');
+			//		var os_rdf = fs.createWriteStream(fspath+'/'+item+'.rdf');
+			//		util.pump(is_rdf, os_rdf, function() {
+			//			counter++;
+			//			if(counter == 2){
+			//				fs.unlinkSync('workspace/tmp/'+item+'.ttl');
+			//				fs.unlinkSync('workspace/tmp/'+item+'.rdf');
+			//			}
+			//		});		
+			//	}
+			//});
 		} 
 	});
 }

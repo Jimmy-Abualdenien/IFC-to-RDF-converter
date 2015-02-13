@@ -51,10 +51,9 @@ public class IfcConvertor {
 	private OntModel om;
 	private Model im;
 	
-	public IfcConvertor(String express_schema, String ifc_file, String output_file, String baseURI){
+	public IfcConvertor(String express_schema, String ifc_file, String baseURI){
 		this.express_schema = express_schema;
 		this.ifc_file = ifc_file;
-		//this.output_file = output_file;
 		this.baseURI = baseURI;
 		
 		//PREPARATION

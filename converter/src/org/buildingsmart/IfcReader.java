@@ -66,7 +66,7 @@ public class IfcReader {
 	 */
 	public static void main(String[] args) {
 		if(args.length != 2)
-		 	System.out.println("Usage: java IFC_Converter ifc_filename output_filename \nExample: java IFC_Converter C:\\sample.ifc c:\\output.rdf");
+		 	System.out.println("Usage: java IFC_Converter ifc_filename output_filename \nExample: java IFC_Converter C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
 		else {
 			if(args.length == 2 && !args[0].startsWith("-json")) {
 				convert(args[0], args[1], DEFAULT_PATH);
@@ -92,7 +92,7 @@ public class IfcReader {
 		
 		String ifc_file = obj.getString("ifc_file");
 		String output_file = obj.getString("output_file");
-		
+				
 		convert(ifc_file, output_file, DEFAULT_PATH);
 	}
 	
@@ -138,10 +138,18 @@ public class IfcReader {
 	public static void convert(String ifc_file, String output_file, String baseURI) {
 		long t0 = System.currentTimeMillis();
 		
+		if(!output_file.endsWith(".ttl")){
+			output_file.replaceAll(".", "");
+			output_file += ".ttl";
+		}
+		if(!ifc_file.endsWith(".ifc")){
+			ifc_file.replaceAll(".", "");
+			ifc_file += ".ifc";
+		}
 		String express_schema = getExpressSchema(ifc_file);
 		
 		//CONVERSION
-		IfcConvertor conv = new IfcConvertor(express_schema, ifc_file, output_file, baseURI);
+		IfcConvertor conv = new IfcConvertor(express_schema, ifc_file, baseURI);
 		Model model = conv.parseModel();		
 		
 		//VALIDATION
@@ -170,14 +178,20 @@ public class IfcReader {
 		if(valid==true){			
 			try {
 				OutputStreamWriter char_output = new OutputStreamWriter(
-						new FileOutputStream(output_file+".ttl"),
+						new FileOutputStream(output_file),
 						Charset.forName("UTF-8").newEncoder());
 				BufferedWriter out = new BufferedWriter(char_output);
 				model.write(out, "TTL");
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				System.err.println("Something went wrong while writing the TTL file");
+				System.exit(1);
 				e.printStackTrace();
 			}	
+		}
+		else{
+			System.err.println("The generated RDF model is invalid");
+			System.exit(1);
 		}
 
 		long t1 = System.currentTimeMillis();
