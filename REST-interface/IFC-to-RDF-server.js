@@ -48,6 +48,8 @@ function configureServer(base_path){
 				if(isIFCResource(fspath, item)){ // we have an IFC resource
 					var file = fspath + '/' + item;
 					var orig_ext = extension;
+					console.log('file : ' + file);
+					console.log('extension : ' + extension);
 					if(extension != null){
 						file = file + extension;
 					} else  {
@@ -132,8 +134,7 @@ function configureServer(base_path){
 					var uploadedFile = fs.readFileSync(req.files.file.path);
 					fs.writeFileSync(fspath+'/'+item+'.ifc', uploadedFile);
 					res.send('UPDATED ' + req.url, 200);
-					generateRDF(fspath, item, req.url);
-					
+					generateRDF(fspath, item, req.url);					
 				} else {
 					console.log('Cannot PUT ' + req.url);
 					res.send('Cannot PUT ' + req.url, 405);
@@ -211,12 +212,12 @@ function configureServer(base_path){
 
 function generateRDF(fspath, item, url){
 	//startup conversion!
-	var config = {'express_file': 'workspace/IFC2X3.exp'};
-	config.ifc_file = fspath+'/'+item+'.ifc';
+	var config = {'ifc_file': fspath+'/'+item+'.ifc'};
+	//config.ifc_file = fspath+'/'+item+'.ifc';
 	config.output_file = 'workspace/tmp/'+item+'.ttl';
-	config.model_name = item;
-	config.path = settings.rdf_host+url+'#';
-	//TODO: add virtuoso switch?
+	//config.model_name = item;
+	//config.path = settings.rdf_host+url+'#';
+	//{'express_file': 'workspace/IFC2X3.exp'};
 	
 	var java = spawn('java', ['-jar', 'workspace/IFC-converter.jar', '-jsonString', JSON.stringify(config)]);
 	java.stderr.on('data', function (data) {
@@ -240,7 +241,7 @@ function generateRDF(fspath, item, url){
 			var file = fs.createWriteStream('workspace/tmp/'+item+'.rdf');
 			var args = clone(settings.cwm_command.args);
 			var l = args.length;
-			args[l] = '--n3';
+			args[l] = '--ttl';
 			args[l+1] = 'workspace/tmp/'+item+'.ttl';
 			args[l+2] = '--rdf';
 			var cwm = spawn(settings.cwm_command.command, args);

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class IfcConvertor {
 		this.baseURI = baseURI;
 		
 		//PREPARATION
-		ExpressReader er = new ExpressReader(express_schema, "samples\\" + express_schema + ".exp");
+		ExpressReader er = new ExpressReader(express_schema);//, "samples\\" + express_schema + ".exp");
 		er.readAndBuild();
 		ent = er.getEntities();
 		typ = er.getTypes();
@@ -68,7 +69,8 @@ public class IfcConvertor {
 	public Model parseModel(){
 		//setup models
 		om=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		om.read("samples\\" + express_schema + ".ttl");
+		InputStream in = IfcConvertor.class.getResourceAsStream("/" + express_schema + ".ttl"); 
+		om.read(in,null,"TTL");
 		im = ModelFactory.createDefaultModel();
 		im.setNsPrefix("ifcowl", ontNS);
 		im.setNsPrefix("inst", baseURI);

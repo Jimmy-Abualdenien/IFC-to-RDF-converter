@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import fi.ni.rdf.Namespace;
 public class ExpressReader {
 
 	private String expressSchemaName;
-	private String expressFile;
+	//private String expressFile;
 
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
@@ -77,18 +78,18 @@ public class ExpressReader {
 	private ArrayList<TypeVO> selectTypesToExpand_temp = new ArrayList<TypeVO>(); // unused
 	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
 
-	public ExpressReader(String expressSchemaName, String fileName) {
+	public ExpressReader(String expressSchemaName) {
 		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 		this.expressSchemaName = expressSchemaName;
-		this.expressFile = fileName;
+		//this.expressFile = ExpressReader.;		
 	}
 	
 	public void readAndBuild(){
 		
 		try {
-			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-			File logFile = new File("out//log_" + timeLog + ".txt");
-			System.out.println(logFile.getCanonicalPath());		
+//			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+//			File logFile = new File("out//log_" + timeLog + ".txt");
+//			System.out.println(logFile.getCanonicalPath());		
 			
 			this.readSpec();
 			this.buildExpressStructure();
@@ -106,15 +107,13 @@ public class ExpressReader {
 
 	public static void main(String[] args) throws IOException {
 		try {
-//			ExpressReader er = new ExpressReader("Ifc2x_all_lf","samples\\Ifc2x_all_lf.exp");
-			ExpressReader er = new ExpressReader("Ifc2x-add1_longform","samples\\Ifc2x-add1_longform.exp");
-//			ExpressReader er = new ExpressReader("IFC2X2_FINAL","samples\\IFC2X2_FINAL.exp");
-//			ExpressReader er = new ExpressReader("IFC2X2_PLATFORM","samples\\IFC2X2_PLATFORM.exp");
-//			ExpressReader er = new ExpressReader("IFC2X2_ADD1","samples\\IFC2X2_ADD1.exp");
-//			ExpressReader er = new ExpressReader("IFC2X3_Final","samples\\IFC2X3_Final.exp");
-//			ExpressReader er = new ExpressReader("IFC2X3_TC1","samples\\IFC2X3_TC1.exp");
-//			ExpressReader er = new ExpressReader("IFC4","samples\\IFC4.exp");
-//			ExpressReader er = new ExpressReader("IFC4_ADD1","samples\\IFC4_ADD1.exp");
+//			ExpressReader er = new ExpressReader("IFC2X2_FINAL");//,"samples\\IFC2X2_FINAL.exp");
+//			ExpressReader er = new ExpressReader("IFC2X2_PLATFORM");//,"samples\\IFC2X2_PLATFORM.exp");
+//			ExpressReader er = new ExpressReader("IFC2X2_ADD1");//,"samples\\IFC2X2_ADD1.exp");
+//			ExpressReader er = new ExpressReader("IFC2X3_Final");//,"samples\\IFC2X3_Final.exp");
+//			ExpressReader er = new ExpressReader("IFC2X3_TC1");//,"samples\\IFC2X3_TC1.exp");
+//			ExpressReader er = new ExpressReader("IFC4");//,"samples\\IFC4.exp");
+			ExpressReader er = new ExpressReader("IFC4_ADD1");//,"samples\\IFC4_ADD1.exp");
 			er.readSpec();
 			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
@@ -384,17 +383,14 @@ public class ExpressReader {
 	private void readSpec() {
 		try {
 			// parsing file
-			FileInputStream fstream = new FileInputStream(expressFile);
-			DataInputStream in = new DataInputStream(fstream);
+//			FileInputStream fstream = new FileInputStream(expressFile);
+//			DataInputStream in = new DataInputStream(fstream);
+			InputStream in = ExpressReader.class.getResourceAsStream("/" + expressSchemaName + ".exp"); 
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			try {
 				String strLine;
 				while ((strLine = br.readLine()) != null) {
 					if (strLine.length() > 0) {
-						if(strLine.contains("Pixel"))
-							System.out.println("stop here");
-						if(strLine.contains("STRING(255)"))
-							System.out.println("stop here");
 						parse_level(strLine);
 					}
 				}
@@ -402,8 +398,7 @@ public class ExpressReader {
 				br.close();
 			}
 		} catch (FileNotFoundException fe) {
-			System.err.println("The IFC Express file " + expressFile
-					+ " is missing.");
+			System.err.println("The IFC Express file is missing.");
 			System.exit(1);
 		} catch (IOException e) {
 			e.printStackTrace();

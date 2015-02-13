@@ -1,10 +1,13 @@
 package org.buildingsmart;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
@@ -62,11 +65,11 @@ public class IfcReader {
 	 * @param args filePath schemaname
 	 */
 	public static void main(String[] args) {
-		if(args.length != 3 && !(args.length == 2 && args[0].startsWith("-json")))
-		 	System.out.println("Usage: java IFC_Converter express_schemaversion ifc_filename output_filename \nExample: java IFC_Converter IFC2X4_ADD1 C:\\sample.ifc c:\\output.rdf");
+		if(args.length != 2)
+		 	System.out.println("Usage: java IFC_Converter ifc_filename output_filename \nExample: java IFC_Converter C:\\sample.ifc c:\\output.rdf");
 		else {
-			if(args.length == 3) {
-				convert(args[0], args[1], args[2], DEFAULT_PATH);
+			if(args.length == 2 && !args[0].startsWith("-json")) {
+				convert(args[0], args[1], DEFAULT_PATH);
 			} else {
 				if(args[0].equals("-json")){
 					try {
@@ -87,14 +90,43 @@ public class IfcReader {
 	public static void convert(String jsonConfig) {
 		JSONObject obj = JSONObject.fromObject(jsonConfig);
 		
-		String express_schema = obj.getString("express_schemaversion");
 		String ifc_file = obj.getString("ifc_file");
 		String output_file = obj.getString("output_file");
 		
-		convert(express_schema, ifc_file, output_file, DEFAULT_PATH);
+		convert(ifc_file, output_file, DEFAULT_PATH);
 	}
 	
-	public static String slurp (InputStream in) throws IOException {
+	private static String getExpressSchema(String ifc_file){
+		try {
+			FileInputStream fstream = new FileInputStream(ifc_file);
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			try {
+				String strLine;
+				while ((strLine = br.readLine()) != null) {
+					if (strLine.length() > 0) {
+						if (strLine.startsWith("FILE_SCHEMA")){
+							if(strLine.indexOf("IFC2X3")!=-1)
+								return "IFC2X3_TC1";
+							if(strLine.indexOf("IFC4")!=-1)
+								return "IFC4_ADD1";
+							if(strLine.indexOf("IFC2X2")!=-1)
+								return "IFC2X2_ADD1";
+							else
+								return "";
+						}
+					}
+				}
+			} finally {
+				br.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return "";
+	}
+	
+ 	public static String slurp (InputStream in) throws IOException {
 		StringBuffer out = new StringBuffer();
 		byte[] b = new byte[4096];
 		for (int n; (n = in.read(b)) != -1;) {
@@ -103,8 +135,10 @@ public class IfcReader {
 		return out.toString();
 	}
 
-	public static void convert(String express_schema, String ifc_file, String output_file, String baseURI) {
+	public static void convert(String ifc_file, String output_file, String baseURI) {
 		long t0 = System.currentTimeMillis();
+		
+		String express_schema = getExpressSchema(ifc_file);
 		
 		//CONVERSION
 		IfcConvertor conv = new IfcConvertor(express_schema, ifc_file, output_file, baseURI);
@@ -114,7 +148,8 @@ public class IfcReader {
 		boolean valid = false;
 		System.out.println("reading ontology model");
 		OntModel ontology=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		ontology.read("samples\\" + express_schema + ".ttl"); //TODO: to replace by exact location
+		InputStream in = IfcReader.class.getResourceAsStream("/" + express_schema + ".ttl"); 
+		ontology.read(in,"http://www.buildingsmart-tech.org/ifcOWL","TTL");//"out\\" + express_schema + ".ttl");
 		System.out.println("reading ontology model done");
 		
 		//Check the created model with the OWL ontology
