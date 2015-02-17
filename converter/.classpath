@@ -15,8 +15,10 @@
 	<classpathentry kind="lib" path="lib/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/commons-beanutils-1.8.0.jar"/>
 	<classpathentry kind="lib" path="lib/jena-core-2.10.0.jar"/>
+	<classpathentry kind="lib" path="lib/jena-iri-0.9.5.jar"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/JenaLibs"/>
 	<classpathentry exported="true" kind="lib" path="lib/axis2-adb-1.6.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache-jena-2.11.1"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/Shared"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
