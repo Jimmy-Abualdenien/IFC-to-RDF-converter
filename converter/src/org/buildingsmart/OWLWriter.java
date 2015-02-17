@@ -459,7 +459,7 @@ public class OWLWriter {
 		}
 	}
 	
-	private void writeRegularProperty(AttributeVO attr, BufferedWriter out) throws IOException {
+	private void writeRegularProperty(AttributeVO attr, BufferedWriter out) throws IOException {		
 		//write property range
 		out.write(" ;\r\n");
 		out.write("\trdfs:subClassOf" + "\r\n");//
@@ -578,7 +578,7 @@ public class OWLWriter {
 	}
 
 	private void writeInverseProperty(PropertyVO prop, BufferedWriter out)
-			throws IOException {
+			throws IOException {		
 		out.write(" ;\r\n");
 		out.write("\trdfs:subClassOf" + "\r\n");
 		out.write("\t\t[" + "\r\n");
@@ -588,23 +588,12 @@ public class OWLWriter {
 		out.write("\t\t]");
 
 		if (prop.getMinCardinality() == -1 && prop.getMaxCardinality() == -1) {
+			System.out.println("This should be impossible");
 			// [?:?]
-			// no cardinality restrictions explicitly stated
+			// no cardinality restrictions explicitly stated (but default is (0, -1))
 			// however, as there is no OPTIONAL statement listed for any INVERSE
 			// property, this property is considered to be required
 			// qualifiedCadinality = 1
-			out.write(" ;" + "\r\n");
-			out.write("\trdfs:subClassOf" + "\r\n");
-			out.write("\t\t[" + "\r\n");
-			out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-			out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;"
-					+ "\r\n");
-			out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
-					+ "\r\n");
-			out.write("\t\t\towl:qualifiedCardinality \"1\"^^xsd:nonNegativeInteger"
-					+ "\r\n");
-			out.write("\t\t]");
-
 		} else if (prop.getMinCardinality() == -1
 				&& prop.getMaxCardinality() != -1) {
 			// [?:2]
@@ -627,6 +616,20 @@ public class OWLWriter {
 						+ "\r\n");
 				out.write("\t\t\towl:minQualifiedCardinality \"" + start
 						+ "\"^^xsd:nonNegativeInteger" + "\r\n");
+				out.write("\t\t]");
+			}
+			else{
+				//this is the regular option / default in EXPRESS
+				out.write(" ;" + "\r\n");
+				out.write("\trdfs:subClassOf" + "\r\n");
+				out.write("\t\t[" + "\r\n");
+				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+				out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;"
+						+ "\r\n");
+				out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
+						+ "\r\n");
+				out.write("\t\t\towl:qualifiedCardinality \"1\"^^xsd:nonNegativeInteger"
+						+ "\r\n");
 				out.write("\t\t]");
 			}
 		} else {
