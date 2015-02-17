@@ -69,12 +69,14 @@ public class IfcConvertor {
 		//setup models
 		om=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		InputStream in = IfcConvertor.class.getResourceAsStream("/" + express_schema + ".ttl"); 
+		System.out.println("found express schema: " + "/" + express_schema + ".ttl");
 		om.read(in,null,"TTL");
 		im = ModelFactory.createDefaultModel();
 		im.setNsPrefix("ifcowl", ontNS);
 		im.setNsPrefix("inst", baseURI);
 		
 		//Read the whole file into a linemap Map object
+		System.out.println("start to read model");
 		readModel();	
 		
 //		Model modelInMem = ModelFactory.createDefaultModel();
@@ -85,9 +87,14 @@ public class IfcConvertor {
 //		   System.out.println("triple from OntModel " + it.next().toString());
 //		}
 
+		System.out.println("ended reading model");
+		System.out.println("started mapEntries");
 		//map entries of the linemap Map object to the ontology Model and make new instances in the model	
 		mapEntries();		
+		System.out.println("ended mapEntries");
+		System.out.println("started createInstances");
 		createInstances();
+		System.out.println("ended createInstances");
 		
 		// Save memory
 		linemap.clear();
@@ -297,7 +304,7 @@ public class IfcConvertor {
 			System.err.println("Does not exist: " + vo.getName());
 
 		String subject = evo.getName() + "_" + vo.getLine_num();
-		//System.out.println("subject : " + subject);
+		System.out.println("subject : " + subject);
 
 		if (vo.is_touched())
 			return;
@@ -488,7 +495,7 @@ public class IfcConvertor {
 				Resource r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, range);
 				IDcounter++;
 				r.addProperty(p, r1);		
-				//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
+				System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
 				
 				String xsdType = getXSDTypeFromRange(range);
 				if(xsdType!=null){
@@ -538,7 +545,7 @@ public class IfcConvertor {
             OntResource rangeInstance = instances.next();
             if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){
             	im.add(im.createStatement(r, p, rangeInstance));							            	
-            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
+            	System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
             	break;
             }
 		}
@@ -585,7 +592,7 @@ public class IfcConvertor {
 					IDcounter++;
 					if(ii==0){
 						r.addProperty(p, r1);
-						//System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
+						System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
 					}
 				}	
 				//bindtheproperties
@@ -666,7 +673,7 @@ public class IfcConvertor {
 																
 			if(i<reslist.size()-1){								
 				r.addProperty(isfollowed,reslist.get(i+1));
-				//System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+				System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
 			}	
 		}
 	}
