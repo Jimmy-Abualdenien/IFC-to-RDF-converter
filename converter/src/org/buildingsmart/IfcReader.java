@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -149,7 +150,19 @@ public class IfcReader {
 		String express_schema = getExpressSchema(ifc_file);
 		
 		//CONVERSION
-		IfcConvertor conv = new IfcConvertor(express_schema, ifc_file, baseURI);
+		IfcConvertor conv = null;
+		try {
+			OntModel om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			InputStream in = IfcReader.class.getResourceAsStream("/ifc2x3tc1.ttl");
+			om.read(in,null,"TTL");
+			
+			ExpressReader er = new ExpressReader(IfcConvertor.class.getResourceAsStream("/ifc2x3tc1.exp"));//, "samples\\" + express_schema + ".exp");
+			er.readAndBuild();
+			
+			conv = new IfcConvertor(om, er, new FileInputStream(ifc_file), baseURI);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
 		Model model = conv.parseModel();		
 		
 		//VALIDATION

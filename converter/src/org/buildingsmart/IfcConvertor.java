@@ -2,7 +2,6 @@ package org.buildingsmart;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,7 +20,6 @@ import org.buildingsmart.vo.TypeVO;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -35,8 +33,6 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 public class IfcConvertor {
 
 	//input variables
-	private String express_schema;
-	private String ifc_file;
 	private String baseURI;
 	private String ontURI;
 	private String ontNS;
@@ -48,29 +44,25 @@ public class IfcConvertor {
 	//conversion variables
 	private int IDcounter = 0;	
 	private Map<Long, IFCVO> linemap = new HashMap<Long, IFCVO>();
-	private OntModel om;
 	private Model im;
+	private InputStream inputStream;
+	private OntModel ontModel;
 	
-	public IfcConvertor(String express_schema, String ifc_file, String baseURI){
-		this.express_schema = express_schema;
-		this.ifc_file = ifc_file;
+	public IfcConvertor(OntModel ontModel, ExpressReader expressReader, InputStream inputStream, String baseURI){
+		this.ontModel = ontModel;
+		this.inputStream = inputStream;
 		this.baseURI = baseURI;
 		
 		//PREPARATION
-		ExpressReader er = new ExpressReader(express_schema);//, "samples\\" + express_schema + ".exp");
-		er.readAndBuild();
-		ent = er.getEntities();
-		typ = er.getTypes();
+		ent = expressReader.getEntities();
+		typ = expressReader.getTypes();
 		ontURI = "http://www.buildingsmart-tech.org/ifcOWL";
 		ontNS = ontURI + "#";
 	}
 
 	public Model parseModel(){
 		//setup models
-		om=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		InputStream in = IfcConvertor.class.getResourceAsStream("/" + express_schema + ".ttl"); 
-		System.out.println("found express schema: " + "/" + express_schema + ".ttl");
-		om.read(in,null,"TTL");
+//		om=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		im = ModelFactory.createDefaultModel();
 		im.setNsPrefix("ifcowl", ontNS);
 		im.setNsPrefix("inst", baseURI);
@@ -106,8 +98,7 @@ public class IfcConvertor {
 	
 	private void readModel() {
 		try {
-			FileInputStream fstream = new FileInputStream(ifc_file);
-			DataInputStream in = new DataInputStream(fstream);
+			DataInputStream in = new DataInputStream(inputStream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			try {
 				String strLine;
@@ -288,7 +279,7 @@ public class IfcConvertor {
 		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
 			IFCVO vo = entry.getValue();	
 			String typeName = ent.get(vo.getName()).getName();			
-			OntClass cl = om.getOntClass(ontNS + typeName);
+			OntClass cl = ontModel.getOntClass(ontNS + typeName);
 			Resource r = im.createResource(baseURI + typeName + "_" + vo.getLine_num(), cl);
 			
 			FillProperties("root", vo, vo, r, cl, 0);
@@ -324,17 +315,17 @@ public class IfcConvertor {
 							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
 							String literalString = filter_extras((String) o);					
 
-							OntProperty p = om.getOntProperty(propURI);
+							OntProperty p = ontModel.getOntProperty(propURI);
 							OntResource range = p.getRange();
 							if(range.isClass()){
-								if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
+								if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "ENUMERATION"))){
 									addEnumProperty(r,p,range,literalString);
 								}								
 								//Check for SELECT
-								else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
+								else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "SELECT"))){
 									System.out.println("1 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
 								}									
-								else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
+								else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
 									System.out.println("1a - WARNING TODO: found LIST property: " + subject + " -- " + p + " - " + range.getLocalName() + " - " + literalString);
 								}	
 								else {
@@ -344,7 +335,7 @@ public class IfcConvertor {
 
 									String xsdType = getXSDTypeFromRange(range);
 									if(xsdType!=null){
-										OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);
+										OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);
 										addLiteralToResource(r1,valueProp,xsdType,literalString);
 									}
 									else{
@@ -370,8 +361,8 @@ public class IfcConvertor {
 					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
 					EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
 
-					OntProperty p = om.getOntProperty(propURI);
-					OntResource rclass = om.getOntResource(evorange.getName());
+					OntProperty p = ontModel.getOntProperty(propURI);
+					OntResource rclass = ontModel.getOntResource(evorange.getName());
 
 					Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num());
 					if(r1 == null)
@@ -405,14 +396,14 @@ public class IfcConvertor {
 								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
 
 							String propURI = evo.getDerived_attribute_list().get(attribute_pointer).getName();
-							OntProperty p = om.getOntProperty(ontNS + propURI);
+							OntProperty p = ontModel.getOntProperty(ontNS + propURI);
 							OntResource typerange = p.getRange();
 
-							if(typerange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
+							if(typerange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
 								String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
-								OntResource listrange = om.getOntResource(listvaluepropURI);
+								OntResource listrange = ontModel.getOntResource(listvaluepropURI);
 
-								if(listrange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
+								if(listrange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
 									System.out.println("6 - WARNING: Found unhandled ListOfList");
 								}													
 								else{
@@ -422,7 +413,7 @@ public class IfcConvertor {
 							}					
 							else{
 								EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o1).getName()));								
-								OntResource rclass = om.getOntResource(ontNS + evorange.getName());
+								OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
 
 								Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num());
 								if(r1 == null)
@@ -451,7 +442,7 @@ public class IfcConvertor {
 								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {				
 
 							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-							OntProperty p = om.getOntProperty(propURI);
+							OntProperty p = ontModel.getOntProperty(propURI);
 
 							addSinglePropertyFromTypeRemembrance(r, p, literalString, typeremembrance);
 						}
@@ -461,7 +452,7 @@ public class IfcConvertor {
 							&& (evo.getDerived_attribute_list() != null)
 							&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
 						String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-						OntProperty p = om.getOntProperty(propURI);
+						OntProperty p = ontModel.getOntProperty(propURI);
 
 						if(literalString.contains("_, ")){
 							addRegularListProperty(r, p, literalString);
@@ -478,15 +469,15 @@ public class IfcConvertor {
 	}	
 	
 	private void addSinglePropertyFromTypeRemembrance(Resource r, OntProperty p, String literalString, TypeVO typeremembrance){				
-		OntResource range = om.getOntResource(ontNS + typeremembrance.getName());
+		OntResource range = ontModel.getOntResource(ontNS + typeremembrance.getName());
 		
 		if(range.isClass()){
 			//Check for ENUM
-			if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "ENUMERATION"))){
+			if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "ENUMERATION"))){
 				addEnumProperty(r,p,range,literalString);									
 			}								
 			//Check for SELECT
-			else if(range.asClass().hasSuperClass(om.getOntClass(ontNS + "SELECT"))){
+			else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "SELECT"))){
 				System.out.println("9 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
 			}								
 			else {
@@ -499,7 +490,7 @@ public class IfcConvertor {
 				
 				String xsdType = getXSDTypeFromRange(range);
 				if(xsdType!=null){
-					OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
+					OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);	
 					addLiteralToResource(r1,valueProp,xsdType,literalString);	
 				}
 			}									
@@ -580,7 +571,7 @@ public class IfcConvertor {
 		if(range.isClass()){
 			OntResource listrange = getListContentType(range.asClass());
 			
-			if(listrange.asClass().hasSuperClass(om.getOntClass(ontNS + "List"))){
+			if(listrange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
 				System.out.println("14 - WARNING: Found unhandled ListOfList");
 			}	
 			else{
@@ -617,9 +608,9 @@ public class IfcConvertor {
 	}
 	
 	private OntResource getListContentType(OntClass range){
-		if(range.hasSuperClass(om.getOntClass(ontNS + "List"))){
+		if(range.hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
 			String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);	
-			return om.getOntResource(listvaluepropURI);
+			return ontModel.getOntResource(listvaluepropURI);
 		}
 		
 		OntClass cl = range.asClass().getSuperClass();
@@ -651,20 +642,20 @@ public class IfcConvertor {
 		
 		//bindtheproperties
 		String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
-		OntResource listrange = om.getOntResource(listvaluepropURI);
+		OntResource listrange = ontModel.getOntResource(listvaluepropURI);
 		
 		AddClassInstanceListProperties(reslist,entlist,listrange);
 	}
 	
 	private void AddClassInstanceListProperties(List<Resource> reslist, List<IFCVO> entlist, OntResource listrange){
-		OntProperty listp = om.getOntProperty(ontNS + "hasListContent");
-		OntProperty isfollowed = om.getOntProperty(ontNS + "isFollowedBy");
+		OntProperty listp = ontModel.getOntProperty(ontNS + "hasListContent");
+		OntProperty isfollowed = ontModel.getOntProperty(ontNS + "isFollowedBy");
 		
 		for(int i = 0; i<reslist.size();i++){	
 			Resource r = reslist.get(i);					
 			
 			EntityVO evorange = ent.get(ExpressReader.formatClassName(entlist.get(i).getName()));									
-			OntResource rclass = om.getOntResource(ontNS + evorange.getName());
+			OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
 			
 			Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num());
 			if(r1 == null)
@@ -682,7 +673,7 @@ public class IfcConvertor {
 		//GetListType
 		String xsdType = getXSDTypeFromRange(listrange);
 		if(xsdType!=null){
-			OntProperty valueProp = om.getOntProperty(ontNS + "has_" + xsdType);	
+			OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);	
 			//Adding Content only if found
 			for(int i = 0; i<reslist.size();i++){	
 				Resource r = reslist.get(i);
@@ -690,13 +681,13 @@ public class IfcConvertor {
 				Resource r2 = im.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter, listrange.asResource());		
 				IDcounter++;
 
-				r.addProperty(om.getOntProperty(ontNS + "hasListContent"), r2);
+				r.addProperty(ontModel.getOntProperty(ontNS + "hasListContent"), r2);
 				//System.out.println("OK: added property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r2.getLocalName());
 
 				addLiteralToResource(r2,valueProp,xsdType,literalString);
 
 				if(i<listelements.size()-1){								
-					r.addProperty(om.getOntProperty(ontNS + "isFollowedBy"),reslist.get(i+1));
+					r.addProperty(ontModel.getOntProperty(ontNS + "isFollowedBy"),reslist.get(i+1));
 					//System.out.println("OK: added property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
 				}	
 			}

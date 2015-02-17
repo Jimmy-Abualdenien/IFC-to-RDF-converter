@@ -65,9 +65,6 @@ import fi.ni.rdf.Namespace;
 
 public class ExpressReader {
 
-	private String expressSchemaName;
-	//private String expressFile;
-
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
 	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();
@@ -77,11 +74,11 @@ public class ExpressReader {
 
 	private ArrayList<TypeVO> selectTypesToExpand_temp = new ArrayList<TypeVO>(); // unused
 	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
+	private InputStream schemaInputStream;
 
-	public ExpressReader(String expressSchemaName) {
+	public ExpressReader(InputStream schemaInputStream) {
+		this.schemaInputStream = schemaInputStream;
 		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
-		this.expressSchemaName = expressSchemaName;
-		//this.expressFile = ExpressReader.;		
 	}
 	
 	public void readAndBuild(){
@@ -113,7 +110,7 @@ public class ExpressReader {
 //			ExpressReader er = new ExpressReader("IFC2X3_Final");//,"samples\\IFC2X3_Final.exp");
 //			ExpressReader er = new ExpressReader("IFC2X3_TC1");//,"samples\\IFC2X3_TC1.exp");
 //			ExpressReader er = new ExpressReader("IFC4");//,"samples\\IFC4.exp");
-			ExpressReader er = new ExpressReader("IFC4_ADD1");//,"samples\\IFC4_ADD1.exp");
+			ExpressReader er = new ExpressReader(ExpressReader.class.getResourceAsStream("/IFC4_ADD1.exp"));//,"samples\\IFC4_ADD1.exp");
 			er.readSpec();
 			System.out.println("Ended parsing the EXPRESS file");
 			er.buildExpressStructure();
@@ -124,9 +121,9 @@ public class ExpressReader {
 			er.addInverses();
 			er.unpackSelectTypes();
 
-			OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities,
-					er.types, er.siblings, er.enumIndividuals, er.properties);
-			ow.outputOWL();
+//			OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities,
+//					er.types, er.siblings, er.enumIndividuals, er.properties);
+//			ow.outputOWL();
 			System.out
 					.println("Ended converting the EXPRESS schema into corresponding OWL file");
 		} catch (Exception e) {
@@ -385,8 +382,7 @@ public class ExpressReader {
 			// parsing file
 //			FileInputStream fstream = new FileInputStream(expressFile);
 //			DataInputStream in = new DataInputStream(fstream);
-			InputStream in = ExpressReader.class.getResourceAsStream("/" + expressSchemaName + ".exp"); 
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			BufferedReader br = new BufferedReader(new InputStreamReader(schemaInputStream));
 			try {
 				String strLine;
 				while ((strLine = br.readLine()) != null) {
