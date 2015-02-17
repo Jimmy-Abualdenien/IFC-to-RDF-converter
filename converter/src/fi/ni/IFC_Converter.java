@@ -1,6 +1,8 @@
 package fi.ni;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -59,22 +61,26 @@ public class IFC_Converter {
 	}
 	
 	public static void convert(String express_file, String ifc_file, String output_file, String model_version_name, String path, VirtConfig virt) {
-
-		long t0 = System.currentTimeMillis();
-		ExpressReader er = new ExpressReader(express_file);
-		IFC_ClassModel model = new IFC_ClassModel(ifc_file, er.getEntities(), er.getTypes(), model_version_name);
-				
 		try {
-			model.listRDF(output_file, path, virt);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
+			FileOutputStream fos = new FileOutputStream(output_file);
+			long t0 = System.currentTimeMillis();
+			ExpressReader er = new ExpressReader(express_file);
+			FileInputStream fileInputStream = new FileInputStream(ifc_file);
+			IFC_ClassModel model = new IFC_ClassModel(ifc_file, fileInputStream, er.getEntities(), er.getTypes(), model_version_name);
+			
+			try {
+				model.listRDF(fos, path, virt, null);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			long t1 = System.currentTimeMillis();
+			System.out.println("done in " + ((t1-t0)/1000.0) + " seconds.");
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
 		}
-
-		long t1 = System.currentTimeMillis();
-		System.out.println("done in " + ((t1-t0)/1000.0) + " seconds.");
-		
 	}
 
 	public static void main(String[] args) {

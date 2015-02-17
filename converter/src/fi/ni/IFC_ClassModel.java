@@ -19,10 +19,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -34,8 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.dbcp.BasicDataSource;
+import org.bimserver.plugins.serializers.ProgressReporter;
 
 import fi.ni.ifc2x3.IfcProject;
 import fi.ni.ifc2x3.IfcRoot;
@@ -123,13 +124,12 @@ public class IFC_ClassModel {
 	 * @param types
 	 *            the types
 	 */
-	public IFC_ClassModel(String model_file, Map<String, EntityVO> entities,
-			Map<String, TypeVO> types, String ifc_model_name) {
+	public IFC_ClassModel(String model_file, InputStream inputStream, Map<String, EntityVO> entities, Map<String, TypeVO> types, String ifc_model_name) {
 		this.entities = entities;
 		this.types = types;
 		this.ifc_filename = filter_spaces((new File(model_file)).getName());
 		this.ifc_model_name = ifc_model_name;
-		readModel(model_file);
+		readModel(inputStream);
 		mapEntries();
 		calculateTheLongestsPathsToTheNode_and_setGlobalIDs();
 		createObjectTree();
@@ -161,7 +161,7 @@ public class IFC_ClassModel {
 
 	// ==============================================================================================================================
 
-	public void listRDF(String outputFileName, String path, VirtConfig virt) throws IOException, SQLException {
+	public void listRDF(OutputStream outputStream, String path, VirtConfig virt, ProgressReporter progressReporter) throws IOException, SQLException {
 
 		BufferedWriter out = null;
 		Connection c = null;
@@ -174,7 +174,7 @@ public class IFC_ClassModel {
 		
 		try {
 			//Setup file output
-			out = new BufferedWriter(new FileWriter(outputFileName));
+			out = new BufferedWriter(new OutputStreamWriter(outputStream));
 			out.write("@prefix : <" + path + ">.\n");
 			out.write("@prefix instances: <http://drum.cs.hut.fi/instances#>. \n");
 			out.write("@prefix owl: <" + Namespace.OWL + "> .\n");
@@ -1115,10 +1115,9 @@ public class IFC_ClassModel {
 	/**
 	 * @param model_file
 	 */
-	private void readModel(String model_file) {
+	private void readModel(InputStream inputStream) {
 		try {
-			FileInputStream fstream = new FileInputStream(model_file);
-			DataInputStream in = new DataInputStream(fstream);
+			DataInputStream in = new DataInputStream(inputStream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			try {
 				String strLine;
