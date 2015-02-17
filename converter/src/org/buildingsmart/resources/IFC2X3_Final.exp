@@ -6828,7 +6828,7 @@ ENTITY IfcRepresentation
 	Items : SET [1:?] OF IfcRepresentationItem;
  INVERSE
 	RepresentationMap : SET [0:1] OF IfcRepresentationMap FOR MappedRepresentation;
-	LayerAssignments : SET [0:?] OF IfcPresentationLayerAssignment FOR Assigneditems;
+	LayerAssignments : SET [0:?] OF IfcPresentationLayerAssignment FOR AssignedItems;
 	OfProductRepresentation : SET [0:1] OF IfcProductRepresentation FOR Representations;
 END_ENTITY;
 
