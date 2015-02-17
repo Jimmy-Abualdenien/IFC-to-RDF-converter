@@ -43,28 +43,25 @@ import fi.ni.vo.TypeVO;
  * @author Jyrki Oraskari
  */
 /*
-The MIT License (MIT)
+The GNU Affero General Public License
 
-Copyright (c) 2014 Jyrki Oraskari
+Copyright (C) 2014  Jyrki Oraskari
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
 
 public class ExpressReader {
 
@@ -478,8 +475,8 @@ public class ExpressReader {
 	private void outputJavaStringClass2Interface(String interface_name) {
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(
-					"c:\\jo\\generated\\" + interface_name
-							+ "_StringValue.java"));
+					"c:\\f\\" + interface_name
+							+ "_StringValue.java")); //jo\\generated
 
 			out.write("package fi.ni.ifc2x3;\n");
 			out.write("import fi.ni.ifc2x3.interfaces.*;\n");
@@ -487,24 +484,23 @@ public class ExpressReader {
 			out.write("\n");
 			out.write("/*\n");
 			out.write(" * IFC Java class for String valued unknown interface type\n");
-			out.write(" * @author Jyrki Oraskari\n");
-		    out.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n");
-		    out.write("of this software and associated documentation files (the \"Software\"), to deal\n");
-		    out.write("in the Software without restriction, including without limitation the rights\n");
-		    out.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
-		    out.write("copies of the Software, and to permit persons to whom the Software is\n");
-		    out.write("furnished to do so, subject to the following conditions:\n");
+			out.write(" * @author Jyrki Oraskari\n");		    
+		    out.write("The GNU Affero General Public License\n");
 		    out.write("\n");
-		    out.write("The above copyright notice and this permission notice shall be included in all\n");
-		    out.write("copies or substantial portions of the Software.\n");
+		    out.write("Copyright (C) 2014  Jyrki Oraskari\n");
 		    out.write("\n");
-		    out.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
-		    out.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
-		    out.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
-		    out.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
-		    out.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
-		    out.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n");
-		    out.write("SOFTWARE.\n");
+		    out.write("This program is free software: you can redistribute it and/or modify\n");
+		    out.write("it under the terms of the GNU Affero General Public License as\n");
+		    out.write("published by the Free Software Foundation, either version 3 of the\n");
+		    out.write("License, or (at your option) any later version.\n");
+		    out.write("\n");
+		    out.write("This program is distributed in the hope that it will be useful,\n");
+		    out.write("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+		    out.write("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+		    out.write("GNU Affero General Public License for more details.\n");
+		    out.write("\n");
+		    out.write("You should have received a copy of the GNU Affero General Public License\n");
+		    out.write("along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");		    
 			out.write(" */\n");
 			out.write("\n");
 
@@ -538,35 +534,30 @@ public class ExpressReader {
 			outputJavaStringClass2Interface(name);
 			try {
 				BufferedWriter out = new BufferedWriter(new FileWriter(
-						"c:\\jo\\interfaces\\" + pairs.getValue() + ".java"));
+						"c:\\f\\interfaces\\" + pairs.getValue() + ".java"));
 
 				out.write("package fi.ni.ifc2x3.interfaces;\n");
 
 				out.write("\n");
 				out.write("/*\n");
 				out.write(" * IFC type select 2 Java interface\n");
-				out.write(" * @author Jyrki Oraskari\n");
-				out.write("The MIT License (MIT)\n");
+				out.write(" * @author Jyrki Oraskari\n");		    
+			    out.write("The GNU Affero General Public License\n");
 			    out.write("\n");
-			    out.write("Copyright (c) 2014 Jyrki Oraskari\n");
+			    out.write("Copyright (C) 2014  Jyrki Oraskari\n");
 			    out.write("\n");
-			    out.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n");
-			    out.write("of this software and associated documentation files (the \"Software\"), to deal\n");
-			    out.write("in the Software without restriction, including without limitation the rights\n");
-			    out.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
-			    out.write("copies of the Software, and to permit persons to whom the Software is\n");
-			    out.write("furnished to do so, subject to the following conditions:\n");
+			    out.write("This program is free software: you can redistribute it and/or modify\n");
+			    out.write("it under the terms of the GNU Affero General Public License as\n");
+			    out.write("published by the Free Software Foundation, either version 3 of the\n");
+			    out.write("License, or (at your option) any later version.\n");
 			    out.write("\n");
-			    out.write("The above copyright notice and this permission notice shall be included in all\n");
-			    out.write("copies or substantial portions of the Software.\n");
+			    out.write("This program is distributed in the hope that it will be useful,\n");
+			    out.write("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+			    out.write("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+			    out.write("GNU Affero General Public License for more details.\n");
 			    out.write("\n");
-			    out.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
-			    out.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
-			    out.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
-			    out.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
-			    out.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
-			    out.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n");
-			    out.write("SOFTWARE.\n");
+			    out.write("You should have received a copy of the GNU Affero General Public License\n");
+			    out.write("along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");	
 				out.write(" */\n");
 				out.write("\n");
 
@@ -591,7 +582,7 @@ public class ExpressReader {
 			EntityVO evo = pairs.getValue();
 			try {
 				BufferedWriter out = new BufferedWriter(new FileWriter(
-						"c:\\jo\\generated\\" + evo.getName() + ".java"));
+						"c:\\f\\" + evo.getName() + ".java"));
 
 				out.write("package fi.ni.ifc2x3;\n");
 				out.write("import fi.ni.ifc2x3.interfaces.*;\n");
@@ -600,28 +591,23 @@ public class ExpressReader {
 
 				out.write("\n");
 				out.write("/*\n");
-				out.write(" * IFC Java class\n");
-				out.write("The MIT License (MIT)\n");
+				out.write(" * IFC Java class\n");		    
+			    out.write("The GNU Affero General Public License\n");
 			    out.write("\n");
-			    out.write("Copyright (c) 2014 Jyrki Oraskari\n");
+			    out.write("Copyright (C) 2014  Jyrki Oraskari\n");
 			    out.write("\n");
-			    out.write("Permission is hereby granted, free of charge, to any person obtaining a copy\n");
-			    out.write("of this software and associated documentation files (the \"Software\"), to deal\n");
-			    out.write("in the Software without restriction, including without limitation the rights\n");
-			    out.write("to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n");
-			    out.write("copies of the Software, and to permit persons to whom the Software is\n");
-			    out.write("furnished to do so, subject to the following conditions:\n");
+			    out.write("This program is free software: you can redistribute it and/or modify\n");
+			    out.write("it under the terms of the GNU Affero General Public License as\n");
+			    out.write("published by the Free Software Foundation, either version 3 of the\n");
+			    out.write("License, or (at your option) any later version.\n");
 			    out.write("\n");
-			    out.write("The above copyright notice and this permission notice shall be included in all\n");
-			    out.write("copies or substantial portions of the Software.\n");
+			    out.write("This program is distributed in the hope that it will be useful,\n");
+			    out.write("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+			    out.write("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+			    out.write("GNU Affero General Public License for more details.\n");
 			    out.write("\n");
-			    out.write("THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n");
-			    out.write("IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n");
-			    out.write("FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n");
-			    out.write("AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n");
-			    out.write("LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n");
-			    out.write("OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n");
-			    out.write("SOFTWARE.\n");
+			    out.write("You should have received a copy of the GNU Affero General Public License\n");
+			    out.write("along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");	
 				out.write(" */\n");
 				out.write("\n");
 
@@ -1563,24 +1549,24 @@ public class ExpressReader {
 	}
 
 	public static void main(String[] args) throws IOException {
-		ExpressReader er = new ExpressReader("c:\\2014\\IFC2X3_Final.exp");
-//		ExpressReader er = new ExpressReader("samples\\IFC2X3_TC1.exp");
+//		ExpressReader er = new ExpressReader("c:\\2014\\IFC2X3_Final.exp");
+		ExpressReader er = new ExpressReader("samples\\IFC2X3_TC1.exp");
 		//er.outputIFCClasses();
 		er.outputJavaClasses();
 
-		FileWriter fw = new FileWriter("out\\IFC2X3_TC1.n3");
-		
-		BufferedWriter out = new BufferedWriter(fw);
-		er.outputRDFS(out);
-		er.outputOWL(out);
-		
-		
-		try {
-			out.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		out.close();
+//		FileWriter fw = new FileWriter("out\\IFC2X3_TC1.n3");
+//		
+//		BufferedWriter out = new BufferedWriter(fw);
+//		er.outputRDFS(out);
+//		er.outputOWL(out);
+//		
+//		
+//		try {
+//			out.flush();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//		out.close();
 
 	}
 
