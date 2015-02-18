@@ -210,32 +210,14 @@ function configureServer(base_path){
 	return app;
 }
 
-function generateRDF(fspath, item, url){
-	//startup conversion!
-	var config = {'ifc_file': fspath+'/'+item+'.ifc'};
-	config.output_file = 'workspace/tmp/'+item+'.ttl';
-	console.log('output file: ' + config.output_file);
-	
-	var java = spawn('java', ['-jar', '-Xmx3072m', 'workspace/IFC-converter.jar', '-jsonString', JSON.stringify(config)]);
+function generateRDF(fspath, item, url){	
+	var java = spawn('java', ['-Xms2048m', '-Xmx3072m', '-jar', 'workspace/IFC-converter.jar', fspath+'/'+item+'.ifc', fspath+'/'+item+'.ttl']);
 	java.stderr.on('data', function (data) {
 		console.log('stderr: ' + data);
 	});
 	java.on('exit', function(java_code) {
 		if (java_code == 0) {
-			//Make .ttl available
-			var counter = 0;
-			var is_ttl = fs.createReadStream('workspace/tmp/'+item+'.ttl');
-			var os_ttl = fs.createWriteStream(fspath+'/'+item+'.ttl');
-			util.pump(is_ttl, os_ttl, function() {
-				counter++;
-				if(counter == 2){
-					fs.unlinkSync('workspace/tmp/'+item+'.ttl');
-					fs.unlinkSync('workspace/tmp/'+item+'.rdf');
-				}
-			});
-			
-			//Create RDF/XML representation
-			//This should be done using Jena, not CWM.
+			//All is handled by jar file normally
 		} 
 	});
 }
@@ -305,10 +287,3 @@ function writeError(error, response){
 
 var app = configureServer(settings.base_path);
 app.listen(settings.server_port);
-
-
-
-
-		
-		
-		

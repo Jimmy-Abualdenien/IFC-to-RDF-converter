@@ -294,7 +294,7 @@ public class IfcConvertor {
 			System.err.println("Does not exist: " + vo.getName());
 
 		String subject = evo.getName() + "_" + vo.getLine_num();
-		System.out.println("subject : " + subject);
+		//System.out.println("subject : " + subject);
 
 		if (vo.is_touched())
 			return;
@@ -485,7 +485,7 @@ public class IfcConvertor {
 				Resource r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, range);
 				IDcounter++;
 				r.addProperty(p, r1);		
-				System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
+				//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
 				
 				String xsdType = getXSDTypeFromRange(range);
 				if(xsdType!=null){
@@ -535,7 +535,7 @@ public class IfcConvertor {
             OntResource rangeInstance = instances.next();
             if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){
             	im.add(im.createStatement(r, p, rangeInstance));							            	
-            	System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
+            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
             	break;
             }
 		}
@@ -582,7 +582,7 @@ public class IfcConvertor {
 					IDcounter++;
 					if(ii==0){
 						r.addProperty(p, r1);
-						System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
+						//System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
 					}
 				}	
 				//bindtheproperties
@@ -619,7 +619,7 @@ public class IfcConvertor {
 			return getListContentType(cl);
 		}
 	}
-		
+	
 	private void fillClassInstanceList(LinkedList<Object> tmp_list, OntResource typerange, OntProperty p, Resource r){
 		List<Resource> reslist = new ArrayList<Resource>();
 		List<IFCVO> entlist = new ArrayList<IFCVO>();
@@ -663,7 +663,7 @@ public class IfcConvertor {
 																
 			if(i<reslist.size()-1){								
 				r.addProperty(isfollowed,reslist.get(i+1));
-				System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+				//System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
 			}	
 		}
 	}
