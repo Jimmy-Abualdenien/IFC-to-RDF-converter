@@ -1,16 +1,11 @@
 package org.buildingsmart;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -35,8 +30,9 @@ import fi.ni.rdf.Namespace;
  * an internal representation of it.
  * 
  * The usage:
- * ExpressReader er = new ExpressReader(file name);
+ * ExpressReader er = new ExpressReader(InputStream schemaInputStream);
  * 
+ *  - readAndBuild() - parses the file and builds up all data required to write an OWL file or convert an IFC file to RDF
  *  - getEntities() - gives map of Entities in IFC
  *  - getTypes()    - gives map of Types in IFC
  *   
@@ -72,8 +68,6 @@ public class ExpressReader {
 	private Map<String, PropertyVO> properties = new HashMap<String, PropertyVO>();
 	private Map<String, Set<String>> siblings = new HashMap<String, Set<String>>();
 
-	private ArrayList<TypeVO> selectTypesToExpand_temp = new ArrayList<TypeVO>(); // unused
-	private Map<TypeVO, TypeVO> selectTypesToExpand = new HashMap<TypeVO,TypeVO>();//interface x ,extends
 	private InputStream schemaInputStream;
 
 	public ExpressReader(InputStream schemaInputStream) {
@@ -81,13 +75,8 @@ public class ExpressReader {
 		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 	}
 	
-	public void readAndBuild(){
-		
-		try {
-//			String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
-//			File logFile = new File("out//log_" + timeLog + ".txt");
-//			System.out.println(logFile.getCanonicalPath());		
-			
+	public void readAndBuild(){		
+		try {			
 			this.readSpec();
 			this.buildExpressStructure();
 			this.generateNamedIndividuals();
@@ -103,32 +92,28 @@ public class ExpressReader {
 	}
 
 	public static void main(String[] args) throws IOException {
-		try {
-//			ExpressReader er = new ExpressReader("IFC2X2_FINAL");//,"samples\\IFC2X2_FINAL.exp");
-//			ExpressReader er = new ExpressReader("IFC2X2_PLATFORM");//,"samples\\IFC2X2_PLATFORM.exp");
-//			ExpressReader er = new ExpressReader("IFC2X2_ADD1");//,"samples\\IFC2X2_ADD1.exp");
-//			ExpressReader er = new ExpressReader("IFC2X3_Final");//,"samples\\IFC2X3_Final.exp");
-//			ExpressReader er = new ExpressReader("IFC2X3_TC1");//,"samples\\IFC2X3_TC1.exp");
-//			ExpressReader er = new ExpressReader("IFC4");//,"samples\\IFC4.exp");
-			ExpressReader er = new ExpressReader(ExpressReader.class.getResourceAsStream("/IFC4_ADD1.exp"));//,"samples\\IFC4_ADD1.exp");
-			er.readSpec();
-			System.out.println("Ended parsing the EXPRESS file");
-			er.buildExpressStructure();
-			er.generateNamedIndividuals();
-
-			er.rearrangeAttributes();
-			er.rearrangeProperties();
-			er.addInverses();
-			er.unpackSelectTypes();
-
-//			OWLWriter ow = new OWLWriter(er.expressSchemaName, er.entities,
-//					er.types, er.siblings, er.enumIndividuals, er.properties);
-//			ow.outputOWL();
-			System.out
-					.println("Ended converting the EXPRESS schema into corresponding OWL file");
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
+		//args should be: IFC2X3_Final, IFC2X3_TC1, IFC4 or IFC4_ADD1, nothing else is accepted here
+		if(args.length != 1)
+		 	System.out.println("Usage: java ExpressReader expressSchemaname \nExample: java ExpressReader IFC2X3_TC1 (only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options)");
+		else {
+			String in = args[0];
+			if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1") || in.equalsIgnoreCase("IFC4_ADD1") || in.equalsIgnoreCase("IFC4")){
+				try {
+					ExpressReader er = new ExpressReader(ExpressReader.class.getResourceAsStream("/" + in + ".exp"));
+					er.readAndBuild();
+		
+					OWLWriter ow = new OWLWriter(in, er.entities,
+							er.types, er.siblings, er.enumIndividuals, er.properties);
+					ow.outputOWL();
+					System.out
+							.println("Ended converting the EXPRESS schema into corresponding OWL file");
+				} catch (Exception e) {
+					e.printStackTrace();
+				} 
+			}
+			else
+			 	System.out.println("Usage: java ExpressReader expressSchemaname \nExample: java ExpressReader IFC2X3_TC1 (only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options)");
+		}
 	}
 
 	private void generateNamedIndividuals() throws IOException {
@@ -379,9 +364,6 @@ public class ExpressReader {
 	// CONVERTING
 	private void readSpec() {
 		try {
-			// parsing file
-//			FileInputStream fstream = new FileInputStream(expressFile);
-//			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(schemaInputStream));
 			try {
 				String strLine;
@@ -570,7 +552,7 @@ public class ExpressReader {
 		case TYPE_SWITCH:
 			if (txt.equalsIgnoreCase("SELECT")) {
 				state = TYPE_SELECT;
-				selectTypesToExpand_temp.add(current_type);
+//				selectTypesToExpand_temp.add(current_type);
 				current_type.setPrimarytype(formatClassName(txt));
 			} else if (txt.equalsIgnoreCase("ENUMERATION")) {
 				state = TYPE_ENUMERATION;
@@ -1040,23 +1022,6 @@ public class ExpressReader {
 			}
 		}
 		return true;
-	}
-
-	private void unpackSelectTypes() {
-		// if a select type is referred to by another select type -> replace it
-		// by the elements of the latter!
-		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
-			TypeVO vo = entry.getValue();
-			for (int n = 0; n < vo.getSelect_entities().size(); n++) {
-				String selectEnt = vo.getSelect_entities().get(n);
-				for (int i = 0; i < selectTypesToExpand_temp.size(); i++) {
-					if (selectTypesToExpand_temp.get(i).getName()
-							.equalsIgnoreCase(selectEnt)) {
-						selectTypesToExpand.put(selectTypesToExpand_temp.get(i),vo);
-					}
-				}
-			}
-		}
 	}
 
 	// ACCESSORS
