@@ -17,6 +17,7 @@ import org.bimserver.plugins.renderengine.RenderEngineException;
 import org.bimserver.plugins.schema.SchemaPlugin;
 import org.bimserver.plugins.serializers.AbstractSerializerPlugin;
 import org.bimserver.plugins.serializers.Serializer;
+
 import org.buildingsmart.ExpressReader;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -40,6 +41,7 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 		if (schemaFile == null) {
 			throw new RenderEngineException("No schema file");
 		}
+		
 		om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		try {
 			String ttlPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.ttl";
@@ -47,16 +49,22 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 			if (in == null) {
 				throw new PluginException(ttlPath + " not found");
 			}
+			
+			String expPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.exp";
+			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
+			if (inexp == null) {
+				throw new PluginException(expPath + " not found");
+			}
+			
 			om.read(in,null,"TTL");
 			
 			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL";
-			String ontNS = ontURI + "#";
-			
+			String ontNS = ontURI + "#";			
 			Model im = ModelFactory.createDefaultModel();
 			im.setNsPrefix("ifcowl", ontNS);
-			im.setNsPrefix("inst", DEFAULT_PATH);
+			im.setNsPrefix("inst", DEFAULT_PATH);			
 			
-			er = new ExpressReader(new FileInputStream(schemaFile));
+			er = new ExpressReader(inexp);
 			er.readAndBuild();
 
 			initialized = true;
