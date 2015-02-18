@@ -3,9 +3,11 @@ package org.bimserver.serializers.ifctordf;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
@@ -68,7 +70,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
 		ValidityReport validity = infModel.validate();
 		if (!validity.isValid()) {
-			StringBuilder stringBuilder = new StringBuilder("generated RDF model contains conflicts. No RDF file produced.");
+			StringBuilder stringBuilder = new StringBuilder("generated RDF model contains conflicts. No RDF nor TTL file produced.");
 			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
 				stringBuilder.append(" - " + i.next() + "\n");
 			}
@@ -78,6 +80,14 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, Charsets.UTF_8);
 		BufferedWriter out = new BufferedWriter(outputStreamWriter);
 		model.write(out, "TTL");
+
+		//you might want to opt to output to RDF/XML as well here, depending on your outputStream var
+		//String output_file_rdf = outputStream.substring(0, output_file.length() - 4) + ".rdf";
+//		OutputStreamWriter char_output = new OutputStreamWriter(
+//				new FileOutputStream(output_file_rdf),
+//				Charset.forName("UTF-8").newEncoder());
+//		BufferedWriter out = new BufferedWriter(char_output);
+//		model.write(out, "RDF/XML");
 
 		long t1 = System.currentTimeMillis();
 		LOGGER.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
