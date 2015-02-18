@@ -67,7 +67,7 @@ public class IfcReader {
 	 */
 	public static void main(String[] args) {
 		if(args.length != 2)
-		 	System.out.println("Usage: java IFC_Converter ifc_filename output_filename \nExample: java IFC_Converter C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
+		 	System.out.println("Usage: java IfcReader ifc_filename output_filename \nExample: java IFC_Converter C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
 		else {
 			if(args.length == 2 && !args[0].startsWith("-json")) {
 				convert(args[0], args[1], DEFAULT_PATH);
@@ -137,77 +137,119 @@ public class IfcReader {
 	}
 
 	public static void convert(String ifc_file, String output_file, String baseURI) {
-		long t0 = System.currentTimeMillis();
+		long t0 = System.currentTimeMillis();		
+
+		if(!ifc_file.endsWith(".ifc")){
+			ifc_file.replaceAll(".", "");
+			ifc_file += ".ifc";
+		}
+		
+		String exp = getExpressSchema(ifc_file);
+		
+		//check if we are able to convert this: only four schemas are supported
+		if(!exp.equalsIgnoreCase("IFC2X3_Final") && !exp.equalsIgnoreCase("IFC2X3_TC1") && !exp.equalsIgnoreCase("IFC4_ADD1") && !exp.equalsIgnoreCase("IFC4"))
+			return;		
+		
+		//CONVERSION
+		OntModel om = null;
+		Model model = null;
+		InputStream in = null;
+		InputStream expin = null;
+		try {
+			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			in = IfcReader.class.getResourceAsStream("/"+exp+".ttl");
+			om.read(in,null,"TTL");
+			
+			expin = IfcConvertor.class.getResourceAsStream("/"+exp+".exp");
+			ExpressReader er = new ExpressReader(expin);
+			er.readAndBuild();
+			
+			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(ifc_file), baseURI);
+			model = conv.parseModel();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} finally{
+			try{
+				in.close();
+			} catch(Exception e1){
+				e1.printStackTrace();
+			}			
+			try{
+				expin.close();
+			} catch(Exception e1){
+				e1.printStackTrace();
+			}
+		}
+		
+		if(om!=null && model !=null){
+			boolean valid = validateGeneratedModel(om, model);
+			if(valid==true){
+				writeTTLRDFFiles(model,output_file);
+			}
+			else{
+				System.err.println("The generated RDF model is invalid");
+				System.exit(1);
+			}
+			long t1 = System.currentTimeMillis();
+			System.out.println("done in " + ((t1-t0)/1000.0) + " seconds.");	
+		}
+		else{
+			System.out.println("No ontologyModel or instanceModel found -> no files generated.");	
+		}	
+	}	
+	
+	//VALIDATION
+	private static boolean validateGeneratedModel(OntModel om, Model model){
+		boolean valid = false;
+		
+		//Check the created model with the OWL ontology
+		System.out.println("createInfModel");
+		InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), om, model);
+		System.out.println("validate");
+		ValidityReport validity = infModel.validate();
+		if (validity.isValid()) {
+			System.out.println("generated RDF graph is OK! Writing TTL and RDF file...");
+			valid = true;
+		} else {
+			System.out.println("generated RDF model contains conflicts. No TTL or RDF file produced.");
+			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
+				System.out.println(" - " + i.next());
+			}
+		}
+		return valid;
+	}
+
+	private static void writeTTLRDFFiles(Model model, String output_file){
 		
 		if(!output_file.endsWith(".ttl")){
 			output_file.replaceAll(".", "");
 			output_file += ".ttl";
 		}
-		if(!ifc_file.endsWith(".ifc")){
-			ifc_file.replaceAll(".", "");
-			ifc_file += ".ifc";
-		}
-		String express_schema = getExpressSchema(ifc_file);
+		String output_file_rdf = output_file.substring(0, output_file.length() - 4) + ".rdf";
 		
-		//CONVERSION
-		IfcConvertor conv = null;
 		try {
-			OntModel om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			InputStream in = IfcReader.class.getResourceAsStream("/ifc2x3tc1.ttl");
-			om.read(in,null,"TTL");
-			
-			ExpressReader er = new ExpressReader(IfcConvertor.class.getResourceAsStream("/ifc2x3tc1.exp"));//, "samples\\" + express_schema + ".exp");
-			er.readAndBuild();
-			
-			conv = new IfcConvertor(om, er, new FileInputStream(ifc_file), baseURI);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		Model model = conv.parseModel();		
-		
-		//VALIDATION
-		boolean valid = false;
-		System.out.println("reading ontology model");
-		OntModel ontology=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		InputStream in = IfcReader.class.getResourceAsStream("/" + express_schema + ".ttl"); 
-		ontology.read(in,"http://www.buildingsmart-tech.org/ifcOWL","TTL");//"out\\" + express_schema + ".ttl");
-		System.out.println("reading ontology model done");
-		
-		//Check the created model with the OWL ontology
-		System.out.println("createInfModel");
-		InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontology, model);
-		System.out.println("validate");
-		ValidityReport validity = infModel.validate();
-		if (validity.isValid()) {
-			System.out.println("generated RDF model is OK! Writing RDF file...");
-			valid = true;
-		} else {
-			System.out.println("generated RDF model contains conflicts. No RDF file produced.");
-			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
-				System.out.println(" - " + i.next());
-			}
-		}
-		
-		if(valid==true){			
-			try {
-				OutputStreamWriter char_output = new OutputStreamWriter(
-						new FileOutputStream(output_file),
-						Charset.forName("UTF-8").newEncoder());
-				BufferedWriter out = new BufferedWriter(char_output);
-				model.write(out, "TTL");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.err.println("Something went wrong while writing the TTL file");
-				System.exit(1);
-				e.printStackTrace();
-			}	
-		}
-		else{
-			System.err.println("The generated RDF model is invalid");
+			OutputStreamWriter char_output = new OutputStreamWriter(
+					new FileOutputStream(output_file),
+					Charset.forName("UTF-8").newEncoder());
+			BufferedWriter out = new BufferedWriter(char_output);
+			model.write(out, "TTL");
+		} catch (IOException e) {
+			System.err.println("Something went wrong while writing the TTL file");
 			System.exit(1);
-		}
-
-		long t1 = System.currentTimeMillis();
-		System.out.println("done in " + ((t1-t0)/1000.0) + " seconds.");		
-	}	
+			e.printStackTrace();
+		}	
+		try {
+			OutputStreamWriter char_output = new OutputStreamWriter(
+					new FileOutputStream(output_file_rdf),
+					Charset.forName("UTF-8").newEncoder());
+			BufferedWriter out = new BufferedWriter(char_output);
+			model.write(out, "RDF/XML");
+		} catch (IOException e) {
+			System.err.println("Something went wrong while writing the RDF file");
+			System.exit(1);
+			e.printStackTrace();
+		}	
+	}
 }
+
+

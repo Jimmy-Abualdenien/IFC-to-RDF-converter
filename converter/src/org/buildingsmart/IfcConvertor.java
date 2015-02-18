@@ -62,7 +62,6 @@ public class IfcConvertor {
 
 	public Model parseModel(){
 		//setup models
-//		om=ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		im = ModelFactory.createDefaultModel();
 		im.setNsPrefix("ifcowl", ontNS);
 		im.setNsPrefix("inst", baseURI);
