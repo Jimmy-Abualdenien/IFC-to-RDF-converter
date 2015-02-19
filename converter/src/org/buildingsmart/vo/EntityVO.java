@@ -29,7 +29,6 @@ public class EntityVO {
 	private String name;
 	private List<AttributeVO> attributes = new LinkedList<AttributeVO>();
 	private List<InverseVO> inverses = new LinkedList<InverseVO>();
-//	private List<String> interfaces = new LinkedList<String>();
 
 	private List<AttributeVO> derived_attribute_list = new LinkedList<AttributeVO>();
 	private List<InverseVO> derived_inverse_list = new LinkedList<InverseVO>();
@@ -68,7 +67,6 @@ public class EntityVO {
 	}
 
 	public EntityVO() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public List<AttributeVO> getAttributes() {
@@ -103,19 +101,11 @@ public class EntityVO {
 		this.name = name;
 	}
 
-//	public List<String> getInterfaces() {
-//		return interfaces;
-//	}
-//
-//	public void setInterfaces(List<String> interfaces) {
-//		this.interfaces = interfaces;
-//	}
 
 	@Override
 	public String toString() {
 		return "EntityVO [name=" + name + ", attributes=" + attributes
 				+ ", inverses=" + inverses 
-//				+ ", interfaces=" + interfaces
 				+ ", derived_attribute_list=" + derived_attribute_list
 				+ ", derived_inverse_list=" + derived_inverse_list
 				+ ", superclass=" + superclass 

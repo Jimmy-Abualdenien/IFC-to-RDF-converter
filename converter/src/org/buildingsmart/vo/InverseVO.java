@@ -26,7 +26,6 @@ public class InverseVO {
 	private String inverseOfProperty;
 	private boolean set = false;
 	private boolean unique = false;
-//	private boolean one_valued = false;
 	private int minCard = -1;
 	private int maxCard = -1;
 	private PropertyVO associatedProperty = null;
@@ -40,7 +39,6 @@ public class InverseVO {
 		this.set = set;
 		this.minCard = minCard;
 		this.maxCard = maxCard;
-//		this.one_valued = one_valued;
 	}
 
 	public boolean isSet() {
@@ -83,13 +81,6 @@ public class InverseVO {
 		this.unique = unique;
 	}
 
-//	public boolean isOne_valued() {
-//		return one_valued;
-//	}
-//
-//	public void setOne_valued(boolean one_valued) {
-//		this.one_valued = one_valued;
-//	}
 
 	public int getMinCard() {
 		return minCard;

@@ -30,6 +30,38 @@ import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
+/*
+ * IFCtoRDFConverter is the final interface for this code. Through this class, one is able to submit an IFC file and the EXPRESS schema it follows so that
+ * a corresponding IFC/RDF graph can be built.
+ * 
+ * The usage:
+ * IFCtoRDFConverter converter = new IFCtoRDFConverter(file name);
+ *   
+ * @author Jyrki Oraskari
+ * @author of modifications Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
+ */
+
+/*
+ * The GNU Affero General Public License
+ * 
+ * Copyright (c) 2014, 2015 Jyrki Oraskari (Jyrki.Oraskari@aalto.fi / rkiorri@gmail.com)
+ * Copyright (c) 2015 Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+
 public class IfcConvertor {
 
 	//input variables
@@ -47,6 +79,9 @@ public class IfcConvertor {
 	private Model im;
 	private InputStream inputStream;
 	private OntModel ontModel;
+	
+	// Taking care of avoiding duplicate resources
+	private Map<String,Resource> resource_map=new HashMap<String,Resource>();  
 	
 	public IfcConvertor(OntModel ontModel, ExpressReader expressReader, InputStream inputStream, String baseURI){
 		this.ontModel = ontModel;
@@ -131,7 +166,7 @@ public class IfcConvertor {
 		int state = 0;
 		StringBuffer sb = new StringBuffer();
 		int cl_count = 0;
-		LinkedList<Object> current = ifcvo.getList();
+		LinkedList<Object> current = ifcvo.getObjectList();
 		Stack<LinkedList<Object>> list_stack = new Stack<LinkedList<Object>>();
 		for (int i = 0; i < line.length(); i++) {
 			char ch = line.charAt(i);
@@ -216,15 +251,15 @@ public class IfcConvertor {
 			IFCVO vo = entry.getValue();
 			
 			//mapping properties to IFCVOs
-			for (int i = 0; i < vo.getList().size(); i++) {
-				Object o = vo.getList().get(i);
+			for (int i = 0; i < vo.getObjectList().size(); i++) {
+				Object o = vo.getObjectList().get(i);
 				if (String.class.isInstance(o)) {
 					String s = (String) o;
 					if (s.length() < 1)
 						continue;
 					if (s.charAt(0) == '#') {
 						Object or = linemap.get(toLong(s.substring(1)));
-						vo.getList().set(i, or);
+						vo.getObjectList().set(i, or);
 					}
 				}
 				if (LinkedList.class.isInstance(o)) {
@@ -276,197 +311,220 @@ public class IfcConvertor {
 	
 	private void createInstances(){		
 		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
-			IFCVO vo = entry.getValue();	
-			String typeName = ent.get(vo.getName()).getName();			
+			IFCVO ifc_lineEntry = entry.getValue();	
+			String typeName = ent.get(ifc_lineEntry.getName()).getName();			
 			OntClass cl = ontModel.getOntClass(ontNS + typeName);
-			Resource r = im.createResource(baseURI + typeName + "_" + vo.getLine_num(), cl);
+			Resource r = im.createResource(baseURI + typeName + "_" + ifc_lineEntry.getLine_num(), cl);
 			
-			FillProperties("root", vo, vo, r, cl, 0);
+			fillProperties(ifc_lineEntry, r, cl);
 		}
+		// The map is used only to avoid duplicates.
+		// So, it can be cleared here
+		resource_map.clear();
 	}
 	
+	TypeVO typeremembrance = null;
 	@SuppressWarnings("unchecked")
-	private void FillProperties(String name, IFCVO vo,
-			IFCVO level_up_vo, Resource r, OntClass cl, int level) {		
-
-		EntityVO evo = ent.get(ExpressReader.formatClassName(vo.getName()));
+	private void fillProperties(IFCVO ifc_lineEntry,Resource r, OntClass cl) {		
+	
+		EntityVO evo = ent.get(ExpressReader.formatClassName(ifc_lineEntry.getName()));
 		if (evo == null)
-			System.err.println("Does not exist: " + vo.getName());
-
-		String subject = evo.getName() + "_" + vo.getLine_num();
-		//System.out.println("subject : " + subject);
-
-		if (vo.is_touched())
-			return;
-
-		TypeVO typeremembrance = null;
+			System.err.println("Does not exist: " + ifc_lineEntry.getName());
+	
+		final String subject = evo.getName() + "_" + ifc_lineEntry.getLine_num();
+	
+		typeremembrance = null;
 		int attribute_pointer = 0;
-		for (int i = 0; i < vo.getList().size(); i++) {
-			Object o = vo.getList().get(i);
+		for (Object o: ifc_lineEntry.getObjectList()) {
+			
 			if (String.class.isInstance(o)) {
-				if (!((String) o).equals("$") && !((String) o).equals("*")) { 
-
-					if (typ.get(ExpressReader.formatClassName((String) o)) == null) {
-						if ((evo != null)
-								&& (evo.getDerived_attribute_list() != null)
-								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-
-							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-							String literalString = filter_extras((String) o);					
-
-							OntProperty p = ontModel.getOntProperty(propURI);
-							OntResource range = p.getRange();
-							if(range.isClass()){
-								if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "ENUMERATION"))){
-									addEnumProperty(r,p,range,literalString);
-								}								
-								//Check for SELECT
-								else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "SELECT"))){
-									System.out.println("1 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
-								}									
-								else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
-									System.out.println("1a - WARNING TODO: found LIST property: " + subject + " -- " + p + " - " + range.getLocalName() + " - " + literalString);
-								}	
-								else {
-									Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
-									IDcounter++;
-									r.addProperty(p, r1);
-
-									String xsdType = getXSDTypeFromRange(range);
-									if(xsdType!=null){
-										OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);
-										addLiteralToResource(r1,valueProp,xsdType,literalString);
-									}
-									else{
-										System.out.println("1b - WARNING TODO: this should not happen for: " + p + " - " + range.getLocalName() + " - " + literalString);
-									}
-								}									
-							}
-							else {
-								System.out.println("5 - WARNING: found other kind of property: " + p + " - " + range.getLocalName());									
-							}
-						}
-						attribute_pointer++;
-					}
-					else{
-						typeremembrance = typ.get(ExpressReader.formatClassName((String) o));
-					}
-				} else
-					attribute_pointer++;
+				attribute_pointer = fillProperties_handleStringObject(r, evo,
+						subject, attribute_pointer, o);
 			} else if (IFCVO.class.isInstance(o)) {
+				attribute_pointer = fillProperties_handleIFC_Object(r,
+						evo, attribute_pointer, o);
+			} else if (LinkedList.class.isInstance(o)) {
+				attribute_pointer = fillProperties_handleListObject(r, evo,
+						attribute_pointer, o);
+			}	
+		}
+	}
+
+	private int fillProperties_handleStringObject(Resource r, EntityVO evo,
+			String subject, int attribute_pointer, Object o) {
+		if (!((String) o).equals("$") && !((String) o).equals("*")) { 
+	
+			if (typ.get(ExpressReader.formatClassName((String) o)) == null) {
 				if ((evo != null)
 						&& (evo.getDerived_attribute_list() != null)
 						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-					EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
-
+	
+					final String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					final String literalString = filter_extras((String) o);					
+	
 					OntProperty p = ontModel.getOntProperty(propURI);
-					OntResource rclass = ontModel.getOntResource(evorange.getName());
+					OntResource range = p.getRange();
+					if(range.isClass()){
+						if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "ENUMERATION"))){
+							addEnumProperty(r,p,range,literalString);
+						}								
+						//Check for SELECT
+						else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "SELECT"))){
+							System.out.println("1 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
+						}									
+						else if(range.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
+							System.out.println("1a - WARNING TODO: found LIST property: " + subject + " -- " + p + " - " + range.getLocalName() + " - " + literalString);
+						}	
+						else {
+	
+							String xsdType = getXSDTypeFromRange(range);
+							if(xsdType!=null){
+								OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);
+								
+								// Create only when needed...
+								String key=valueProp.toString()+":"+xsdType+":"+literalString;
+								Resource r1 = resource_map.get(key);
+								if(r1==null)
+								{
+								 r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
+								 IDcounter++;
+								 resource_map.put(key,r1);
+								 addLiteralToResource(r1,valueProp,xsdType,literalString);
+								}
+								r.addProperty(p, r1);
 
-					Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num());
-					if(r1 == null)
-						r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num(), rclass);
-					r.addProperty(p, r1);								
-				} 
+							}
+							else{
+								System.out.println("1b - WARNING TODO: this should not happen for: " + p + " - " + range.getLocalName() + " - " + literalString);
+							}
+						}									
+					}
+					else {
+						System.out.println("5 - WARNING: found other kind of property: " + p + " - " + range.getLocalName());									
+					}
+				}
 				attribute_pointer++;
-			} else if (LinkedList.class.isInstance(o)) {
-				LinkedList<Object> tmp_list = (LinkedList<Object>) o;
-				StringBuffer local_txt = new StringBuffer();
+			}
+			else{
+				typeremembrance = typ.get(ExpressReader.formatClassName((String) o));
+			}
+		} else
+			attribute_pointer++;
+		return attribute_pointer;
+	}
+
+	private int fillProperties_handleIFC_Object(Resource r, EntityVO evo,
+			int attribute_pointer, Object o) {
+		if ((evo != null)
+				&& (evo.getDerived_attribute_list() != null)
+				&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+			final String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+			EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
+
+			OntProperty p = ontModel.getOntProperty(propURI);
+			OntResource rclass = ontModel.getOntResource(evorange.getName());
+
+			Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num());
+			if(r1 == null)
+				r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num(), rclass);
+			r.addProperty(p, r1);								
+		} 
+		attribute_pointer++;
+		return attribute_pointer;
+	}
+
+	private int fillProperties_handleListObject(Resource r, EntityVO evo,
+			int attribute_pointer, Object o) {
+		@SuppressWarnings("unchecked")
+		final LinkedList<Object> tmp_list = (LinkedList<Object>) o;
+		LinkedList<String> literals=new LinkedList<String>();
+		
 
 //				if(tmp_list.size()==0)
 //					attribute_pointer++;
-				
-				//process list
-				for (int j = 0; j < tmp_list.size(); j++) {
-					Object o1 = tmp_list.get(j);
-					if (String.class.isInstance(o1)) {
-						if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null) {
-							typeremembrance = typ.get(ExpressReader.formatClassName((String) o1));	
-						}
+		
+		//process list
+		for (int j = 0; j < tmp_list.size(); j++) {
+			Object o1 = tmp_list.get(j);
+			if (String.class.isInstance(o1)) {
+				if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null) {
+					typeremembrance = typ.get(ExpressReader.formatClassName((String) o1));	
+				}
+				else{
+					literals.add(filter_extras((String) o1));
+				}
+			}
+			if (IFCVO.class.isInstance(o1)) {
+				if ((evo != null)
+						&& (evo.getDerived_attribute_list() != null)
+						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+
+					String propURI = evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					OntProperty p = ontModel.getOntProperty(ontNS + propURI);
+					OntResource typerange = p.getRange();
+
+					if(typerange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
+						String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
+						OntResource listrange = ontModel.getOntResource(listvaluepropURI);
+
+						if(listrange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
+							System.out.println("6 - WARNING: Found unhandled ListOfList");
+						}													
 						else{
-							if (j > 0 && typeremembrance == null)
-								local_txt.append("_, ");
-							local_txt.append(filter_extras((String) o1));							
+							fillClassInstanceList(tmp_list, typerange, p, r);
+							j = tmp_list.size()-1;
 						}
-					}
-					if (IFCVO.class.isInstance(o1)) {
-						if ((evo != null)
-								&& (evo.getDerived_attribute_list() != null)
-								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
+					}					
+					else{
+						EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o1).getName()));								
+						OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
 
-							String propURI = evo.getDerived_attribute_list().get(attribute_pointer).getName();
-							OntProperty p = ontModel.getOntProperty(ontNS + propURI);
-							OntResource typerange = p.getRange();
-
-							if(typerange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
-								String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
-								OntResource listrange = ontModel.getOntResource(listvaluepropURI);
-
-								if(listrange.asClass().hasSuperClass(ontModel.getOntClass(ontNS + "List"))){
-									System.out.println("6 - WARNING: Found unhandled ListOfList");
-								}													
-								else{
-									fillClassInstanceList(tmp_list, typerange, p, r);
-									j = tmp_list.size()-1;
-								}
-							}					
-							else{
-								EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o1).getName()));								
-								OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
-
-								Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num());
-								if(r1 == null)
-									r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num(), rclass);
-								r.addProperty(p, r1);									
-							}
-						}
-					}
-					if(LinkedList.class.isInstance(o1) && typeremembrance != null){
-						LinkedList<Object> tmp_list_inlist = (LinkedList<Object>) o1;
-						for(int jj = 0; jj<tmp_list_inlist.size(); jj++){
-							Object o2 = tmp_list_inlist.get(jj);
-							if(String.class.isInstance(o2)){
-								local_txt.append(filter_extras((String) o2));
-							}
-						}
+						Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num());
+						if(r1 == null)
+							r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num(), rclass);
+						r.addProperty(p, r1);									
 					}
 				}
-
-				//interpret parse
-				if (local_txt.length() > 0) {
-					String literalString = local_txt.toString();
-					if(typeremembrance != null){
-						if ((evo != null)
-								&& (evo.getDerived_attribute_list() != null)
-								&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {				
-
-							String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-							OntProperty p = ontModel.getOntProperty(propURI);
-
-							addSinglePropertyFromTypeRemembrance(r, p, literalString, typeremembrance);
-						}
-						typeremembrance = null;
-					}
-					else if ((evo != null)
-							&& (evo.getDerived_attribute_list() != null)
-							&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
-						String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
-						OntProperty p = ontModel.getOntProperty(propURI);
-
-						if(literalString.contains("_, ")){
-							addRegularListProperty(r, p, literalString);
-						}
-						else{
-							//System.out.println("WARNING: odd behaviour: no list found where there should be one: " + r + " - " + p);
-							addRegularListProperty(r, p, literalString);
-						}
+			}
+			if(LinkedList.class.isInstance(o1) && typeremembrance != null){
+				LinkedList<Object> tmp_list_inlist = (LinkedList<Object>) o1;
+				for(int jj = 0; jj<tmp_list_inlist.size(); jj++){
+					Object o2 = tmp_list_inlist.get(jj);
+					if(String.class.isInstance(o2)){
+						literals.add(filter_extras((String) o2));
 					}
 				}
-				attribute_pointer++;
-			}	
+			}
 		}
-	}	
-	
+
+		//interpret parse
+		if (literals.size() > 0) {
+			if(typeremembrance != null){
+				if ((evo != null)
+						&& (evo.getDerived_attribute_list() != null)
+						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {				
+
+					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					OntProperty p = ontModel.getOntProperty(propURI);
+
+					addSinglePropertyFromTypeRemembrance(r, p, literals.getFirst(), typeremembrance);
+				}
+				typeremembrance = null;
+			}
+			else if ((evo != null)
+					&& (evo.getDerived_attribute_list() != null)
+					&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
+				String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+				OntProperty p = ontModel.getOntProperty(propURI);
+
+				addRegularListProperty(r, p, literals);
+				
+			}
+		}
+		attribute_pointer++;
+		return attribute_pointer;
+	}
+
 	private void addSinglePropertyFromTypeRemembrance(Resource r, OntProperty p, String literalString, TypeVO typeremembrance){				
 		OntResource range = ontModel.getOntResource(ontNS + typeremembrance.getName());
 		
@@ -480,17 +538,21 @@ public class IfcConvertor {
 				System.out.println("9 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString);
 			}								
 			else {
-				//always creating a new list instance
-				//ideally, identical lists should be found and have only one URI
-				Resource r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, range);
-				IDcounter++;
-				r.addProperty(p, r1);		
-				//System.out.println("OK: created class property: " + p + " - " + r1.getLocalName());
-				
 				String xsdType = getXSDTypeFromRange(range);
 				if(xsdType!=null){
 					OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);	
-					addLiteralToResource(r1,valueProp,xsdType,literalString);	
+					String key=valueProp.toString()+":"+xsdType+":"+literalString;
+					
+					Resource r1 = resource_map.get(key);
+					if(r1==null)
+					{
+					 r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, range);
+					 IDcounter++;
+					 resource_map.put(key,r1);
+					 addLiteralToResource(r1,valueProp,xsdType,literalString);
+					}
+					r.addProperty(p, r1);
+					
 				}
 			}									
 		}
@@ -563,9 +625,8 @@ public class IfcConvertor {
 	}
 	
 	//LIST HANDLING
-	private void addRegularListProperty(Resource r, OntProperty p, String literalString){
-		List<String> el = getListElements(literalString);
-
+	private void addRegularListProperty(Resource r, OntProperty p, List<String> el){
+		
 		OntResource range = p.getRange();
 		if(range.isClass()){
 			OntResource listrange = getListContentType(range.asClass());
@@ -677,13 +738,16 @@ public class IfcConvertor {
 			for(int i = 0; i<reslist.size();i++){	
 				Resource r = reslist.get(i);
 				String literalString = listelements.get(i);
-				Resource r2 = im.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter, listrange.asResource());		
-				IDcounter++;
-
+				String key=valueProp.toString()+":"+xsdType+":"+literalString;
+				Resource r2 = resource_map.get(key);
+				if(r2==null)
+				{
+					r2 = im.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter, listrange.asResource());
+					IDcounter++;
+					resource_map.put(key,r2);
+					addLiteralToResource(r2,valueProp,xsdType,literalString);
+				}
 				r.addProperty(ontModel.getOntProperty(ontNS + "hasListContent"), r2);
-				//System.out.println("OK: added property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r2.getLocalName());
-
-				addLiteralToResource(r2,valueProp,xsdType,literalString);
 
 				if(i<listelements.size()-1){								
 					r.addProperty(ontModel.getOntProperty(ontNS + "isFollowedBy"),reslist.get(i+1));
