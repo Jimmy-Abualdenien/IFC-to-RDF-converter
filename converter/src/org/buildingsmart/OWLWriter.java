@@ -540,15 +540,16 @@ public class OWLWriter {
 				if(attr.isOptional()&&attr.getMaxCard()==-1){
 					//do nothing
 				}
-				else{				
-					if(attr.getMinCard()>0&&!attr.isOptional()){
+				else{	
+					if(attr.getMinCard()==1 && attr.getMaxCard()==1 && !attr.isOptional()){
+						//UNICUM CASE: RelatedObjects_of_IfcRelDefinesByProperties Property in IFC4 SET[1:1]
 						out.write(" ;\r\n");
 						out.write("\t" + "rdfs:subClassOf " + "\r\n");
 						out.write("\t\t" + "[" + "\r\n");
 						out.write("\t\t\t" + "rdf:type owl:Restriction ;"
 								+ "\r\n");				
 							out.write("\t\t\t"
-									+ "owl:minQualifiedCardinality \"" + attr.getMinCard() + "\"^^xsd:nonNegativeInteger ;"
+									+ "owl:qualifiedCardinality \"" + attr.getMinCard() + "\"^^xsd:nonNegativeInteger ;"
 									+ "\r\n");
 						out.write("\t\t\t" + "owl:onProperty ifc:"
 								+ attr.getName() + " ;\r\n");
@@ -556,21 +557,39 @@ public class OWLWriter {
 								+ attr.getType().getName() + "\r\n");					
 						out.write("\t\t" + "]");
 					}
-
-					if(attr.getMaxCard()!=-1){
-						out.write(" ;\r\n");
-						out.write("\t" + "rdfs:subClassOf " + "\r\n");
-						out.write("\t\t" + "[" + "\r\n");
-						out.write("\t\t\t" + "rdf:type owl:Restriction ;"
-								+ "\r\n");	
-							out.write("\t\t\t"
-									+ "owl:maxQualifiedCardinality \"" + attr.getMaxCard() + "\"^^xsd:nonNegativeInteger ;"
-									+ "\r\n");
-						out.write("\t\t\t" + "owl:onProperty ifc:"
-								+ attr.getName() + " ;\r\n");
-						out.write("\t\t\t" + "owl:onClass ifc:"
-								+ attr.getType().getName() + "\r\n");					
-						out.write("\t\t" + "]");
+					else{
+					
+						if(attr.getMinCard()>0&&!attr.isOptional()){
+							out.write(" ;\r\n");
+							out.write("\t" + "rdfs:subClassOf " + "\r\n");
+							out.write("\t\t" + "[" + "\r\n");
+							out.write("\t\t\t" + "rdf:type owl:Restriction ;"
+									+ "\r\n");				
+								out.write("\t\t\t"
+										+ "owl:minQualifiedCardinality \"" + attr.getMinCard() + "\"^^xsd:nonNegativeInteger ;"
+										+ "\r\n");
+							out.write("\t\t\t" + "owl:onProperty ifc:"
+									+ attr.getName() + " ;\r\n");
+							out.write("\t\t\t" + "owl:onClass ifc:"
+									+ attr.getType().getName() + "\r\n");					
+							out.write("\t\t" + "]");
+						}
+	
+						if(attr.getMaxCard()!=-1){
+							out.write(" ;\r\n");
+							out.write("\t" + "rdfs:subClassOf " + "\r\n");
+							out.write("\t\t" + "[" + "\r\n");
+							out.write("\t\t\t" + "rdf:type owl:Restriction ;"
+									+ "\r\n");	
+								out.write("\t\t\t"
+										+ "owl:maxQualifiedCardinality \"" + attr.getMaxCard() + "\"^^xsd:nonNegativeInteger ;"
+										+ "\r\n");
+							out.write("\t\t\t" + "owl:onProperty ifc:"
+									+ attr.getName() + " ;\r\n");
+							out.write("\t\t\t" + "owl:onClass ifc:"
+									+ attr.getType().getName() + "\r\n");					
+							out.write("\t\t" + "]");
+						}
 					}
 				}
 			}

@@ -17875,14 +17875,7 @@ ifc:IfcRelDefinesByProperties
 	rdfs:subClassOf 
 		[
 			rdf:type owl:Restriction ;
-			owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
-			owl:onProperty ifc:RelatedObjects_of_IfcRelDefinesByProperties ;
-			owl:onClass ifc:IfcObjectDefinition
-		] ;
-	rdfs:subClassOf 
-		[
-			rdf:type owl:Restriction ;
-			owl:maxQualifiedCardinality "1"^^xsd:nonNegativeInteger ;
+			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger ;
 			owl:onProperty ifc:RelatedObjects_of_IfcRelDefinesByProperties ;
 			owl:onClass ifc:IfcObjectDefinition
 		] ;
