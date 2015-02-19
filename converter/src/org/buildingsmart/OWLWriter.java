@@ -620,6 +620,7 @@ public class OWLWriter {
 			}
 			else{
 				//this is the regular option / default in EXPRESS
+				if(!prop.isSet()){
 				out.write(" ;" + "\r\n");
 				out.write("\trdfs:subClassOf" + "\r\n");
 				out.write("\t\t[" + "\r\n");
@@ -631,6 +632,7 @@ public class OWLWriter {
 				out.write("\t\t\towl:qualifiedCardinality \"1\"^^xsd:nonNegativeInteger"
 						+ "\r\n");
 				out.write("\t\t]");
+				}
 			}
 		} else {
 			int start = prop.getMinCardinality();

@@ -14885,13 +14885,6 @@ ifc:IfcObjectPlacement
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcLocalPlacement ; 
 			owl:onProperty ifc:ReferencedByPlacements
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ReferencedByPlacements ;
-			owl:onClass ifc:IfcLocalPlacement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcStructuralPlanarAction
@@ -15776,13 +15769,6 @@ ifc:IfcClassification
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcClassificationItem ; 
 			owl:onProperty ifc:Contains
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Contains ;
-			owl:onClass ifc:IfcClassificationItem ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcQuantityWeight
@@ -15918,36 +15904,15 @@ ifc:IfcAppliedValue
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ValuesReferenced ;
-			owl:onClass ifc:IfcReferencesValueDocument ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcAppliedValueRelationship ; 
 			owl:onProperty ifc:ValueOfComponents
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ValueOfComponents ;
-			owl:onClass ifc:IfcAppliedValueRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcAppliedValueRelationship ; 
 			owl:onProperty ifc:IsComponentIn
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsComponentIn ;
-			owl:onClass ifc:IfcAppliedValueRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcCostItem
@@ -17213,13 +17178,6 @@ ifc:IfcDocumentInformation
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsPointedTo ;
-			owl:onClass ifc:IfcDocumentInformationRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcDocumentInformationRelationship ; 
 			owl:onProperty ifc:IsPointer
@@ -18019,13 +17977,6 @@ ifc:IfcRepresentationMap
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcMappedItem ; 
 			owl:onProperty ifc:MapUsage
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:MapUsage ;
-			owl:onClass ifc:IfcMappedItem ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcConnectedFaceSet
@@ -18170,13 +18121,6 @@ ifc:IfcProductDefinitionShape
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcShapeAspect ; 
 			owl:onProperty ifc:HasShapeAspects
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasShapeAspects ;
-			owl:onClass ifc:IfcShapeAspect ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcBuildingElementComponent
@@ -18727,13 +18671,6 @@ ifc:IfcResource
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelAssignsToResource ; 
 			owl:onProperty ifc:ResourceOf
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ResourceOf ;
-			owl:onClass ifc:IfcRelAssignsToResource ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcPresentationLayerWithStyle
@@ -19895,23 +19832,9 @@ ifc:IfcSpaceProgram
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasInteractionReqsFrom ;
-			owl:onClass ifc:IfcRelInteractionRequirements ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelInteractionRequirements ; 
 			owl:onProperty ifc:HasInteractionReqsTo
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasInteractionReqsTo ;
-			owl:onClass ifc:IfcRelInteractionRequirements ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcRelAssignsToProduct
@@ -21749,13 +21672,6 @@ ifc:IfcOpeningElement
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelFillsElement ; 
 			owl:onProperty ifc:HasFillings
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasFillings ;
-			owl:onClass ifc:IfcRelFillsElement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcPerson
@@ -21869,13 +21785,6 @@ ifc:IfcPerson
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcPersonAndOrganization ; 
 			owl:onProperty ifc:EngagedIn
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:EngagedIn ;
-			owl:onClass ifc:IfcPersonAndOrganization ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcStructuralLoadGroup
@@ -21965,13 +21874,6 @@ ifc:IfcStructuralLoadGroup
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcStructuralAnalysisModel ; 
 			owl:onProperty ifc:LoadGroupFor
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:LoadGroupFor ;
-			owl:onClass ifc:IfcStructuralAnalysisModel ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcQuantityVolume
@@ -23978,36 +23880,15 @@ ifc:IfcOrganization
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsRelatedBy ;
-			owl:onClass ifc:IfcOrganizationRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcOrganizationRelationship ; 
 			owl:onProperty ifc:Relates_of_IfcOrganization
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Relates_of_IfcOrganization ;
-			owl:onClass ifc:IfcOrganizationRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcPersonAndOrganization ; 
 			owl:onProperty ifc:Engages
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Engages ;
-			owl:onClass ifc:IfcPersonAndOrganization ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcDateAndTime
@@ -24294,23 +24175,9 @@ ifc:IfcDraughtingCallout
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsRelatedFromCallout ;
-			owl:onClass ifc:IfcDraughtingCalloutRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcDraughtingCalloutRelationship ; 
 			owl:onProperty ifc:IsRelatedToCallout
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsRelatedToCallout ;
-			owl:onClass ifc:IfcDraughtingCalloutRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcInventory
@@ -25089,36 +24956,15 @@ ifc:IfcSpatialStructureElement
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ReferencesElements ;
-			owl:onClass ifc:IfcRelReferencedInSpatialStructure ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelServicesBuildings ; 
 			owl:onProperty ifc:ServicedBySystems
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ServicedBySystems ;
-			owl:onClass ifc:IfcRelServicesBuildings ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelContainedInSpatialStructure ; 
 			owl:onProperty ifc:ContainsElements
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ContainsElements ;
-			owl:onClass ifc:IfcRelContainedInSpatialStructure ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcDerivedUnit
@@ -25378,13 +25224,6 @@ ifc:IfcProduct
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelAssignsToProduct ; 
 			owl:onProperty ifc:ReferencedBy
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ReferencedBy ;
-			owl:onClass ifc:IfcRelAssignsToProduct ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcRelDefines
@@ -25951,13 +25790,6 @@ ifc:IfcGeometricRepresentationContext
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcGeometricRepresentationSubContext ; 
 			owl:onProperty ifc:HasSubContexts
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasSubContexts ;
-			owl:onClass ifc:IfcGeometricRepresentationSubContext ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcFeatureElementAddition
@@ -26375,13 +26207,6 @@ ifc:IfcActor
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelAssignsToActor ; 
 			owl:onProperty ifc:IsActingUpon
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsActingUpon ;
-			owl:onClass ifc:IfcRelAssignsToActor ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcAddress
@@ -26761,23 +26586,9 @@ ifc:IfcObjectDefinition
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasAssignments ;
-			owl:onClass ifc:IfcRelAssigns ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelDecomposes ; 
 			owl:onProperty ifc:IsDecomposedBy
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsDecomposedBy ;
-			owl:onClass ifc:IfcRelDecomposes ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] ;
 	rdfs:subClassOf
 		[
@@ -27209,23 +27020,9 @@ ifc:IfcConstraint
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ClassifiedAs_of_IfcConstraint ;
-			owl:onClass ifc:IfcConstraintClassificationRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcConstraintRelationship ; 
 			owl:onProperty ifc:RelatesConstraints
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:RelatesConstraints ;
-			owl:onClass ifc:IfcConstraintRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] ;
 	rdfs:subClassOf
 		[
@@ -27235,36 +27032,15 @@ ifc:IfcConstraint
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsRelatedWith_of_IfcConstraint ;
-			owl:onClass ifc:IfcConstraintRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcPropertyConstraintRelationship ; 
 			owl:onProperty ifc:PropertiesForConstraint
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:PropertiesForConstraint ;
-			owl:onClass ifc:IfcPropertyConstraintRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcConstraintAggregationRelationship ; 
 			owl:onProperty ifc:Aggregates
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Aggregates ;
-			owl:onClass ifc:IfcConstraintAggregationRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcRelDecomposes
@@ -27346,23 +27122,9 @@ ifc:IfcStructuralMember
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ReferencesElement ;
-			owl:onClass ifc:IfcRelConnectsStructuralElement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelConnectsStructuralMember ; 
 			owl:onProperty ifc:ConnectedBy
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ConnectedBy ;
-			owl:onClass ifc:IfcRelConnectsStructuralMember ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcRelDefinesByType
@@ -27811,13 +27573,6 @@ ifc:IfcStructuralItem
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelConnectsStructuralActivity ; 
 			owl:onProperty ifc:AssignedStructuralActivity
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:AssignedStructuralActivity ;
-			owl:onClass ifc:IfcRelConnectsStructuralActivity ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcProcess
@@ -27841,36 +27596,15 @@ ifc:IfcProcess
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:OperatesOn ;
-			owl:onClass ifc:IfcRelAssignsToProcess ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelSequence ; 
 			owl:onProperty ifc:IsSuccessorFrom
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsSuccessorFrom ;
-			owl:onClass ifc:IfcRelSequence ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelSequence ; 
 			owl:onProperty ifc:IsPredecessorTo
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsPredecessorTo ;
-			owl:onClass ifc:IfcRelSequence ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcSoundValue
@@ -28736,13 +28470,6 @@ ifc:IfcStructuralReaction
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcStructuralAction ; 
 			owl:onProperty ifc:Causes
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Causes ;
-			owl:onClass ifc:IfcStructuralAction ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcSanitaryTerminalType
@@ -29118,13 +28845,6 @@ ifc:IfcRepresentationContext
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRepresentation ; 
 			owl:onProperty ifc:RepresentationsInContext
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:RepresentationsInContext ;
-			owl:onClass ifc:IfcRepresentation ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcAnnotationCurveOccurrence
@@ -29341,13 +29061,6 @@ ifc:IfcControl
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelAssignsToControl ; 
 			owl:onProperty ifc:Controls
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Controls ;
-			owl:onClass ifc:IfcRelAssignsToControl ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcFeatureElement
@@ -29778,23 +29491,9 @@ ifc:IfcProperty
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:PropertyForDependance ;
-			owl:onClass ifc:IfcPropertyDependencyRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcPropertyDependencyRelationship ; 
 			owl:onProperty ifc:PropertyDependsOn
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:PropertyDependsOn ;
-			owl:onClass ifc:IfcPropertyDependencyRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] ;
 	rdfs:subClassOf
 		[
@@ -31074,23 +30773,9 @@ ifc:IfcSpace
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasCoverings_of_IfcSpace ;
-			owl:onClass ifc:IfcRelCoversSpaces ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelSpaceBoundary ; 
 			owl:onProperty ifc:BoundedBy
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:BoundedBy ;
-			owl:onClass ifc:IfcRelSpaceBoundary ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcRelReferencedInSpatialStructure
@@ -31717,13 +31402,6 @@ ifc:IfcObject
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelDefines ; 
 			owl:onProperty ifc:IsDefinedBy
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsDefinedBy ;
-			owl:onClass ifc:IfcRelDefines ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcRelAssociatesClassification
@@ -32761,36 +32439,15 @@ ifc:IfcApproval
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Actors ;
-			owl:onClass ifc:IfcApprovalActorRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcApprovalRelationship ; 
 			owl:onProperty ifc:IsRelatedWith_of_IfcApproval
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsRelatedWith_of_IfcApproval ;
-			owl:onClass ifc:IfcApprovalRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcApprovalRelationship ; 
 			owl:onProperty ifc:Relates_of_IfcApproval
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:Relates_of_IfcApproval ;
-			owl:onClass ifc:IfcApprovalRelationship ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcDistributionElementType
@@ -32928,13 +32585,6 @@ ifc:IfcElement
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasStructuralMember ;
-			owl:onClass ifc:IfcRelConnectsStructuralElement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelFillsElement ; 
 			owl:onProperty ifc:FillsVoids
@@ -32954,23 +32604,9 @@ ifc:IfcElement
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ConnectedTo_of_IfcElement ;
-			owl:onClass ifc:IfcRelConnectsElements ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelCoversBldgElements ; 
 			owl:onProperty ifc:HasCoverings_of_IfcElement
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasCoverings_of_IfcElement ;
-			owl:onClass ifc:IfcRelCoversBldgElements ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] ;
 	rdfs:subClassOf
 		[
@@ -32980,23 +32616,9 @@ ifc:IfcElement
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasProjections ;
-			owl:onClass ifc:IfcRelProjectsElement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelReferencedInSpatialStructure ; 
 			owl:onProperty ifc:ReferencedInStructures
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ReferencedInStructures ;
-			owl:onClass ifc:IfcRelReferencedInSpatialStructure ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] ;
 	rdfs:subClassOf
 		[
@@ -33006,23 +32628,9 @@ ifc:IfcElement
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasPorts ;
-			owl:onClass ifc:IfcRelConnectsPortToElement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelVoidsElement ; 
 			owl:onProperty ifc:HasOpenings
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:HasOpenings ;
-			owl:onClass ifc:IfcRelVoidsElement ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] ;
 	rdfs:subClassOf
 		[
@@ -33032,36 +32640,15 @@ ifc:IfcElement
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:IsConnectionRealization ;
-			owl:onClass ifc:IfcRelConnectsWithRealizingElements ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelSpaceBoundary ; 
 			owl:onProperty ifc:ProvidesBoundaries
 		] ;
 	rdfs:subClassOf
 		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ProvidesBoundaries ;
-			owl:onClass ifc:IfcRelSpaceBoundary ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
-		] ;
-	rdfs:subClassOf
-		[
 			rdf:type owl:Restriction ; 
 			owl:allValuesFrom ifc:IfcRelConnectsElements ; 
 			owl:onProperty ifc:ConnectedFrom_of_IfcElement
-		] ;
-	rdfs:subClassOf
-		[
-			rdf:type owl:Restriction ;
-			owl:onProperty ifc:ConnectedFrom_of_IfcElement ;
-			owl:onClass ifc:IfcRelConnectsElements ;
-			owl:qualifiedCardinality "1"^^xsd:nonNegativeInteger
 		] .
 
 ifc:IfcDimensionCurve
