@@ -168,10 +168,10 @@ public class IfcReaderStream {
 		InputStream expin = null;
 		try {
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			in = IfcReaderStream.class.getResourceAsStream("/" + exp + ".ttl");
+			in = IfcReaderStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertorStream.class.getResourceAsStream("/" + exp + ".exp");
+			expin = IfcConvertorStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuild();
 

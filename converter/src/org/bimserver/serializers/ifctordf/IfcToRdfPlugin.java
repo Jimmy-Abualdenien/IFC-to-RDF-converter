@@ -44,13 +44,13 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 		
 		om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		try {
-			String ttlPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.ttl";
+			String ttlPath = "/org/buildingsmart/resources/IFC2X3_TC1.ttl";
 			InputStream in = pluginManager.getPluginContext(this).getResourceAsInputStream(ttlPath);
 			if (in == null) {
 				throw new PluginException(ttlPath + " not found");
 			}
 			
-			String expPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.exp";
+			String expPath = "/org/buildingsmart/resources/IFC2X3_TC1.exp";
 			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
 			if (inexp == null) {
 				throw new PluginException(expPath + " not found");
