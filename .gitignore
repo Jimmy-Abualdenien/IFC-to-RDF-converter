@@ -1,3 +1,5 @@
 
 /REST-interface/repo
 /REST-interface/node_modules
+.metadata/*
+.recommenders/*

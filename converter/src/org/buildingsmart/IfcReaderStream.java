@@ -148,7 +148,6 @@ public class IfcReaderStream {
 		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
-			//ifc_file.replaceAll(".", "");
 			ifc_file += ".ifc";
 		}
 
@@ -168,7 +167,7 @@ public class IfcReaderStream {
 		InputStream expin = null;
 		try {
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			in = IfcReaderStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".ttl");
+			in = IfcReaderStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".ttl");		
 			om.read(in, null, "TTL");
 
 			expin = IfcConvertorStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".exp");
