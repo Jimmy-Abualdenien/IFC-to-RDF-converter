@@ -28,6 +28,7 @@ public class TypeVO {
 	private String primarytype;
 	private List<String> select_entities = new LinkedList<String>();
 	private List<String> enum_entities = new LinkedList<String>();
+	private TypeVO parentSelect;
 	private int[] listCardinalities = new int[2];
 	private static List<TypeVO> listOfTypes = new ArrayList<TypeVO>();
 
@@ -45,6 +46,14 @@ public class TypeVO {
 		listOfTypes.add(this);
 	}
 
+	public static TypeVO getTypeVO(String TypeName) {
+		for (TypeVO t : listOfTypes) {
+			if (t.getName().equalsIgnoreCase(TypeName))
+				return t;
+		}
+		return null;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -59,6 +68,14 @@ public class TypeVO {
 
 	public void setSelect_entities(List<String> select_entities) {
 		this.select_entities = select_entities;
+	}
+
+	public TypeVO getParentSelectType() {
+		return parentSelect;
+	}
+
+	public void setParentSelectType(TypeVO parentSelect) {
+		this.parentSelect = parentSelect;
 	}
 
 	public String getPrimarytype() {

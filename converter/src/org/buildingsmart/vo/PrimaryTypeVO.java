@@ -7,6 +7,7 @@ public class PrimaryTypeVO {
 
 	private String pTypeName;
 	private static List<PrimaryTypeVO> listOfPrimaryTypes = new ArrayList<PrimaryTypeVO>();
+	private TypeVO parentSelect;
 
 	public PrimaryTypeVO() {
 		// unused
@@ -29,6 +30,14 @@ public class PrimaryTypeVO {
 				return pt;
 		}
 		return null;
+	}
+
+	public TypeVO getParentSelect() {
+		return parentSelect;
+	}
+
+	public void setParentSelect(TypeVO parentSelect) {
+		this.parentSelect = parentSelect;
 	}
 
 	public String getPTypeName() {
@@ -65,14 +74,14 @@ public class PrimaryTypeVO {
 			return "double";
 		else if (pTypeName.equalsIgnoreCase("BINARY"))
 			return "hexBinary";
-		else if (pTypeName.equalsIgnoreCase("BOOLEAN"))
-			return "boolean";
 		else if (pTypeName.equalsIgnoreCase("INTEGER"))
 			return "integer";
 		else if (pTypeName.equalsIgnoreCase("NUMBER"))
-			return "integer";
+			return "double";
 		else if (pTypeName.equalsIgnoreCase("STRING"))
 			return "string";
+		else if (pTypeName.equalsIgnoreCase("BOOLEAN"))
+			return "boolean";
 		else if (pTypeName.equalsIgnoreCase("LOGICAL"))
 			return "boolean";
 		return "XSDTYPE";
@@ -83,14 +92,14 @@ public class PrimaryTypeVO {
 			return "Double";
 		else if (pTypeName.equalsIgnoreCase("BINARY"))
 			return "org.apache.axis2.databinding.types.xsd.HexBinary";
-		else if (pTypeName.equalsIgnoreCase("BOOLEAN"))
-			return "Boolean";
 		else if (pTypeName.equalsIgnoreCase("INTEGER"))
 			return "Integer";
 		else if (pTypeName.equalsIgnoreCase("NUMBER"))
-			return "Integer";
+			return "Double";
 		else if (pTypeName.equalsIgnoreCase("STRING"))
 			return "String";
+		else if (pTypeName.equalsIgnoreCase("BOOLEAN"))
+			return "Boolean";
 		else if (pTypeName.equalsIgnoreCase("LOGICAL"))
 			return "Boolean";
 		return "JAVAType";

@@ -65,7 +65,7 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 			im.setNsPrefix("inst", DEFAULT_PATH);			
 			
 			er = new ExpressReader(inexp);
-			er.readAndBuild();
+			er.readAndBuildVersion2015();
 
 			initialized = true;
 		} catch (FileNotFoundException e) {

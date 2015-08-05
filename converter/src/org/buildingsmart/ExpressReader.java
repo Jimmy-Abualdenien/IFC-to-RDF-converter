@@ -1,10 +1,17 @@
 package org.buildingsmart;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +29,15 @@ import org.buildingsmart.vo.NamedIndividualVO;
 import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.PropertyVO;
 import org.buildingsmart.vo.TypeVO;
+
+import com.hp.hpl.jena.ontology.OntModel;
+import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.rdf.model.InfModel;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.reasoner.ValidityReport;
+import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 
 import fi.ni.rdf.Namespace;
 
@@ -75,15 +91,32 @@ public class ExpressReader {
 		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 	}
 	
-	public void readAndBuild(){		
+	public void readAndBuildVersion2014(){		
 		try {			
 			this.readSpec();
 			this.buildExpressStructure();
-			this.generateNamedIndividuals();
+			this.generateNamedIndividualsWithPartialRenaming();
 	
-			this.rearrangeAttributes();
+			this.rearrangeAttributesWithPartialRenaming();
 			this.rearrangeProperties();
 			this.addInverses();
+			System.out.println("Ended reading the EXPRESS file and building internals");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void readAndBuildVersion2015(){		
+		try {			
+			this.readSpec();
+			this.buildExpressStructure();
+			this.generateNamedIndividualsWithoutRenaming();
+	
+			this.rearrangeAttributesWithFullRenaming();
+			this.rearrangeProperties();
+			this.addInverses();
+			this.interpretSelects();
 			System.out.println("Ended reading the EXPRESS file and building internals");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -100,13 +133,19 @@ public class ExpressReader {
 			if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1") || in.equalsIgnoreCase("IFC4_ADD1") || in.equalsIgnoreCase("IFC4")){
 				try {
 					ExpressReader er = new ExpressReader(ExpressReader.class.getResourceAsStream("/" + in + ".exp"));
-					er.readAndBuild();
+					if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1"))
+						Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/IFC2X3";
+					else
+						Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/IFC4";						
+					er.readAndBuildVersion2015();
 		
 					OWLWriter ow = new OWLWriter(in, er.entities,
 							er.types, er.siblings, er.enumIndividuals, er.properties);
-					ow.outputOWL();
-					System.out
-							.println("Ended converting the EXPRESS schema into corresponding OWL file");
+					ow.outputOWLVersion2015();
+					System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
+					
+					CleanModelAndRewrite(in);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
@@ -115,8 +154,66 @@ public class ExpressReader {
 			 	System.out.println("Usage: java ExpressReader expressSchemaname \nExample: java ExpressReader IFC2X3_TC1 (only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options)");
 		}
 	}
+	
+	private static void CleanModelAndRewrite(String in){
+		try {
+			OntModel om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			BufferedReader instr = new BufferedReader(new InputStreamReader(new FileInputStream("out\\" + in + ".ttl"), "UTF-8"));
+			om.read(instr, null, "TTL");
+		
+		
+		//InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), om);
+		ValidityReport validity = om.validate();
+//		if (validity.isValid()) {
+			System.out
+					.println("generated RDF graph is OK! Writing TTL and RDF file...");
+			try {
+				OutputStreamWriter char_output = new OutputStreamWriter(
+						new FileOutputStream("out\\"
+								+ in + ".ttl"), Charset.forName("UTF-8")
+								.newEncoder());
+				BufferedWriter out = new BufferedWriter(char_output);
+				om.write(out, "TTL");
+			
+				char_output = new OutputStreamWriter(
+						new FileOutputStream("out\\"
+								+ in + ".rdf"), Charset.forName(
+								"UTF-8").newEncoder());
+				out = new BufferedWriter(char_output);
+				om.write(out, "RDF/XML");
+			} catch (IOException e) {
+				System.err
+						.println("Something went wrong while writing the RDF file");
+				System.exit(1);
+				e.printStackTrace();
+			}
+//		} else {
+//			System.out
+//					.println("generated RDF model contains conflicts. No TTL or RDF file produced.");
+//			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
+//				System.out.println(" - " + i.next());
+//			}
+//		}
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
 
-	private void generateNamedIndividuals() throws IOException {
+	private void generateNamedIndividualsWithoutRenaming() throws IOException {
+		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
+			TypeVO vo = entry.getValue();			
+			for (int n = 0; n < vo.getEnum_entities().size(); n++) {
+					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo
+							.getEnum_entities().get(n),	vo.getEnum_entities().get(n)));
+			}
+		}
+	}
+	
+	private void generateNamedIndividualsWithPartialRenaming() throws IOException {
 		ArrayList<String> doublegeneratednamedindividuals = new ArrayList<String>();
 		HashMap<String, NamedIndividualVO> alreadygeneratednamedindividuals = new HashMap<String, NamedIndividualVO>();
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
@@ -153,7 +250,40 @@ public class ExpressReader {
 		}
 	}
 
-	private void rearrangeAttributes() throws IOException {
+	private void rearrangeAttributesWithFullRenaming() throws IOException {
+		
+		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, EntityVO> pairs = iter.next();
+			EntityVO evo = pairs.getValue();
+			
+			for (int n = 0; n < evo.getAttributes().size(); n++) {
+				AttributeVO attr = evo.getAttributes().get(n);
+				attr.setDomain(evo);				
+				attr.setOriginalName(attr.getName());
+				attr.setName(attr.getName() + "_" + evo.getName()); //this used to be "_of_"
+			}
+			
+			for (int n = 0; n < evo.getInverses().size(); n++) {
+				InverseVO inv = evo.getInverses().get(n);
+				PropertyVO prop = new PropertyVO();
+				inv.setAssociatedProperty(prop);
+								
+				prop.setName(formatProperty(inv.getName(), false));
+				prop.setDomain(evo);
+				prop.setRange(inv.getClassRange());
+				prop.setSet(inv.isSet());				
+
+				prop.setMinCardinality(inv.getMinCard());
+				prop.setMaxCardinality(inv.getMaxCard());
+				prop.setOriginalName(prop.getName());
+				prop.setName(prop.getName() + "_" + evo.getName()); //this used to be "_of_"
+				properties.put(prop.getName(), prop);
+			}			
+		}
+	}
+	
+	private void rearrangeAttributesWithPartialRenaming() throws IOException {
 		ArrayList<String> doublegeneratedattributes = new ArrayList<String>();
 		HashMap<String, AttributeVO> alreadygeneratedattributes = new HashMap<String, AttributeVO>();
 		HashMap<String, PropertyVO> alreadygeneratedinverseprops = new HashMap<String, PropertyVO>();
@@ -252,7 +382,6 @@ public class ExpressReader {
 	}
 		
 	private void rearrangeProperties() {
-				
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, EntityVO> pairs = it.next();
@@ -355,6 +484,39 @@ public class ExpressReader {
 					else{
 						System.out.println("removing property 5: " + prop.getName());	
 						properties.remove(prop.getName());							
+					}
+				}
+			}
+		}
+	}
+	
+	private void interpretSelects() {
+		Iterator<Entry<String, TypeVO>> iter = types.entrySet().iterator();
+		while (iter.hasNext()) {
+			Entry<String, TypeVO> pairs = iter.next();
+			TypeVO parent = pairs.getValue();
+			for (int n = 0; n < parent.getSelect_entities().size(); n++) {
+				String entString = parent.getSelect_entities().get(n);
+
+				TypeVO type = TypeVO.getTypeVO(entString);
+				if (type != null)
+					type.setParentSelectType(parent);
+
+				else {
+					EntityVO ent = EntityVO.getEntityVO(entString);
+					if (ent != null){
+						ent.setParentSelect(parent);
+					}
+					else {						
+						PrimaryTypeVO ptype = PrimaryTypeVO
+								.getPrimaryTypeVO(entString);
+						if (ptype != null){
+							System.out.println("Warning: PTYPE is part of select : " + parent.getName());
+							ptype.setParentSelect(parent);
+						}
+						else{
+							System.out.println("Warning: Something is part of select that is not a PType, Entity, or Type: " + parent.getName());
+						}
 					}
 				}
 			}

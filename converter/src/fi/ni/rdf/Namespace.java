@@ -8,5 +8,8 @@ public class Namespace {
 	public static final String XSD = "http://www.w3.org/2001/XMLSchema#";
 	public static String IFC = "http://www.buildingsmart-tech.org/ifcOWL";
 	public static final String DCE = "http://purl.org/dc/elements/1.1/";
+	public static final String VANN = "http://purl.org/vocab/vann/";
+	public static final String CC = "http://creativecommons.org/ns#";
+	
 //	public static final String DCT = "http://purl.org/dc/terms/";	
 }

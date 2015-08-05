@@ -1,5 +1,6 @@
 package org.buildingsmart.vo;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,15 +30,30 @@ public class EntityVO {
 	private String name;
 	private List<AttributeVO> attributes = new LinkedList<AttributeVO>();
 	private List<InverseVO> inverses = new LinkedList<InverseVO>();
-//	private List<String> interfaces = new LinkedList<String>();
 
 	private List<AttributeVO> derived_attribute_list = new LinkedList<AttributeVO>();
 	private List<InverseVO> derived_inverse_list = new LinkedList<InverseVO>();
 	
 	private String superclass;
 	private boolean abstractsuperclass = false;
+	private TypeVO parentSelect;
 	private Set<String> subClassList = new HashSet<String>();
+	private static List<EntityVO> listOfEntities = new ArrayList<EntityVO>();
 
+	public EntityVO(String name) {
+		super();
+		this.name = name;
+		listOfEntities.add(this);
+	}
+
+	public static EntityVO getEntityVO(String EntityName) {
+		for (EntityVO e : listOfEntities) {
+			if (e.getName().equalsIgnoreCase(EntityName))
+				return e;
+		}
+		return null;
+	}
+	
 	public List<InverseVO> getDerived_inverse_list() {
 		return derived_inverse_list;
 	}
@@ -62,15 +78,6 @@ public class EntityVO {
 		this.derived_attribute_list = derived_list;
 	}
 
-	public EntityVO(String name) {
-		super();
-		this.name = name;
-	}
-
-	public EntityVO() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public List<AttributeVO> getAttributes() {
 		return attributes;
 	}
@@ -86,6 +93,14 @@ public class EntityVO {
 	public void setSuperclass(String superclass) {
 		this.superclass = superclass;
 	}	
+
+	public TypeVO getParentSelect() {
+		return parentSelect;
+	}
+
+	public void setParentSelect(TypeVO parentSelect) {
+		this.parentSelect = parentSelect;
+	}
 
 	public void setAbstractSuperclass(boolean abstractsuperclass){
 		this.abstractsuperclass = abstractsuperclass;

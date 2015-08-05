@@ -61,8 +61,8 @@ public class IfcReader {
 
 	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
 			.format(Calendar.getInstance().getTime());
-	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"
-			+ timeLog + "#";
+	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/resources"
+			+ timeLog + "/";
 
 	/**
 	 * @param args
@@ -114,6 +114,8 @@ public class IfcReader {
 				while ((strLine = br.readLine()) != null) {
 					if (strLine.length() > 0) {
 						if (strLine.startsWith("FILE_SCHEMA")) {
+							if (strLine.indexOf("IFC4MVD_PP") != -1)
+								return "IFC4MVD_PP";
 							if (strLine.indexOf("IFC2X3") != -1)
 								return "IFC2X3_TC1";
 							if (strLine.indexOf("IFC4") != -1)
@@ -173,7 +175,7 @@ public class IfcReader {
 
 			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
-			er.readAndBuild();
+			er.readAndBuildVersion2015();
 
 			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
 					ifc_file), baseURI);
@@ -207,6 +209,71 @@ public class IfcReader {
 			System.out
 					.println("No ontologyModel or instanceModel found -> no files generated.");
 		}
+	}
+	
+	public Model convert(String ifc_file, String baseURI) {
+		long t0 = System.currentTimeMillis();
+
+		if (!ifc_file.endsWith(".ifc")) {
+			ifc_file += ".ifc";
+		}
+
+		String exp = getExpressSchema(ifc_file);
+
+		// check if we are able to convert this: only four schemas are supported
+		if (!exp.equalsIgnoreCase("IFC2X3_Final")
+				&& !exp.equalsIgnoreCase("IFC2X3_TC1")
+				&& !exp.equalsIgnoreCase("IFC4_ADD1")
+				&& !exp.equalsIgnoreCase("IFC4"))
+			return null;
+
+		// CONVERSION
+		OntModel om = null;
+		Model model = null;
+		InputStream in = null;
+		InputStream expin = null;
+		try {
+			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
+			om.read(in, null, "TTL");
+
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
+			ExpressReader er = new ExpressReader(expin);
+			er.readAndBuildVersion2015();
+
+			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
+					ifc_file), baseURI);
+			model = conv.parseModel();
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} finally {
+			try {
+				in.close();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			try {
+				expin.close();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		if (om != null && model != null) {
+			boolean valid = validateGeneratedModel(om, model);
+			if (valid == true) {
+				return model;//writeTTLRDFFiles(model, output_file);
+			} else {
+				System.err.println("The generated RDF model is invalid");
+				System.exit(1);
+			}
+			long t1 = System.currentTimeMillis();
+			System.out.println("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+		} else {
+			System.out
+					.println("No ontologyModel or instanceModel found -> no files generated.");
+		}
+		return model;
 	}
 
 	// VALIDATION
