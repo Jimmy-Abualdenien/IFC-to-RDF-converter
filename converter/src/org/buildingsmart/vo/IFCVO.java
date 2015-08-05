@@ -34,7 +34,6 @@ public class IFCVO {
 	private String name = null;
 	private LinkedList<Object> list = new LinkedList<Object>();	
 	private Map<String,LinkedList<IFCVO>> inverse_pointer_sets = new HashMap<String,LinkedList<IFCVO>>();
-	private boolean touched = false;
 	
 	public IFCVO() {}
 	
@@ -54,7 +53,7 @@ public class IFCVO {
 		this.name = name;
 	}
 	
-	public LinkedList<Object> getList() {
+	public LinkedList<Object> getObjectList() {
 		return list;
 	}
 	
@@ -70,22 +69,4 @@ public class IFCVO {
 		this.inverse_pointer_sets = inverse_pointer_sets;
 	}
 
-	public boolean is_touched() {
-		if(!touched)
-		{
-			touched=true;
-			return false;
-		}
-		return true;
-	}
-	
-	public void reset_touched() {
-		touched=false;
-	}
-	
-	@Override
-	public String toString() {
-	    return "IFC_X3_VO [line_num=" + line_num + ", name=" + name + ", list=" + list + ", inverse_pointer_sets=" + getInverse_pointer_sets() + ", touched=" + touched
-			    + "]";
-	}
 }

@@ -2,6 +2,7 @@ package org.buildingsmart;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,23 +13,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFCVO;
 import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.TypeVO;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
+
 
 /*
  * IFCtoRDFConverter is the final interface for this code. Through this class, one is able to submit an IFC file and the EXPRESS schema it follows so that
@@ -62,7 +68,15 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  */
 
 
-public class IfcConvertor {
+/*
+ * !!!
+ * apache-jena-2.12.1 need to be used
+ * Otherwice gives: Exception in thread "main" java.lang.NoSuchFieldError: JSONLD  ERROR
+ * 
+ * 
+ */
+
+public class IfcConvertorStream {
 
 	//input variables
 	private String baseURI;
@@ -76,14 +90,16 @@ public class IfcConvertor {
 	//conversion variables
 	private int IDcounter = 0;	
 	private Map<Long, IFCVO> linemap = new HashMap<Long, IFCVO>();
-	private Model im;
+
+	private StreamRDF ttl_writer;
 	private InputStream inputStream;
 	private OntModel ontModel;
 	
 	// Taking care of avoiding duplicate resources
+	private Map<String,Resource> peoperty_resource_map=new HashMap<String,Resource>();  
 	private Map<String,Resource> resource_map=new HashMap<String,Resource>();  
 	
-	public IfcConvertor(OntModel ontModel, ExpressReader expressReader, InputStream inputStream, String baseURI){
+	public IfcConvertorStream(OntModel ontModel, ExpressReader expressReader, InputStream inputStream, String baseURI){
 		this.ontModel = ontModel;
 		this.inputStream = inputStream;
 		this.baseURI = baseURI;
@@ -95,23 +111,15 @@ public class IfcConvertor {
 		ontNS = ontURI + "#";
 	}
 
-	public Model parseModel(){
-		//setup models
-		im = ModelFactory.createDefaultModel();
-		im.setNsPrefix("ifcowl", ontNS);
-		im.setNsPrefix("inst", baseURI);
+	public void parseModel2Stream(FileOutputStream out){
 		
+		ttl_writer = StreamRDFWriter.getWriterStream(out, RDFFormat.TURTLE_BLOCKS) ;
+		ttl_writer.prefix("ifcowl", ontNS);
+		ttl_writer.prefix("inst", baseURI);
+		ttl_writer.start();
 		//Read the whole file into a linemap Map object
 		System.out.println("start to read model");
 		readModel();	
-		
-//		Model modelInMem = ModelFactory.createDefaultModel();
-//		modelInMem.add(om);
-//
-//		Iterator it = GraphUtil.findAll(modelInMem.getGraph());
-//		while (it.hasNext()) {
-//		   System.out.println("triple from OntModel " + it.next().toString());
-//		}
 
 		System.out.println("ended reading model");
 		System.out.println("started mapEntries");
@@ -126,9 +134,8 @@ public class IfcConvertor {
 		linemap.clear();
 		linemap = null;
 		System.gc();
-		
-		return im;
-	}
+		ttl_writer.finish();
+		}
 	
 	private void readModel() {
 		try {
@@ -314,13 +321,12 @@ public class IfcConvertor {
 			IFCVO ifc_lineEntry = entry.getValue();	
 			String typeName = ent.get(ifc_lineEntry.getName()).getName();			
 			OntClass cl = ontModel.getOntClass(ontNS + typeName);
-			Resource r = im.createResource(baseURI + typeName + "_" + ifc_lineEntry.getLine_num(), cl);
-			
+			Resource r =  getResource(baseURI + typeName + "_" + ifc_lineEntry.getLine_num(),cl);
 			fillProperties(ifc_lineEntry, r, cl);
 		}
 		// The map is used only to avoid duplicates.
 		// So, it can be cleared here
-		resource_map.clear();
+		peoperty_resource_map.clear();
 	}
 	
 	TypeVO typeremembrance = null;
@@ -383,15 +389,16 @@ public class IfcConvertor {
 								
 								// Create only when needed...
 								String key=valueProp.toString()+":"+xsdType+":"+literalString;
-								Resource r1 = resource_map.get(key);
+								Resource r1 = peoperty_resource_map.get(key);
 								if(r1==null)
 								{
-								 r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
+								 r1 = ResourceFactory.createResource(baseURI + range.getLocalName() + "_" + IDcounter);
+								 ttl_writer.triple(new Triple(r1.asNode(), RDF.type.asNode(), range.asNode()));
 								 IDcounter++;
-								 resource_map.put(key,r1);
+								 peoperty_resource_map.put(key,r1);
 								 addLiteralToResource(r1,valueProp,xsdType,literalString);
 								}
-								r.addProperty(p, r1);
+								ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
 
 							}
 							else{
@@ -422,12 +429,10 @@ public class IfcConvertor {
 			EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
 
 			OntProperty p = ontModel.getOntProperty(propURI);
-			OntResource rclass = ontModel.getOntResource(evorange.getName());
-
-			Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num());
-			if(r1 == null)
-				r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num(), rclass);
-			r.addProperty(p, r1);								
+			OntClass rclass = ontModel.getOntClass(ontNS + evorange.getName());
+           
+			Resource r1 = getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o).getLine_num(),rclass);
+			ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));			
 		} 
 		attribute_pointer++;
 		return attribute_pointer;
@@ -439,9 +444,6 @@ public class IfcConvertor {
 		final LinkedList<Object> tmp_list = (LinkedList<Object>) o;
 		LinkedList<String> literals=new LinkedList<String>();
 		
-
-//				if(tmp_list.size()==0)
-//					attribute_pointer++;
 		
 		//process list
 		for (int j = 0; j < tmp_list.size(); j++) {
@@ -479,10 +481,8 @@ public class IfcConvertor {
 						EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o1).getName()));								
 						OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
 
-						Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num());
-						if(r1 == null)
-							r1 = im.createResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num(), rclass);
-						r.addProperty(p, r1);									
+						Resource r1 = getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num(),rclass);
+						ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
 					}
 				}
 			}
@@ -543,16 +543,17 @@ public class IfcConvertor {
 					OntProperty valueProp = ontModel.getOntProperty(ontNS + "has_" + xsdType);	
 					String key=valueProp.toString()+":"+xsdType+":"+literalString;
 					
-					Resource r1 = resource_map.get(key);
+					Resource r1 = peoperty_resource_map.get(key);
 					if(r1==null)
 					{
-					 r1 = im.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter, range);
+					 r1 = ResourceFactory.createResource(baseURI + typeremembrance.getName() + "_" + IDcounter);
+					 ttl_writer.triple(new Triple(r1.asNode(), RDF.type.asNode(), range.asNode()));		
+					 
 					 IDcounter++;
-					 resource_map.put(key,r1);
+					 peoperty_resource_map.put(key,r1);
 					 addLiteralToResource(r1,valueProp,xsdType,literalString);
 					}
-					r.addProperty(p, r1);
-					
+					ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
 				}
 			}									
 		}
@@ -595,9 +596,8 @@ public class IfcConvertor {
 	private void addEnumProperty(Resource r, Property p, OntResource range, String literalString){
 		for (ExtendedIterator<? extends OntResource> instances = range.asClass().listInstances(); instances.hasNext(); ) {
             OntResource rangeInstance = instances.next();
-            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){
-            	im.add(im.createStatement(r, p, rangeInstance));							            	
-            	//System.out.println( "OK: added statement " + p + " - " + rangeInstance.getLocalName());
+            if( rangeInstance.getProperty(RDFS.label).getString().equalsIgnoreCase(filter_points(literalString))){            	
+            	ttl_writer.triple(new Triple(r.asNode(), p.asNode(),  rangeInstance.asNode()));
             	break;
             }
 		}
@@ -605,23 +605,23 @@ public class IfcConvertor {
 	
 	private void addLiteralToResource(Resource r1, OntProperty valueProp, String xsdType, String literalString){
 		if(xsdType.equalsIgnoreCase("integer"))
-			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
+			addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDinteger));	
 		else if(xsdType.equalsIgnoreCase("double"))
-			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
+			addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDdouble));	
 		else if(xsdType.equalsIgnoreCase("hexBinary"))
-			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
+			addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDhexBinary));	
 		else if(xsdType.equalsIgnoreCase("boolean")){
 			if(literalString.equalsIgnoreCase(".F."))
-				r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
+				addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral("false", XSDDatatype.XSDboolean));	
 			else if(literalString.equalsIgnoreCase(".T."))
-					r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
+				addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral("true", XSDDatatype.XSDboolean));
 			else
 				System.out.println("4 - WARNING: found odd boolean value: " + literalString);
 		}
 		else if(xsdType.equalsIgnoreCase("string"))
-			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
+			addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral(literalString, XSDDatatype.XSDstring));	
 		else
-			r1.addLiteral(valueProp, ResourceFactory.createTypedLiteral(literalString));
+			addLiteral(r1,valueProp, ResourceFactory.createTypedLiteral(literalString));
 	}
 	
 	//LIST HANDLING
@@ -638,12 +638,11 @@ public class IfcConvertor {
 				List<Resource> reslist = new ArrayList<Resource>();
 				//createrequirednumberofresources
 				for(int ii = 0; ii<el.size();ii++){	
-					Resource r1 = im.createResource(baseURI + range.getLocalName() + "_" + IDcounter, range.asResource());
+					Resource r1 = getResource(baseURI + range.getLocalName() + "_" + IDcounter, range);
 					reslist.add(r1);
 					IDcounter++;
 					if(ii==0){
-						r.addProperty(p, r1);
-						//System.out.println("OK: added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName());		
+						ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
 					}
 				}	
 				//bindtheproperties
@@ -688,14 +687,14 @@ public class IfcConvertor {
 		//createrequirednumberofresources
 		for (int i = 0; i < tmp_list.size(); i++) {
 			if (IFCVO.class.isInstance(tmp_list.get(i))) {
-				Resource r1 = im.createResource(
+				Resource r1 = getResource(
 						baseURI + typerange.getLocalName() + "_" + IDcounter,
 						typerange);
 				reslist.add(r1);
 				IDcounter++;
 				entlist.add((IFCVO)tmp_list.get(i));
 				if (i == 0) {
-					r.addProperty(p, r1);
+					ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));
 				}
 			}
 		}	
@@ -717,14 +716,11 @@ public class IfcConvertor {
 			EntityVO evorange = ent.get(ExpressReader.formatClassName(entlist.get(i).getName()));									
 			OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
 			
-			Resource r1 = im.getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num());
-			if(r1 == null)
-				r1 = im.createResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num(), rclass);
-			r.addProperty(listp, r1);			
+			Resource r1 = getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num(),rclass);
+			ttl_writer.triple(new Triple(r.asNode(), listp.asNode(), r1.asNode()));
 																
 			if(i<reslist.size()-1){								
-				r.addProperty(isfollowed,reslist.get(i+1));
-				//System.out.println("OK: created class property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+				ttl_writer.triple(new Triple(r.asNode(), isfollowed.asNode(), reslist.get(i+1).asNode()));
 			}	
 		}
 	}
@@ -739,19 +735,20 @@ public class IfcConvertor {
 				Resource r = reslist.get(i);
 				String literalString = listelements.get(i);
 				String key=valueProp.toString()+":"+xsdType+":"+literalString;
-				Resource r2 = resource_map.get(key);
+				Resource r2 = peoperty_resource_map.get(key);
 				if(r2==null)
 				{
-					r2 = im.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter, listrange.asResource());
+					r2 = ResourceFactory.createResource(baseURI + listrange.getLocalName() + "_" + IDcounter);
+					ttl_writer.triple(new Triple(r2.asNode(), RDF.type.asNode(), listrange.asNode()));		
+					
 					IDcounter++;
-					resource_map.put(key,r2);
+					peoperty_resource_map.put(key,r2);
 					addLiteralToResource(r2,valueProp,xsdType,literalString);
 				}
-				r.addProperty(ontModel.getOntProperty(ontNS + "hasListContent"), r2);
+				ttl_writer.triple(new Triple(r.asNode(), ontModel.getOntProperty(ontNS + "hasListContent").asNode(), r2.asNode()));
 
 				if(i<listelements.size()-1){								
-					r.addProperty(ontModel.getOntProperty(ontNS + "isFollowedBy"),reslist.get(i+1));
-					//System.out.println("OK: added property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName());
+					ttl_writer.triple(new Triple(r.asNode(), ontModel.getOntProperty(ontNS + "isFollowedBy").asNode(), reslist.get(i+1).asNode()));
 				}	
 			}
 		}	
@@ -796,5 +793,29 @@ public class IfcConvertor {
 		} catch (Exception e) {
 			return Long.MIN_VALUE;
 		}
+	}
+	
+	private void addLiteral(Resource r,OntProperty valueProp, Literal l)
+	{
+		ttl_writer.triple(new Triple(r.asNode(), valueProp.asNode(), l.asNode()));		
+	}
+	
+	private Resource getResource(String uri,OntResource rclass)
+	{
+		Resource r=resource_map.get(uri);
+		if(r==null)
+		{
+		   r=ResourceFactory.createResource(uri);
+		   resource_map.put(uri, r);
+		   try
+		   {
+		     ttl_writer.triple(new Triple(r.asNode(), RDF.type.asNode(), rclass.asNode()));
+		   }
+		   catch(Exception e)
+		   {
+			   e.printStackTrace();
+		   }
+		}
+		return r;
 	}
 }

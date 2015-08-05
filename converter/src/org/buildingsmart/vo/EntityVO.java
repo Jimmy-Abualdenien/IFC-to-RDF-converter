@@ -78,6 +78,9 @@ public class EntityVO {
 		this.derived_attribute_list = derived_list;
 	}
 
+	public EntityVO() {
+	}
+
 	public List<AttributeVO> getAttributes() {
 		return attributes;
 	}
@@ -118,19 +121,11 @@ public class EntityVO {
 		this.name = name;
 	}
 
-//	public List<String> getInterfaces() {
-//		return interfaces;
-//	}
-//
-//	public void setInterfaces(List<String> interfaces) {
-//		this.interfaces = interfaces;
-//	}
 
 	@Override
 	public String toString() {
 		return "EntityVO [name=" + name + ", attributes=" + attributes
 				+ ", inverses=" + inverses 
-//				+ ", interfaces=" + interfaces
 				+ ", derived_attribute_list=" + derived_attribute_list
 				+ ", derived_inverse_list=" + derived_inverse_list
 				+ ", superclass=" + superclass 
