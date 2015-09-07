@@ -10,6 +10,8 @@ public class Namespace {
 	public static final String DCE = "http://purl.org/dc/elements/1.1/";
 	public static final String VANN = "http://purl.org/vocab/vann/";
 	public static final String CC = "http://creativecommons.org/ns#";
+	public static final String LIST = "http://www.co-ode.org/ontologies/list.owl#";
+	public static final String EXPRESS = "http://purl.org/vocab/express/";
 	
 //	public static final String DCT = "http://purl.org/dc/terms/";	
 }

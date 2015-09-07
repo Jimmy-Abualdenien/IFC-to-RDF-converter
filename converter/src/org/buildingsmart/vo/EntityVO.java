@@ -36,7 +36,7 @@ public class EntityVO {
 	
 	private String superclass;
 	private boolean abstractsuperclass = false;
-	private TypeVO parentSelect;
+	private List<TypeVO> parentSelect;
 	private Set<String> subClassList = new HashSet<String>();
 	private static List<EntityVO> listOfEntities = new ArrayList<EntityVO>();
 
@@ -97,12 +97,14 @@ public class EntityVO {
 		this.superclass = superclass;
 	}	
 
-	public TypeVO getParentSelect() {
+	public List<TypeVO> getParentSelectTypes() {
 		return parentSelect;
 	}
 
-	public void setParentSelect(TypeVO parentSelect) {
-		this.parentSelect = parentSelect;
+	public void addParentSelectType(TypeVO parentSelect) {
+		if(this.parentSelect == null)
+			this.parentSelect = new ArrayList<TypeVO>();
+		this.parentSelect.add(parentSelect);
 	}
 
 	public void setAbstractSuperclass(boolean abstractsuperclass){

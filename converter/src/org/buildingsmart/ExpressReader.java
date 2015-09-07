@@ -99,7 +99,7 @@ public class ExpressReader {
 	
 			this.rearrangeAttributesWithPartialRenaming();
 			this.rearrangeProperties();
-			this.addInverses();
+			this.addInverses2014();
 			System.out.println("Ended reading the EXPRESS file and building internals");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -115,7 +115,7 @@ public class ExpressReader {
 	
 			this.rearrangeAttributesWithFullRenaming();
 			this.rearrangeProperties();
-			this.addInverses();
+			this.addInverses2015();
 			this.interpretSelects();
 			System.out.println("Ended reading the EXPRESS file and building internals");
 		} catch (IOException e) {
@@ -132,11 +132,9 @@ public class ExpressReader {
 			String in = args[0];
 			if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1") || in.equalsIgnoreCase("IFC4_ADD1") || in.equalsIgnoreCase("IFC4")){
 				try {
-					ExpressReader er = new ExpressReader(ExpressReader.class.getResourceAsStream("/" + in + ".exp"));
-					if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1"))
-						Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/IFC2X3";
-					else
-						Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/IFC4";						
+					InputStream instr = ExpressReader.class.getResourceAsStream("resources/" + in + ".exp");
+					ExpressReader er = new ExpressReader(instr);
+					Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/" + in;										
 					er.readAndBuildVersion2015();
 		
 					OWLWriter ow = new OWLWriter(in, er.entities,
@@ -181,6 +179,7 @@ public class ExpressReader {
 								"UTF-8").newEncoder());
 				out = new BufferedWriter(char_output);
 				om.write(out, "RDF/XML");
+				System.out.println("OK!");
 			} catch (IOException e) {
 				System.err
 						.println("Something went wrong while writing the RDF file");
@@ -426,7 +425,7 @@ public class ExpressReader {
 		}
 	}
 	
-	private void addInverses() {
+	private void addInverses2014() {
 		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
 		ArrayList<PropertyVO> listOfAddedObjectProperties = new ArrayList<PropertyVO>();
 		while (iter.hasNext()) {
@@ -490,6 +489,70 @@ public class ExpressReader {
 		}
 	}
 	
+	private void addInverses2015() {
+		Iterator<Entry<String, EntityVO>> iter = entities.entrySet().iterator();
+		ArrayList<PropertyVO> listOfAddedObjectProperties = new ArrayList<PropertyVO>();
+		while (iter.hasNext()) {
+			Entry<String, EntityVO> pairs = iter.next();
+			EntityVO evo = pairs.getValue();
+			for (int n = 0; n < evo.getInverses().size(); n++) {
+				
+				InverseVO inv = evo.getInverses().get(n);						
+				PropertyVO prop = inv.getAssociatedProperty();	
+				PropertyVO inverseOfInv = properties.get(inv
+						.getInverseOfProperty());		
+				
+				if (inverseOfInv == null) {
+					inverseOfInv = properties.get(inv.getInverseOfProperty()
+							+ "_" + prop.getRange());
+				}	
+				
+				if(!listOfAddedObjectProperties.contains(inverseOfInv) && inverseOfInv!=null){	
+					listOfAddedObjectProperties.add(inverseOfInv);
+						prop.setInverseProp(inverseOfInv);
+						inverseOfInv.setInverseProp(prop);
+					
+					if(inverseOfInv.isList() || inverseOfInv.isListOfList() || inverseOfInv.isArray()){
+						//Property needs to be deleted again to counter inconsistencies in the eventual OWL ontology
+						properties.remove(prop.getName());
+						inverseOfInv.setInverseProp(null);
+						listOfAddedObjectProperties.remove(inverseOfInv);
+					}
+				}
+				else{
+					PropertyVO origprop = inverseOfInv;
+					if(origprop!=null){			
+						PropertyVO originv = inverseOfInv.getInverseProperty();			 
+						 if(originv!=null){
+							 System.out.println("removing property 2 from property list: " + originv.getName());
+							 if(properties.remove(originv.getName())==null){
+								 System.out.println("could not remove property 2 from list: " + originv.getName());
+								 properties.remove(originv.getOriginalName());
+							 }
+							 System.out.println("removing property 2 from property list: " + origprop.getName());
+							 originv.setInverseProp(null);
+							 System.out.println("removed inverses of property: " + originv.getName());
+						 }	
+						 else{
+							 System.out.println("removing property 3: " + origprop.getName());	
+							 origprop.setInverseProp(null);								
+						 }
+						 
+						 System.out.println("removing property 4: " + prop.getName());	
+						 if(properties.remove(prop.getName())==null)
+							 System.out.println("could not remove property 4 from list: " + prop.getName());
+						 inverseOfInv.setInverseProp(null);
+						 System.out.println("removed inverses of property: " + inverseOfInv.getName());
+					}	
+					else{
+						System.out.println("removing property 5: " + prop.getName());	
+						properties.remove(prop.getName());							
+					}
+				}
+			}
+		}
+	}
+	
 	private void interpretSelects() {
 		Iterator<Entry<String, TypeVO>> iter = types.entrySet().iterator();
 		while (iter.hasNext()) {
@@ -500,19 +563,19 @@ public class ExpressReader {
 
 				TypeVO type = TypeVO.getTypeVO(entString);
 				if (type != null)
-					type.setParentSelectType(parent);
+					type.addParentSelectType(parent);
 
 				else {
 					EntityVO ent = EntityVO.getEntityVO(entString);
 					if (ent != null){
-						ent.setParentSelect(parent);
+						ent.addParentSelectType(parent);
 					}
 					else {						
 						PrimaryTypeVO ptype = PrimaryTypeVO
 								.getPrimaryTypeVO(entString);
 						if (ptype != null){
 							System.out.println("Warning: PTYPE is part of select : " + parent.getName());
-							ptype.setParentSelect(parent);
+							ptype.addParentSelectType(parent);
 						}
 						else{
 							System.out.println("Warning: Something is part of select that is not a PType, Entity, or Type: " + parent.getName());

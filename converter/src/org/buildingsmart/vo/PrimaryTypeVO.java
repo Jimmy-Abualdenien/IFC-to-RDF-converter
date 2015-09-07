@@ -7,7 +7,7 @@ public class PrimaryTypeVO {
 
 	private String pTypeName;
 	private static List<PrimaryTypeVO> listOfPrimaryTypes = new ArrayList<PrimaryTypeVO>();
-	private TypeVO parentSelect;
+	private List<TypeVO> parentSelect;
 
 	public PrimaryTypeVO() {
 		// unused
@@ -32,12 +32,14 @@ public class PrimaryTypeVO {
 		return null;
 	}
 
-	public TypeVO getParentSelect() {
+	public List<TypeVO> getParentSelect() {
 		return parentSelect;
 	}
-
-	public void setParentSelect(TypeVO parentSelect) {
-		this.parentSelect = parentSelect;
+	
+	public void addParentSelectType(TypeVO parentSelect) {
+		if(this.parentSelect == null)
+			this.parentSelect = new ArrayList<TypeVO>();
+		this.parentSelect.add(parentSelect);
 	}
 
 	public String getPTypeName() {
