@@ -12,6 +12,4 @@ public class Namespace {
 	public static final String CC = "http://creativecommons.org/ns#";
 	public static final String LIST = "http://www.co-ode.org/ontologies/list.owl#";
 	public static final String EXPRESS = "http://purl.org/vocab/express/";
-	
-//	public static final String DCT = "http://purl.org/dc/terms/";	
 }

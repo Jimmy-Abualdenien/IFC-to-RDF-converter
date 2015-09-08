@@ -2,6 +2,8 @@ package org.buildingsmart.vo;
 
 import java.util.List;
 
+import fi.ni.rdf.Namespace;
+
 /*
  The GNU Affero General Public License
 
@@ -29,6 +31,7 @@ public class PropertyVO {
 	public enum propertyType{TypeVO,EntityVO,Select};
 	private propertyType type; 
 	private boolean optional = false;
+	private String rangeNS;
 
 	private boolean isArray = false;
 	private boolean isSet = false;
@@ -44,7 +47,7 @@ public class PropertyVO {
 	
 	private List<String> range_selectEntities = null;
 	private String range=null;
-	
+		
 	
 //	List<String> ifcClasses = new ArrayList<String>();
 //	public boolean isEntity = false;
@@ -202,6 +205,14 @@ public class PropertyVO {
 
 	public void setOptional(boolean optional) {
 		this.optional = optional;
+	}
+
+	public String getRangeNS() {
+		return rangeNS;
+	}
+
+	public void setRangeNS(String rangeNS) {
+		this.rangeNS = rangeNS;
 	}
 	
 	

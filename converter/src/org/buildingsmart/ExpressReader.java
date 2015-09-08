@@ -271,12 +271,23 @@ public class ExpressReader {
 				prop.setName(formatProperty(inv.getName(), false));
 				prop.setDomain(evo);
 				prop.setRange(inv.getClassRange());
-				prop.setSet(inv.isSet());				
+				prop.setSet(inv.isSet());		
 
 				prop.setMinCardinality(inv.getMinCard());
 				prop.setMaxCardinality(inv.getMaxCard());
 				prop.setOriginalName(prop.getName());
 				prop.setName(prop.getName() + "_" + evo.getName()); //this used to be "_of_"
+				
+				if(inv.getClassRange().equalsIgnoreCase("NUMBER") || inv.getClassRange().equalsIgnoreCase("REAL") || 
+						inv.getClassRange().equalsIgnoreCase("INTEGER") || inv.getClassRange().equalsIgnoreCase("LOGICAL") || 
+						inv.getClassRange().equalsIgnoreCase("BOOLEAN") || inv.getClassRange().equalsIgnoreCase("STRING") || 
+						inv.getClassRange().equalsIgnoreCase("BINARY")){
+					prop.setRangeNS("express");
+				}
+				else {
+					prop.setRangeNS("ifc");
+				}
+				
 				properties.put(prop.getName(), prop);
 			}			
 		}
@@ -406,6 +417,22 @@ public class ExpressReader {
 				prop.setMinCardinality_listoflist(attr.getMinCard_listoflist());
 				prop.setMaxCardinality_listoflist(attr.getMaxCard_listoflist());
 				prop.setOptional(attr.isOptional());
+
+				if(type_name.equalsIgnoreCase("NUMBER") || type_name.equalsIgnoreCase("REAL") || 
+						type_name.equalsIgnoreCase("INTEGER") || type_name.equalsIgnoreCase("LOGICAL") || 
+						type_name.equalsIgnoreCase("BOOLEAN") || type_name.equalsIgnoreCase("STRING") || 
+						type_name.equalsIgnoreCase("BINARY")){
+					prop.setRangeNS("express");
+					attr.setRangeNS("express");
+				}
+				else if(attr.isListOfList() || attr.isArray() || (attr.isList() && !attr.isSet())){
+					prop.setRangeNS("express");
+					attr.setRangeNS("express");
+				}
+				else {
+					prop.setRangeNS("ifc");
+					attr.setRangeNS("ifc");
+				}
 
 				if (type_primaryType.equalsIgnoreCase("enumeration"))
 					prop.setType(PropertyVO.propertyType.TypeVO);
@@ -562,8 +589,9 @@ public class ExpressReader {
 				String entString = parent.getSelect_entities().get(n);
 
 				TypeVO type = TypeVO.getTypeVO(entString);
-				if (type != null)
+				if (type != null && !type.getPrimarytype().equalsIgnoreCase("CLASS")){
 					type.addParentSelectType(parent);
+				}
 
 				else {
 					EntityVO ent = EntityVO.getEntityVO(entString);

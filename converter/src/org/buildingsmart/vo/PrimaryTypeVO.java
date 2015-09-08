@@ -3,6 +3,8 @@ package org.buildingsmart.vo;
 import java.util.ArrayList;
 import java.util.List;
 
+import fi.ni.rdf.Namespace;
+
 public class PrimaryTypeVO {
 
 	private String pTypeName;

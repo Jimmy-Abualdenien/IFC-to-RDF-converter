@@ -23,6 +23,7 @@ public class AttributeVO {
 	private String name;
 	private String originalName;
 	private EntityVO domain;
+	private String rangeNS;
 
 	private boolean array = false;
 	private boolean set = false;
@@ -199,5 +200,13 @@ public class AttributeVO {
 		return "AttributeVO [name=" + name + ", type=" + type
 				+ ", reverse_pointer=" + reverse_pointer + ", points_from="
 				+ points_from + ", set=" + set + "]";
+	}
+
+	public String getRangeNS() {
+		return rangeNS;
+	}
+
+	public void setRangeNS(String rangeNS) {
+		this.rangeNS = rangeNS;
 	}
 }
