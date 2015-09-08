@@ -81,10 +81,9 @@ public class OWLWriter {
 		this.properties = properties;
 	}	
 	
-	public void outputOWLVersion2015() {
+	public void outputOWLVersion2015(String filePath) {
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter("out\\"
-					+ expressSchemaName + ".ttl"));
+			BufferedWriter out = new BufferedWriter(new FileWriter(filePath + ".ttl"));
 			out.write("@base <" + Namespace.IFC + "> .\r\n");
 			out.write("@prefix : <" + Namespace.IFC + "#> .\r\n");
 			out.write("@prefix ifc: <" + Namespace.IFC + "#> .\r\n");

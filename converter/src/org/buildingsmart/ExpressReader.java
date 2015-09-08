@@ -138,11 +138,12 @@ public class ExpressReader {
 					er.readAndBuildVersion2015();
 		
 					OWLWriter ow = new OWLWriter(in, er.entities,
-							er.types, er.siblings, er.enumIndividuals, er.properties);
-					ow.outputOWLVersion2015();
+							er.types, er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
+					ow.outputOWLVersion2015("out\\" + in);
 					System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
 					
-					CleanModelAndRewrite(in);
+					//modify location when using
+					er.CleanModelAndRewrite("out\\" + in);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -153,10 +154,10 @@ public class ExpressReader {
 		}
 	}
 	
-	private static void CleanModelAndRewrite(String in){
+	public void CleanModelAndRewrite(String filePathNoExt){		
 		try {
 			OntModel om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			BufferedReader instr = new BufferedReader(new InputStreamReader(new FileInputStream("out\\" + in + ".ttl"), "UTF-8"));
+			BufferedReader instr = new BufferedReader(new InputStreamReader(new FileInputStream(filePathNoExt + ".ttl"), "UTF-8"));
 			om.read(instr, null, "TTL");
 		
 		
@@ -167,15 +168,13 @@ public class ExpressReader {
 					.println("generated RDF graph is OK! Writing TTL and RDF file...");
 			try {
 				OutputStreamWriter char_output = new OutputStreamWriter(
-						new FileOutputStream("out\\"
-								+ in + ".ttl"), Charset.forName("UTF-8")
+						new FileOutputStream(filePathNoExt + ".ttl"), Charset.forName("UTF-8")
 								.newEncoder());
 				BufferedWriter out = new BufferedWriter(char_output);
 				om.write(out, "TTL");
 			
 				char_output = new OutputStreamWriter(
-						new FileOutputStream("out\\"
-								+ in + ".rdf"), Charset.forName(
+						new FileOutputStream(filePathNoExt + ".rdf"), Charset.forName(
 								"UTF-8").newEncoder());
 				out = new BufferedWriter(char_output);
 				om.write(out, "RDF/XML");
@@ -206,7 +205,7 @@ public class ExpressReader {
 		for (Map.Entry<String, TypeVO> entry : types.entrySet()) {
 			TypeVO vo = entry.getValue();			
 			for (int n = 0; n < vo.getEnum_entities().size(); n++) {
-					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo
+					getEnumIndividuals().add(new NamedIndividualVO(vo.getName(), vo
 							.getEnum_entities().get(n),	vo.getEnum_entities().get(n)));
 			}
 		}
@@ -230,19 +229,19 @@ public class ExpressReader {
 								.getOriginalNameOfIndividual()
 								+ "_of_"
 								+ firstind.getEnumName());
-						enumIndividuals.add(new NamedIndividualVO(vo.getName(),
+						getEnumIndividuals().add(new NamedIndividualVO(vo.getName(),
 								vo.getEnum_entities().get(n) + "_of_"
 										+ vo.getName(), vo.getEnum_entities()
 										.get(n)));
 					} else {
 						NamedIndividualVO ind = new NamedIndividualVO(
 								vo.getName(), vo.getEnum_entities().get(n));
-						enumIndividuals.add(ind);
+						getEnumIndividuals().add(ind);
 						alreadygeneratednamedindividuals.put(vo
 								.getEnum_entities().get(n), ind);
 					}
 				} else
-					enumIndividuals.add(new NamedIndividualVO(vo.getName(), vo
+					getEnumIndividuals().add(new NamedIndividualVO(vo.getName(), vo
 							.getEnum_entities().get(n) + "_of_" + vo.getName(),
 							vo.getEnum_entities().get(n)));
 			}
@@ -288,7 +287,7 @@ public class ExpressReader {
 					prop.setRangeNS("ifc");
 				}
 				
-				properties.put(prop.getName(), prop);
+				getProperties().put(prop.getName(), prop);
 			}			
 		}
 	}
@@ -371,8 +370,8 @@ public class ExpressReader {
 						firstprop.setOriginalName(firstprop.getName());
 						firstprop.setName(firstprop.getName() + "_of_"
 								+ firstprop.getDomain().getName());
-						properties.remove(firstprop.getOriginalName());
-						properties.put(firstprop.getName(),firstprop);
+						getProperties().remove(firstprop.getOriginalName());
+						getProperties().put(firstprop.getName(),firstprop);
 						prop.setOriginalName(prop.getName());
 						prop.setName(prop.getName() + "_of_"
 								+ prop.getDomain().getName());
@@ -386,7 +385,7 @@ public class ExpressReader {
 					prop.setOriginalName(prop.getName());
 					prop.setName(prop.getName() + "_of_" + evo.getName());
 				}
-				properties.put(prop.getName(), prop);
+				getProperties().put(prop.getName(), prop);
 			}			
 		}
 	}
@@ -447,7 +446,7 @@ public class ExpressReader {
 					prop.setType(PropertyVO.propertyType.TypeVO);
 				}
 				
-				properties.put(prop.getName(), prop);
+				getProperties().put(prop.getName(), prop);
 			}
 		}
 	}
@@ -462,11 +461,11 @@ public class ExpressReader {
 				
 				InverseVO inv = evo.getInverses().get(n);						
 				PropertyVO prop = inv.getAssociatedProperty();	
-				PropertyVO inverseOfInv = properties.get(inv
+				PropertyVO inverseOfInv = getProperties().get(inv
 						.getInverseOfProperty());		
 				
 				if (inverseOfInv == null) {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
+					inverseOfInv = getProperties().get(inv.getInverseOfProperty()
 							+ "_of_" + prop.getRange());
 				}	
 				
@@ -477,7 +476,7 @@ public class ExpressReader {
 					
 					if(inverseOfInv.isList() || inverseOfInv.isListOfList() || inverseOfInv.isArray()){
 						//Property needs to be deleted again to counter inconsistencies in the eventual OWL ontology
-						properties.remove(prop.getName());
+						getProperties().remove(prop.getName());
 						inverseOfInv.setInverseProp(null);
 						listOfAddedObjectProperties.remove(inverseOfInv);
 					}
@@ -488,9 +487,9 @@ public class ExpressReader {
 						PropertyVO originv = inverseOfInv.getInverseProperty();			 
 						 if(originv!=null){
 							 System.out.println("removing property 2 from property list: " + originv.getName());
-							 if(properties.remove(originv.getName())==null){
+							 if(getProperties().remove(originv.getName())==null){
 								 System.out.println("could not remove property 2 from list: " + originv.getName());
-								 properties.remove(originv.getOriginalName());
+								 getProperties().remove(originv.getOriginalName());
 							 }
 							 System.out.println("removing property 2 from property list: " + origprop.getName());
 							 originv.setInverseProp(null);
@@ -502,14 +501,14 @@ public class ExpressReader {
 						 }
 						 
 						 System.out.println("removing property 4: " + prop.getName());	
-						 if(properties.remove(prop.getName())==null)
+						 if(getProperties().remove(prop.getName())==null)
 							 System.out.println("could not remove property 4 from list: " + prop.getName());
 						 inverseOfInv.setInverseProp(null);
 						 System.out.println("removed inverses of property: " + inverseOfInv.getName());
 					}	
 					else{
 						System.out.println("removing property 5: " + prop.getName());	
-						properties.remove(prop.getName());							
+						getProperties().remove(prop.getName());							
 					}
 				}
 			}
@@ -526,11 +525,11 @@ public class ExpressReader {
 				
 				InverseVO inv = evo.getInverses().get(n);						
 				PropertyVO prop = inv.getAssociatedProperty();	
-				PropertyVO inverseOfInv = properties.get(inv
+				PropertyVO inverseOfInv = getProperties().get(inv
 						.getInverseOfProperty());		
 				
 				if (inverseOfInv == null) {
-					inverseOfInv = properties.get(inv.getInverseOfProperty()
+					inverseOfInv = getProperties().get(inv.getInverseOfProperty()
 							+ "_" + prop.getRange());
 				}	
 				
@@ -541,7 +540,7 @@ public class ExpressReader {
 					
 					if(inverseOfInv.isList() || inverseOfInv.isListOfList() || inverseOfInv.isArray()){
 						//Property needs to be deleted again to counter inconsistencies in the eventual OWL ontology
-						properties.remove(prop.getName());
+						getProperties().remove(prop.getName());
 						inverseOfInv.setInverseProp(null);
 						listOfAddedObjectProperties.remove(inverseOfInv);
 					}
@@ -552,9 +551,9 @@ public class ExpressReader {
 						PropertyVO originv = inverseOfInv.getInverseProperty();			 
 						 if(originv!=null){
 							 System.out.println("removing property 2 from property list: " + originv.getName());
-							 if(properties.remove(originv.getName())==null){
+							 if(getProperties().remove(originv.getName())==null){
 								 System.out.println("could not remove property 2 from list: " + originv.getName());
-								 properties.remove(originv.getOriginalName());
+								 getProperties().remove(originv.getOriginalName());
 							 }
 							 System.out.println("removing property 2 from property list: " + origprop.getName());
 							 originv.setInverseProp(null);
@@ -566,14 +565,14 @@ public class ExpressReader {
 						 }
 						 
 						 System.out.println("removing property 4: " + prop.getName());	
-						 if(properties.remove(prop.getName())==null)
+						 if(getProperties().remove(prop.getName())==null)
 							 System.out.println("could not remove property 4 from list: " + prop.getName());
 						 inverseOfInv.setInverseProp(null);
 						 System.out.println("removed inverses of property: " + inverseOfInv.getName());
 					}	
 					else{
 						System.out.println("removing property 5: " + prop.getName());	
-						properties.remove(prop.getName());							
+						getProperties().remove(prop.getName());							
 					}
 				}
 			}
@@ -1073,11 +1072,11 @@ public class ExpressReader {
 				}
 				String sibstr = filter_extras(txt);
 				current_sibling_set.add(sibstr);
-				Set<String> s = this.siblings.get(sibstr);
+				Set<String> s = this.getSiblings().get(sibstr);
 				if (s != null)
 					System.err.println("DUPLICATE: " + sibstr);
 				else
-					this.siblings.put(sibstr, current_sibling_set);
+					this.getSiblings().put(sibstr, current_sibling_set);
 			}
 			break;
 
@@ -1292,5 +1291,29 @@ public class ExpressReader {
 
 	public void setEntities(Map<String, EntityVO> entities) {
 		this.entities = entities;
+	}
+
+	public Map<String, Set<String>> getSiblings() {
+		return siblings;
+	}
+
+	public void setSiblings(Map<String, Set<String>> siblings) {
+		this.siblings = siblings;
+	}
+
+	public List<NamedIndividualVO> getEnumIndividuals() {
+		return enumIndividuals;
+	}
+
+	public void setEnumIndividuals(List<NamedIndividualVO> enumIndividuals) {
+		this.enumIndividuals = enumIndividuals;
+	}
+
+	public Map<String, PropertyVO> getProperties() {
+		return properties;
+	}
+
+	public void setProperties(Map<String, PropertyVO> properties) {
+		this.properties = properties;
 	}
 }
