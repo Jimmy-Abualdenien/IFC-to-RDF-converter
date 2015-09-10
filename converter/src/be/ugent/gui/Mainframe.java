@@ -81,7 +81,6 @@ public class Mainframe extends JFrame {
 		menuItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				openLDAC2015Version();
-				//OpenIFCFileInMemory();
 			}
 		});
 		menu.add(menuItem);

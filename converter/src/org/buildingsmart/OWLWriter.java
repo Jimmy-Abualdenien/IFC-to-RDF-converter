@@ -89,7 +89,7 @@ public class OWLWriter {
 			out.write("@prefix ifc: <" + Namespace.IFC + "#> .\r\n");
 			out.write(getOwl_header());
 
-			//writePrimaryTypes2015(out);
+//			writePrimaryTypes2015(out);
 			writeNamedIndividuals(out);
 //			writeHelperClasses2015(out);
 
@@ -895,7 +895,7 @@ public class OWLWriter {
 			Entry<String, TypeVO> pairs = it.next();
 			TypeVO tvo = pairs.getValue();
 			
-			if(howMuch.equalsIgnoreCase("partial ifc") && howMuch.equalsIgnoreCase("full ifc")){
+			if(howMuch.equalsIgnoreCase("partial ifc") || howMuch.equalsIgnoreCase("full ifc")){
 				if (tvo.getPrimarytype().equalsIgnoreCase("ENUMERATION"))
 					writeEnumerations(tvo,out);
 				else if (tvo.getPrimarytype().equalsIgnoreCase("SELECT"))
