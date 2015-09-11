@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<VBox prefHeight="440.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.ni.gui.fx.IFC2RDFController">
+  <children>
+    <MenuBar fx:id="myMenuBar" VBox.vgrow="NEVER">
+      <menus>
+        <Menu mnemonicParsing="false" text="File">
+          <items>
+                  <Menu mnemonicParsing="false" text="Express to OWL">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015" />
+                        <MenuItem disable="true" mnemonicParsing="false" text="Open as AUTCON2015" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL" />
+                        <SeparatorMenuItem mnemonicParsing="false" visible="false" />
+                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC2X3_TC1.exp" visible="false" />
+                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC2X3_Final.exp" visible="false" />
+                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC4.exp" visible="false" />
+                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC4_ADD1.exp" visible="false" />
+                        <MenuItem mnemonicParsing="false" text="Save expressOWL..." visible="false" />
+                    </items>
+                  </Menu>
+            <SeparatorMenuItem mnemonicParsing="false" />
+            <MenuItem mnemonicParsing="false" onAction="#closeApplicationAction" text="Quit" />
+          </items>
+        </Menu>
+        <Menu mnemonicParsing="false" text="Help">
+          <items>
+            <MenuItem mnemonicParsing="false" onAction="#aboutAction" text="About IFC-to-RDF GUI" />
+          </items>
+        </Menu>
+      </menus>
+    </MenuBar>
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="375.0" prefWidth="640.0" VBox.vgrow="ALWAYS" />
+    
+    
+  </children>
+</VBox>
