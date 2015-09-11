@@ -59,7 +59,6 @@ public class Mainframe extends JFrame {
 		setVisible(true);
 	}
 	
-
 	private JMenuBar setupMenuBar() {
 		// Where the GUI is created:
 		JMenu menu;
@@ -109,99 +108,99 @@ public class Mainframe extends JFrame {
 		});
 		menu.add(menuItem);		
 		
-		menu.addSeparator();			
-
-		menuItem = new JMenuItem("Generate expressOWL for IFC2X3_TC1.exp");
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC2X3_TC1.exp");
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC2X3_TC1.exp");
-				er = new ExpressReader(instr);
-				String IFCOntologyNamespace = "IFC2X3_TC1";									
-				er.readAndBuildVersion2015();
-				
-				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
-						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
-				ow.outputExpressOWLVersion2015("out/IFC2X3_TC1_express");
-				
-				JOptionPane.showMessageDialog(null,
-						"Successfully generated in-memory EXPRESS OWL file");
-			}
-		});
-		menu.add(menuItem);	
-		
-		menuItem = new JMenuItem("Generate expressOWL for IFC2X3_Final.exp");
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC2X3_Final.exp");
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC2X3_Final.exp");
-				er = new ExpressReader(instr);
-				String IFCOntologyNamespace = "IFC2X3_Final";									
-				er.readAndBuildVersion2015();
-				
-				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
-						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
-				ow.outputExpressOWLVersion2015("out/IFC2X3_Final_express");
-				
-				JOptionPane.showMessageDialog(null,
-						"Successfully generated in-memory EXPRESS OWL file");
-			}
-		});
-		menu.add(menuItem);	
-		
-		menuItem = new JMenuItem("Generate expressOWL for IFC4.exp");
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC4.exp");
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC4.exp");
-				er = new ExpressReader(instr);
-				String IFCOntologyNamespace = "IFC4";									
-				er.readAndBuildVersion2015();
-				
-				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
-						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
-				ow.outputExpressOWLVersion2015("out/IFC4_express");
-				
-				JOptionPane.showMessageDialog(null,
-						"Successfully generated in-memory EXPRESS OWL file");
-			}
-		});
-		menu.add(menuItem);	
-		
-		menuItem = new JMenuItem("Generate expressOWL for IFC4_ADD1.exp");
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC4_ADD1.exp");
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {					
-				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC4_ADD1.exp");
-				er = new ExpressReader(instr);
-				String IFCOntologyNamespace = "IFC4_ADD1";									
-				er.readAndBuildVersion2015();
-				
-				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
-						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
-				ow.outputExpressOWLVersion2015("out/IFC4_ADD1_express");
-				
-				JOptionPane.showMessageDialog(null,
-						"Successfully generated in-memory EXPRESS OWL file");
-			}
-		});
-		menu.add(menuItem);	
-
-		menuItem = new JMenuItem("Save expressOWL...", KeyEvent.VK_S);
-		menuItem.setEnabled(false);
-		menuItem.getAccessibleContext().setAccessibleDescription(
-				"Save expressOWL ontology in file system (TTL, RDF/XML, N-3, ...)");
-		menuItem.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				//JOptionPane.showMessageDialog(null,
-				//		"You selected: Save Full IFC as RDF graph...");
-			}
-		});
-		menu.add(menuItem);
+//		menu.addSeparator();			
+//
+//		menuItem = new JMenuItem("Generate expressOWL for IFC2X3_TC1.exp");
+//		menuItem.getAccessibleContext().setAccessibleDescription(
+//				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC2X3_TC1.exp");
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent actionEvent) {
+//				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC2X3_TC1.exp");
+//				er = new ExpressReader(instr);
+//				String IFCOntologyNamespace = "IFC2X3_TC1";									
+//				er.readAndBuildVersion2015();
+//				
+//				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
+//						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
+//				ow.outputExpressOWLVersion2015("out/IFC2X3_TC1_express");
+//				
+//				JOptionPane.showMessageDialog(null,
+//						"Successfully generated in-memory EXPRESS OWL file");
+//			}
+//		});
+//		menu.add(menuItem);	
+//		
+//		menuItem = new JMenuItem("Generate expressOWL for IFC2X3_Final.exp");
+//		menuItem.getAccessibleContext().setAccessibleDescription(
+//				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC2X3_Final.exp");
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent actionEvent) {
+//				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC2X3_Final.exp");
+//				er = new ExpressReader(instr);
+//				String IFCOntologyNamespace = "IFC2X3_Final";									
+//				er.readAndBuildVersion2015();
+//				
+//				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
+//						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
+//				ow.outputExpressOWLVersion2015("out/IFC2X3_Final_express");
+//				
+//				JOptionPane.showMessageDialog(null,
+//						"Successfully generated in-memory EXPRESS OWL file");
+//			}
+//		});
+//		menu.add(menuItem);	
+//		
+//		menuItem = new JMenuItem("Generate expressOWL for IFC4.exp");
+//		menuItem.getAccessibleContext().setAccessibleDescription(
+//				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC4.exp");
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent actionEvent) {
+//				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC4.exp");
+//				er = new ExpressReader(instr);
+//				String IFCOntologyNamespace = "IFC4";									
+//				er.readAndBuildVersion2015();
+//				
+//				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
+//						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
+//				ow.outputExpressOWLVersion2015("out/IFC4_express");
+//				
+//				JOptionPane.showMessageDialog(null,
+//						"Successfully generated in-memory EXPRESS OWL file");
+//			}
+//		});
+//		menu.add(menuItem);	
+//		
+//		menuItem = new JMenuItem("Generate expressOWL for IFC4_ADD1.exp");
+//		menuItem.getAccessibleContext().setAccessibleDescription(
+//				"Generate local .ttl file with OWL classes for EXPRESS elements in IFC4_ADD1.exp");
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent actionEvent) {					
+//				InputStream instr = ExpressReader.class.getResourceAsStream("resources/IFC4_ADD1.exp");
+//				er = new ExpressReader(instr);
+//				String IFCOntologyNamespace = "IFC4_ADD1";									
+//				er.readAndBuildVersion2015();
+//				
+//				OWLWriter ow = new OWLWriter(IFCOntologyNamespace, er.getEntities(),
+//						er.getTypes(), er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
+//				ow.outputExpressOWLVersion2015("out/IFC4_ADD1_express");
+//				
+//				JOptionPane.showMessageDialog(null,
+//						"Successfully generated in-memory EXPRESS OWL file");
+//			}
+//		});
+//		menu.add(menuItem);	
+//
+//		menuItem = new JMenuItem("Save expressOWL...", KeyEvent.VK_S);
+//		menuItem.setEnabled(false);
+//		menuItem.getAccessibleContext().setAccessibleDescription(
+//				"Save expressOWL ontology in file system (TTL, RDF/XML, N-3, ...)");
+//		menuItem.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent actionEvent) {
+//				//JOptionPane.showMessageDialog(null,
+//				//		"You selected: Save Full IFC as RDF graph...");
+//			}
+//		});
+//		menu.add(menuItem);
 
 		menuBar.add(menu);
 		return menuBar;

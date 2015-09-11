@@ -417,21 +417,30 @@ public class ExpressReader {
 				prop.setMaxCardinality_listoflist(attr.getMaxCard_listoflist());
 				prop.setOptional(attr.isOptional());
 
-				if(type_name.equalsIgnoreCase("NUMBER") || type_name.equalsIgnoreCase("REAL") || 
-						type_name.equalsIgnoreCase("INTEGER") || type_name.equalsIgnoreCase("LOGICAL") || 
-						type_name.equalsIgnoreCase("BOOLEAN") || type_name.equalsIgnoreCase("STRING") || 
-						type_name.equalsIgnoreCase("BINARY")){
-					prop.setRangeNS("express");
-					attr.setRangeNS("express");
-				}
-				else if(attr.isListOfList() || attr.isArray() || (attr.isList() && !attr.isSet())){
-					prop.setRangeNS("express");
-					attr.setRangeNS("express");
-				}
-				else {
+				if(type_name.startsWith("Ifc")){
 					prop.setRangeNS("ifc");
 					attr.setRangeNS("ifc");
 				}
+				else {
+					prop.setRangeNS("express");
+					attr.setRangeNS("express");
+				}
+
+//				if(type_name.equalsIgnoreCase("NUMBER") || type_name.equalsIgnoreCase("REAL") || 
+//						type_name.equalsIgnoreCase("INTEGER") || type_name.equalsIgnoreCase("LOGICAL") || 
+//						type_name.equalsIgnoreCase("BOOLEAN") || type_name.equalsIgnoreCase("STRING") || 
+//						type_name.equalsIgnoreCase("BINARY")){
+//					prop.setRangeNS("express");
+//					attr.setRangeNS("express");
+//				}
+//				else if(attr.isListOfList() || attr.isArray() || (attr.isList() && !attr.isSet())){
+//					prop.setRangeNS("express");
+//					attr.setRangeNS("express");
+//				}
+//				else {
+//					prop.setRangeNS("ifc");
+//					attr.setRangeNS("ifc");
+//				}
 
 				if (type_primaryType.equalsIgnoreCase("enumeration"))
 					prop.setType(PropertyVO.propertyType.TypeVO);
