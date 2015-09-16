@@ -5,7 +5,9 @@
 
 
 /*
- * to compile this, install http://www.eclipse.org/efxclipse/index.html
+ * To compile this, Java 8 is needed. jfxrt.jar is included, so, the the plugin should not be mandatory
+ * but installing the http://www.eclipse.org/efxclipse/index.html and http://gluonhq.com/open-source/scene-builder/
+ * make coding easier. 
  * 
  */
 

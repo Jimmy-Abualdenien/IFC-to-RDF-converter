@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
 <?import java.lang.*?>
@@ -17,10 +18,19 @@
           <items>
                   <Menu mnemonicParsing="false" text="Express to OWL">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015" />
-                        <MenuItem disable="true" mnemonicParsing="false" text="Open as AUTCON2015" />
+                      <MenuItem mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
+                        <MenuItem disable="true" mnemonicParsing="false" text="Open as AUTCON2015">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL" />
+                  <MenuItem mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" visible="false" />
                         <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC2X3_TC1.exp" visible="false" />
                         <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC2X3_Final.exp" visible="false" />
