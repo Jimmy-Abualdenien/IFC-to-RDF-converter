@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.geometry.*?>
@@ -18,7 +19,7 @@
           <items>
                   <Menu mnemonicParsing="false" text="Express to OWL">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015">
+                      <MenuItem fx:id="openLDAC2015Version" mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
@@ -27,7 +28,7 @@
                               <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL">
+                  <MenuItem fx:id="saveIfcOWL" mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
@@ -40,7 +41,10 @@
                     </items>
                   </Menu>
             <SeparatorMenuItem mnemonicParsing="false" />
-            <MenuItem mnemonicParsing="false" onAction="#closeApplicationAction" text="Quit" />
+            <MenuItem mnemonicParsing="false" onAction="#closeApplicationAction" text="Quit">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Q" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
           </items>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
@@ -50,7 +54,22 @@
         </Menu>
       </menus>
     </MenuBar>
-    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="375.0" prefWidth="640.0" VBox.vgrow="ALWAYS" />
+    <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="375.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" height="200.0" layoutX="14.0" layoutY="8.0" stroke="BLACK" strokeType="INSIDE" width="200.0">
+               <fill>
+                  <LinearGradient endX="1.0" endY="1.0">
+                     <stops>
+                        <Stop color="#93c2ee" />
+                        <Stop color="WHITE" offset="1.0" />
+                     </stops>
+                  </LinearGradient>
+               </fill>
+            </Rectangle>
+            <Button accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="24.0" layoutY="42.0" mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015" />
+            <Text layoutX="24.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Handle Ontologies" />
+            <Button accessibleHelp="Save ifcOWL ontology in file system (TTL, RDF/XML, N-3, ...)" layoutX="24.0" layoutY="83.0" mnemonicParsing="false" onAction="#saveIfcOWL" text="Save expressOWL..." />
+         </children></AnchorPane>
     
     
   </children>

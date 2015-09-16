@@ -45,12 +45,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class IFC2RDFController implements Initializable {
+public class IFC2RDFController implements Initializable {	
 	@FXML
 	MenuBar myMenuBar;
+	
+	@FXML
+	MenuItem openLDAC2015Version;
+	@FXML
+	MenuItem saveIfcOWL;
+	
+	
 	private static ExpressReader er;
 	private static String ontologyNamespace;
 
@@ -104,7 +112,7 @@ public class IFC2RDFController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-		// TODO
+		//openLDAC2015Version.   //setAccessibleDescription("Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015");
 	}
 
 	@FXML
