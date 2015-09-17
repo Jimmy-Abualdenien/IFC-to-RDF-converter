@@ -1,14 +1,11 @@
 package org.bimserver.serializers.ifctordf;
 
 import java.io.File;
-<<<<<<< HEAD
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-=======
->>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 import java.util.Set;
 
 import org.bimserver.emf.Schema;
@@ -20,8 +17,6 @@ import org.bimserver.plugins.renderengine.RenderEngineException;
 import org.bimserver.plugins.schema.SchemaPlugin;
 import org.bimserver.plugins.serializers.AbstractSerializerPlugin;
 import org.bimserver.plugins.serializers.Serializer;
-
-<<<<<<< HEAD
 import org.buildingsmart.ExpressReader;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -29,21 +24,15 @@ import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-=======
->>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 
 	private boolean initialized;
 	private File schemaFile;
-<<<<<<< HEAD
 	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"+timeLog+"#";
 	private OntModel om;
 	private ExpressReader er;
-	
-=======
-
->>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
+		
 	@Override
 	public void init(PluginManager pluginManager) throws PluginException {
 		SchemaPlugin schemaPlugin = pluginManager.getFirstSchemaPlugin("ifc2x3tc1", true);
@@ -51,7 +40,6 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 		if (schemaFile == null) {
 			throw new RenderEngineException("No schema file");
 		}
-<<<<<<< HEAD
 		
 		om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		try {
@@ -82,9 +70,6 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-=======
-		initialized = true;
->>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 	}
 
 	@Override
@@ -114,11 +99,7 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 
 	@Override
 	public Serializer createSerializer(PluginConfiguration plugin) {
-<<<<<<< HEAD
 		return new IfcToRdfSerializer(om, er);
-=======
-		return new IfcToRdfSerializer(schemaFile);
->>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 	}
 
 	@Override
