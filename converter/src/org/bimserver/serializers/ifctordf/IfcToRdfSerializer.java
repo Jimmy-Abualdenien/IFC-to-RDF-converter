@@ -1,5 +1,6 @@
 package org.bimserver.serializers.ifctordf;
 
+<<<<<<< HEAD
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,6 +12,15 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Iterator;
+=======
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.SQLException;
+>>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 
 import org.bimserver.plugins.serializers.EmfSerializer;
 import org.bimserver.plugins.serializers.ProgressReporter;
@@ -18,6 +28,7 @@ import org.bimserver.plugins.serializers.Serializer;
 import org.bimserver.plugins.serializers.SerializerException;
 import org.bimserver.plugins.serializers.SerializerPlugin;
 import org.bimserver.plugins.serializers.StagingProgressReporter;
+<<<<<<< HEAD
 import org.buildingsmart.ExpressReader;
 import org.buildingsmart.IfcConvertor;
 import org.slf4j.Logger;
@@ -37,11 +48,21 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 	private OntModel ontModel;
 	private ExpressReader expressReader;
+=======
+
+import fi.ni.ExpressReader;
+import fi.ni.IFC_ClassModel;
+
+public class IfcToRdfSerializer extends EmfSerializer {
+
+	private File expressFile;
+>>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 
 	@Override
 	public void reset() {
 	}
 
+<<<<<<< HEAD
 	public IfcToRdfSerializer(OntModel ontModel, ExpressReader expressReader) {
 		this.ontModel = ontModel;
 		this.expressReader = expressReader;
@@ -51,6 +72,15 @@ public class IfcToRdfSerializer extends EmfSerializer {
 	protected boolean write(OutputStream outputStream, ProgressReporter progressReporter) throws SerializerException {
 		// Quite inefficient, first write the model to IFC (byte buffer), then
 		// call the IfcToRdf code
+=======
+	public IfcToRdfSerializer(File expressFile) {
+		this.expressFile = expressFile;
+	}
+	
+	@Override
+	protected boolean write(OutputStream outputStream, ProgressReporter progressReporter) throws SerializerException {
+		// Quite inefficient, first write the model to IFC (byte buffer), then call the IfcToRdf code
+>>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 
 		SerializerPlugin serializerPlugin = getPluginManager().getSerializerPlugin("org.bimserver.ifc.step.serializer.Ifc2x3tc1StepSerializerPlugin", true);
 		Serializer serializer = serializerPlugin.createSerializer(null);
@@ -60,6 +90,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		serializer.writeToOutputStream(outputStream2, halvingProgressReporter);
 		halvingProgressReporter.incStage();
 		InputStream inputStream = new ByteArrayInputStream(outputStream2.toByteArray());
+<<<<<<< HEAD
 
 		long t0 = System.currentTimeMillis();
 
@@ -91,6 +122,24 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 		long t1 = System.currentTimeMillis();
 		LOGGER.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+=======
+		String fileName = "test.ifc";
+		ExpressReader er = new ExpressReader(expressFile.getAbsolutePath());
+		IFC_ClassModel model = new IFC_ClassModel(fileName, inputStream, er.getEntities(), er.getTypes(), "model name");
+		try {
+			model.listRDF(outputStream, "ifc", null, halvingProgressReporter);
+		} catch (IOException e) {
+			throw new SerializerException(e);
+		} catch (SQLException e) {
+			throw new SerializerException(e);
+		} finally {
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				throw new SerializerException(e);
+			}
+		}
+>>>>>>> cfbde0d7deda287d81177ad9d10737b5b3a1a78a
 		return false;
 	}
 }
