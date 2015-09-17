@@ -1197,8 +1197,8 @@ public class OWLWriter {
 				+ "\tdce:language \"en\" ; \r\n"
 				+ "\tvann:preferredNamespacePrefix \"ifc\" ; \r\n"
 				+ "\tvann:preferredNamespaceUri \""+Namespace.IFC+"\" ; \r\n"
-				+ "\towl:imports <http://www.co-ode.org/ontologies/lists/2008/09/11/list.owl> ; \r\n"
-				+ "\towl:imports <http://purl.org/vocab/express> ; \r\n"
+				+ "\towl:imports <http://owl.cs.manchester.ac.uk/wp-content/uploads/2015/07/list.owl_.txt> ; \r\n"
+				+ "\towl:imports <http://users.ugent.be/~pipauwel/ontologies/express/20150917/express.owl> ; \r\n"
 				+ "\tcc:license <http://creativecommons.org/licenses/by/3.0/> . \r\n\r\n";
 		
 		s += "dce:creator \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
