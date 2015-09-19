@@ -3,6 +3,7 @@ package org.buildingsmart;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -12,8 +13,16 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import net.sf.json.JSONObject;
 
@@ -63,14 +72,33 @@ public class IfcReader {
 			.format(Calendar.getInstance().getTime());
 	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/resources"
 			+ timeLog + "/";
-
+	public static Logger logger;
+	public static boolean logToFile = false;
+	
 	/**
 	 * @param args
 	 *            filePath schemaname
 	 */
 	public static void main(String[] args) {
-		//TODO: only IFC4_ADD1, IFC4, IFC2X3_TC1, and IFC2X3_Final files should be accepted, nothing else
-		if (args.length != 2) {
+		if(args[0].equalsIgnoreCase("LOG") && args[1].equalsIgnoreCase("DIR") && args.length == 3){
+			//do not give too many files to the machine!!!!
+			logToFile = true;			
+			List<String> files = showFiles(args[2]);			
+			for(String f : files){
+				if(f.endsWith(".ifc")){
+					System.out.println("Converting file : " + f);
+					setupLogger(f);
+					String path = f.substring(0,f.length()-4);
+					convert(path+".ifc", path+".ttl", DEFAULT_PATH);
+				}
+			}
+		}
+		else if(args[0].equalsIgnoreCase("LOG") && args.length == 3){
+			logToFile = true;
+			setupLogger(args[2]);
+			convert(args[1], args[2], DEFAULT_PATH);
+		}
+		else if (args.length != 2) {
 			System.out
 					.println("Usage: java IfcReader ifc_filename output_filename \nExample: java IfcReader C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
 			for (int i = 0; i < args.length; i++) {
@@ -94,6 +122,24 @@ public class IfcReader {
 				}
 			}
 		}
+	}
+	
+	private static void setupLogger(String path){	
+		String outputFile = path.substring(0,path.length()-4) + ".log";
+		
+		logger = Logger.getLogger("MyLog");  
+	    FileHandler fh;  
+	
+	    try {
+	        fh = new FileHandler(outputFile);  
+	        logger.addHandler(fh);
+	        be.ugent.BriefFormatter formatter = new be.ugent.BriefFormatter();  
+	        fh.setFormatter(formatter);	
+	    } catch (SecurityException e) {  
+	        e.printStackTrace();  
+	    } catch (IOException e) {  
+	        e.printStackTrace();  
+	    }
 	}
 
 	public static void convert(String jsonConfig) {
@@ -206,6 +252,7 @@ public class IfcReader {
 			}
 			long t1 = System.currentTimeMillis();
 			System.out.println("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+			if(IfcReader.logToFile) IfcReader.logger.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
 		} else {
 			System.out
 					.println("No ontologyModel or instanceModel found -> no files generated.");
@@ -270,9 +317,11 @@ public class IfcReader {
 			}
 			long t1 = System.currentTimeMillis();
 			System.out.println("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+			if(IfcReader.logToFile) IfcReader.logger.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
 		} else {
 			System.out
 					.println("No ontologyModel or instanceModel found -> no files generated.");
+			if(IfcReader.logToFile) IfcReader.logger.info("No ontologyModel or instanceModel found -> no files generated.");
 		}
 		return model;
 	}
@@ -290,10 +339,12 @@ public class IfcReader {
 		if (validity.isValid()) {
 			System.out
 					.println("generated RDF graph is OK! Writing TTL and RDF file...");
+			if(IfcReader.logToFile) IfcReader.logger.info("generated RDF graph is OK! Writing TTL and RDF file...");
 			valid = true;
 		} else {
 			System.out
 					.println("generated RDF model contains conflicts. No TTL or RDF file produced.");
+			if(IfcReader.logToFile) IfcReader.logger.info("generated RDF model contains conflicts. No TTL or RDF file produced.");
 			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
 				System.out.println(" - " + i.next());
 			}
@@ -342,4 +393,29 @@ public class IfcReader {
 			e.printStackTrace();
 		}
 	}
+	
+	public static List<String> showFiles(String dir) {
+		List<String> goodFiles = new ArrayList<String>();
+		
+		File folder = new File(dir);
+		File[] listOfFiles = folder.listFiles();
+		
+		for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile()) {
+		    	  goodFiles.add(listOfFiles[i].getAbsolutePath());
+		      } else if (listOfFiles[i].isDirectory()) {
+//		        System.out.println("Directory " + listOfFiles[i].getName());
+		      }
+		    }
+		
+//	    for (File file : files) {
+//	        if (file.isDirectory()) {
+//	        	goodFiles.addAll(showFiles(file.getAbsolutePath())); // Calls same method again.
+//	        } else {
+//	        	goodFiles.add(file.getAbsolutePath());
+//	        }
+//	    }
+	    return goodFiles;
+	}
+	
 }
