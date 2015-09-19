@@ -61,7 +61,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		long t0 = System.currentTimeMillis();
 
 		IfcConvertor conv = new IfcConvertor(ontModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
-				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#");
+				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
 		Model model = conv.parseModel();
 
 		InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);

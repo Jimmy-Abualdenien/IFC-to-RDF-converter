@@ -69,6 +69,7 @@ public class IfcReaderStream {
 	 *            filePath schemaname
 	 */
 	public static void main(String[] args) {
+		//TODO: only IFC4_ADD1, IFC4, IFC2X3_TC1, and IFC2X3_Final files should be accepted, nothing else
 		if (args.length != 2) {
 			System.out
 					.println("Usage: java IfcReader ifc_filename output_filename \nExample: java IfcReaderStream C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
@@ -118,8 +119,8 @@ public class IfcReaderStream {
 								return "IFC2X3_TC1";
 							if (strLine.indexOf("IFC4") != -1)
 								return "IFC4_ADD1";
-							if (strLine.indexOf("IFC2X2") != -1)
-								return "IFC2X2_ADD1";
+//							if (strLine.indexOf("IFC2X2") != -1)
+//								return "IFC2X2_ADD1";
 							else
 								return "";
 						}

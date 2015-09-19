@@ -143,7 +143,7 @@ public class ExpressReader {
 					System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
 					
 					//modify location when using
-					er.CleanModelAndRewrite("out\\" + in);
+					//er.CleanModelAndRewrite("out\\" + in);
 					
 				} catch (Exception e) {
 					e.printStackTrace();

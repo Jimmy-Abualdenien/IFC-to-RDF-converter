@@ -69,6 +69,7 @@ public class IfcReader {
 	 *            filePath schemaname
 	 */
 	public static void main(String[] args) {
+		//TODO: only IFC4_ADD1, IFC4, IFC2X3_TC1, and IFC2X3_Final files should be accepted, nothing else
 		if (args.length != 2) {
 			System.out
 					.println("Usage: java IfcReader ifc_filename output_filename \nExample: java IfcReader C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
@@ -120,8 +121,8 @@ public class IfcReader {
 								return "IFC2X3_TC1";
 							if (strLine.indexOf("IFC4") != -1)
 								return "IFC4_ADD1";
-							if (strLine.indexOf("IFC2X2") != -1)
-								return "IFC2X2_ADD1";
+//							if (strLine.indexOf("IFC2X2") != -1)
+//								return "IFC2X2_ADD1";
 							else
 								return "";
 						}
@@ -150,7 +151,6 @@ public class IfcReader {
 		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
-			//ifc_file.replaceAll(".", "");
 			ifc_file += ".ifc";
 		}
 
@@ -169,6 +169,7 @@ public class IfcReader {
 		InputStream in = null;
 		InputStream expin = null;
 		try {
+//			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF); //this takes a LOT more time (like 30 times as much for a simple model)
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			in = IfcReader.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".ttl");
 			om.read(in, null, "TTL");
@@ -178,7 +179,7 @@ public class IfcReader {
 			er.readAndBuildVersion2015();
 
 			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
-					ifc_file), baseURI);
+					ifc_file), baseURI, exp);
 			model = conv.parseModel();
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
@@ -242,7 +243,7 @@ public class IfcReader {
 			er.readAndBuildVersion2015();
 
 			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
-					ifc_file), baseURI);
+					ifc_file), baseURI, exp);
 			model = conv.parseModel();
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();

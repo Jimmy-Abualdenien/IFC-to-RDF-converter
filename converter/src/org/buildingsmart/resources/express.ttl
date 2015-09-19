@@ -1,0 +1,553 @@
+@prefix : <http://purl.org/vocab/express#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix list: <http://www.co-ode.org/ontologies/list.owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix vann: <http://purl.org/vocab/vann/> .
+@prefix express: <http://purl.org/vocab/express#> .
+@base <http://purl.org/vocab/express> .
+
+<http://purl.org/vocab/express> rdf:type owl:Ontology ;
+                                
+                                dc:creator "Pieter Pauwels (pipauwel.pauwels@ugent.be)" ;
+                                
+                                rdfs:comment "Serialized using C++ RDF library by Walter Terkaj (ITIA-CNR, walter.terkaj@itia.cnr.it) based on Redland API C library. Fri Sep 11 17:28:57 2015" ,
+                                             "Ontology automatically generated using 'genOnto' converter developed by Walter Terkaj (ITIA-CNR, walter.terkaj@itia.cnr.it) with revision support from Pieter Pauwels (pipauwel.pauwels@ugent.be)" ;
+                                
+                                vann:preferredNamespaceUri "http://purl.org/vocab/express" ;
+                                
+                                dc:title "EXPRESS" ;
+                                
+                                dc:description "OWL ontology for EXPRESS concepts" ;
+                                
+                                dc:creator "Walter Terkaj (walter.terkaj@itia.cnr.it)" ;
+                                
+                                dc:language "en" ;
+                                
+                                vann:preferredNamespacePrefix "express" ;
+                                
+                                cc:license <http://creativecommons.org/licenses/by/3.0/> ;
+                                
+                                owl:imports <http://owl.cs.manchester.ac.uk/wp-content/uploads/2015/07/list.owl_.txt> .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://purl.org/dc/elements/1.1/contributor
+
+dc:contributor rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/elements/1.1/creator
+
+dc:creator rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/elements/1.1/date
+
+dc:date rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/elements/1.1/description
+
+dc:description rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/elements/1.1/identifier
+
+dc:identifier rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/elements/1.1/language
+
+dc:language rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/elements/1.1/title
+
+dc:title rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://purl.org/vocab/express#hasLogical
+
+:hasLogical rdf:type owl:FunctionalProperty ,
+                     owl:ObjectProperty ;
+            
+            rdfs:label "hasLogical" ;
+            
+            rdfs:domain :LOGICAL ;
+            
+            rdfs:range :LogicalEnum .
+
+
+
+###  http://purl.org/vocab/express#hasSet
+
+:hasSet rdf:type owl:ObjectProperty ;
+        
+        rdfs:label "hasSet" .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://purl.org/vocab/express#hasBoolean
+
+:hasBoolean rdf:type owl:DatatypeProperty ,
+                     owl:FunctionalProperty ;
+            
+            rdfs:label "hasBoolean" ;
+            
+            rdfs:range xsd:boolean ;
+            
+            rdfs:domain [ rdf:type owl:Class ;
+                          owl:unionOf ( :BOOLEAN
+                                      )
+                        ] .
+
+
+
+###  http://purl.org/vocab/express#hasDouble
+
+:hasDouble rdf:type owl:DatatypeProperty ,
+                    owl:FunctionalProperty ;
+           
+           rdfs:label "hasDouble" ;
+           
+           rdfs:range xsd:double ;
+           
+           rdfs:domain [ rdf:type owl:Class ;
+                         owl:unionOf ( :NUMBER
+                                       :REAL
+                                     )
+                       ] .
+
+
+
+###  http://purl.org/vocab/express#hasHexBinary
+
+:hasHexBinary rdf:type owl:DatatypeProperty ,
+                       owl:FunctionalProperty ;
+              
+              rdfs:label "hasHexBinary" ;
+              
+              rdfs:range xsd:hexBinary ;
+              
+              rdfs:domain [ rdf:type owl:Class ;
+                            owl:unionOf ( :BINARY
+                                        )
+                          ] .
+
+
+
+###  http://purl.org/vocab/express#hasInteger
+
+:hasInteger rdf:type owl:DatatypeProperty ,
+                     owl:FunctionalProperty ;
+            
+            rdfs:label "hasInteger" ;
+            
+            rdfs:range xsd:integer ;
+            
+            rdfs:domain [ rdf:type owl:Class ;
+                          owl:unionOf ( :INTEGER
+                                      )
+                        ] .
+
+
+
+###  http://purl.org/vocab/express#hasString
+
+:hasString rdf:type owl:DatatypeProperty ,
+                    owl:FunctionalProperty ;
+           
+           rdfs:label "hasString" ;
+           
+           rdfs:range xsd:string ;
+           
+           rdfs:domain [ rdf:type owl:Class ;
+                         owl:unionOf ( :STRING
+                                     )
+                       ] .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://purl.org/vocab/express#BINARY
+
+:BINARY rdf:type owl:Class ;
+        
+        rdfs:subClassOf [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasHexBinary ;
+                          owl:allValuesFrom xsd:hexBinary
+                        ] .
+
+
+
+###  http://purl.org/vocab/express#BINARY_EmptyList
+
+:BINARY_EmptyList rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :BINARY_List ,
+                                  list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#BINARY_List
+
+:BINARY_List rdf:type owl:Class ;
+             
+             rdfs:subClassOf list:OWLList ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:hasContents ;
+                               owl:allValuesFrom :BINARY
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:isFollowedBy ;
+                               owl:allValuesFrom :BINARY_List
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:hasNext ;
+                               owl:allValuesFrom :BINARY_List
+                             ] .
+
+
+
+###  http://purl.org/vocab/express#BOOLEAN
+
+:BOOLEAN rdf:type owl:Class ;
+         
+         rdfs:subClassOf [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasBoolean ;
+                           owl:allValuesFrom xsd:boolean
+                         ] .
+
+
+
+###  http://purl.org/vocab/express#BOOLEAN_EmptyList
+
+:BOOLEAN_EmptyList rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :BOOLEAN_List ,
+                                   list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#BOOLEAN_List
+
+:BOOLEAN_List rdf:type owl:Class ;
+              
+              rdfs:subClassOf list:OWLList ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:hasNext ;
+                                owl:allValuesFrom :BOOLEAN_List
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:isFollowedBy ;
+                                owl:allValuesFrom :BOOLEAN_List
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:hasContents ;
+                                owl:allValuesFrom :BOOLEAN
+                              ] .
+
+
+
+###  http://purl.org/vocab/express#ENUMERATION
+
+:ENUMERATION rdf:type owl:Class .
+
+
+
+###  http://purl.org/vocab/express#INTEGER
+
+:INTEGER rdf:type owl:Class ;
+         
+         rdfs:subClassOf [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasInteger ;
+                           owl:allValuesFrom xsd:integer
+                         ] .
+
+
+
+###  http://purl.org/vocab/express#INTEGER_EmptyList
+
+:INTEGER_EmptyList rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :INTEGER_List ,
+                                   list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#INTEGER_List
+
+:INTEGER_List rdf:type owl:Class ;
+              
+              rdfs:subClassOf list:OWLList ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:hasContents ;
+                                owl:allValuesFrom :INTEGER
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:hasNext ;
+                                owl:allValuesFrom :INTEGER_List
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:isFollowedBy ;
+                                owl:allValuesFrom :INTEGER_List
+                              ] .
+
+
+
+###  http://purl.org/vocab/express#LOGICAL
+
+:LOGICAL rdf:type owl:Class ;
+         
+         rdfs:subClassOf [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasLogical ;
+                           owl:allValuesFrom :LogicalEnum
+                         ] .
+
+
+
+###  http://purl.org/vocab/express#LOGICAL_EmptyList
+
+:LOGICAL_EmptyList rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :LOGICAL_List ,
+                                   list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#LOGICAL_List
+
+:LOGICAL_List rdf:type owl:Class ;
+              
+              rdfs:subClassOf list:OWLList ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:hasNext ;
+                                owl:allValuesFrom :LOGICAL_List
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:hasContents ;
+                                owl:allValuesFrom :LOGICAL
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty list:isFollowedBy ;
+                                owl:allValuesFrom :LOGICAL_List
+                              ] .
+
+
+
+###  http://purl.org/vocab/express#LogicalEnum
+
+:LogicalEnum rdf:type owl:Class ;
+             
+             rdfs:subClassOf :ENUMERATION .
+
+
+
+###  http://purl.org/vocab/express#NUMBER
+
+:NUMBER rdf:type owl:Class ;
+        
+        rdfs:subClassOf [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasDouble ;
+                          owl:allValuesFrom xsd:double
+                        ] .
+
+
+
+###  http://purl.org/vocab/express#NUMBER_EmptyList
+
+:NUMBER_EmptyList rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :NUMBER_List ,
+                                  list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#NUMBER_List
+
+:NUMBER_List rdf:type owl:Class ;
+             
+             rdfs:subClassOf list:OWLList ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:hasContents ;
+                               owl:allValuesFrom :NUMBER
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:hasNext ;
+                               owl:allValuesFrom :NUMBER_List
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:isFollowedBy ;
+                               owl:allValuesFrom :NUMBER_List
+                             ] .
+
+
+
+###  http://purl.org/vocab/express#REAL
+
+:REAL rdf:type owl:Class ;
+      
+      rdfs:subClassOf [ rdf:type owl:Restriction ;
+                        owl:onProperty :hasDouble ;
+                        owl:allValuesFrom xsd:double
+                      ] .
+
+
+
+###  http://purl.org/vocab/express#REAL_EmptyList
+
+:REAL_EmptyList rdf:type owl:Class ;
+                
+                rdfs:subClassOf :REAL_List ,
+                                list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#REAL_List
+
+:REAL_List rdf:type owl:Class ;
+           
+           rdfs:subClassOf list:OWLList ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty list:isFollowedBy ;
+                             owl:allValuesFrom :REAL_List
+                           ] ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty list:hasContents ;
+                             owl:allValuesFrom :REAL
+                           ] ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty list:hasNext ;
+                             owl:allValuesFrom :REAL_List
+                           ] .
+
+
+
+###  http://purl.org/vocab/express#SELECT
+
+:SELECT rdf:type owl:Class .
+
+
+
+###  http://purl.org/vocab/express#STRING
+
+:STRING rdf:type owl:Class ;
+        
+        rdfs:subClassOf [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasString ;
+                          owl:allValuesFrom xsd:string
+                        ] .
+
+
+
+###  http://purl.org/vocab/express#STRING_EmptyList
+
+:STRING_EmptyList rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :STRING_List ,
+                                  list:EmptyList .
+
+
+
+###  http://purl.org/vocab/express#STRING_List
+
+:STRING_List rdf:type owl:Class ;
+             
+             rdfs:subClassOf list:OWLList ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:hasNext ;
+                               owl:allValuesFrom :STRING_List
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:isFollowedBy ;
+                               owl:allValuesFrom :STRING_List
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty list:hasContents ;
+                               owl:allValuesFrom :STRING
+                             ] .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://purl.org/vocab/express#FALSE
+
+:FALSE rdf:type :LogicalEnum ,
+                owl:NamedIndividual ;
+       
+       rdfs:label "FALSE" .
+
+
+
+###  http://purl.org/vocab/express#TRUE
+
+:TRUE rdf:type :LogicalEnum ,
+               owl:NamedIndividual ;
+      
+      rdfs:label "TRUE" .
+
+
+
+###  http://purl.org/vocab/express#UNKNOWN
+
+:UNKNOWN rdf:type :LogicalEnum ,
+                  owl:NamedIndividual ;
+         
+         rdfs:label "UNKNOWN" .
+
+
+
+
+###  Generated by the OWL API (version 3.4.5-SNAPSHOT) http://owlapi.sourceforge.net
