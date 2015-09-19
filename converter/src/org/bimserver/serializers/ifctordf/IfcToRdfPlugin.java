@@ -18,6 +18,8 @@ import org.bimserver.plugins.schema.SchemaPlugin;
 import org.bimserver.plugins.serializers.AbstractSerializerPlugin;
 import org.bimserver.plugins.serializers.Serializer;
 import org.buildingsmart.ExpressReader;
+import org.buildingsmart.IfcConvertor;
+import org.buildingsmart.IfcReader;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -55,13 +57,7 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 				throw new PluginException(expPath + " not found");
 			}
 			
-			om.read(in,null,"TTL");
-			
-			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL";
-			String ontNS = ontURI + "#";			
-			Model im = ModelFactory.createDefaultModel();
-			im.setNsPrefix("ifcowl", ontNS);
-			im.setNsPrefix("inst", DEFAULT_PATH);			
+			om.read(in,null,"TTL");					
 			
 			er = new ExpressReader(inexp);
 			er.readAndBuildVersion2015();

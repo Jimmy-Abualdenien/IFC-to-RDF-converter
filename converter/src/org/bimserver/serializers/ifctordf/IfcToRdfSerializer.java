@@ -3,6 +3,7 @@ package org.bimserver.serializers.ifctordf;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -63,7 +64,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		IfcConvertor conv = new IfcConvertor(ontModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
 				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
 		Model model = conv.parseModel();
-
+		
 		InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
 		ValidityReport validity = infModel.validate();
 		if (!validity.isValid()) {
