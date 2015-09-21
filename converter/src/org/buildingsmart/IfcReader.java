@@ -221,20 +221,20 @@ public class IfcReader {
 		try {
 //			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF); //this takes a LOT more time (like 30 times as much for a simple model)
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			in = IfcReader.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".ttl");
+			in = IfcReader.class.getResourceAsStream("/data/org/buildingsmart/resources/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertor.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".exp");
+			expin = IfcConvertor.class.getResourceAsStream("/data/org/buildingsmart/resources/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			String expresTtl = "/org/buildingsmart/resources/express.ttl";
+			String expresTtl = "/data/org/buildingsmart/resources/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/org/buildingsmart/resources/list.rdf";
+			String rdfList = "/data/org/buildingsmart/resources/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -306,13 +306,13 @@ public class IfcReader {
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			String expresTtl = "/org/buildingsmart/resources/express.ttl";
+			String expresTtl = "/data/org/buildingsmart/resources/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/org/buildingsmart/resources/list.rdf";
+			String rdfList = "/data/org/buildingsmart/resources/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);

@@ -3,6 +3,7 @@ package org.bimserver.serializers.ifctordf;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -20,6 +21,8 @@ import org.bimserver.plugins.serializers.Serializer;
 import org.buildingsmart.ExpressReader;
 import org.buildingsmart.IfcConvertor;
 import org.buildingsmart.IfcReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -28,6 +31,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(IfcToRdfPlugin.class);
 	private boolean initialized;
 	private File schemaFile;
 	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
@@ -45,47 +49,40 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 			throw new RenderEngineException("No schema file");
 		}
 		
-		om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		try {
-			String ttlPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.ttl";
-			InputStream in = pluginManager.getPluginContext(this).getResourceAsInputStream(ttlPath);
-			if (in == null) {
-				throw new PluginException(ttlPath + " not found");
-			}
+			om = loadModel(pluginManager, "/data/org/buildingsmart/resources/IFC2X3_TC1.ttl", "TTL");
+			expressModel = loadModel(pluginManager, "/data/org/buildingsmart/resources/express.ttl", "TTL");
+			listModel = loadModel(pluginManager, "/data/org/buildingsmart/resources/list.rdf", "RDF/XML");
 			
-			String expPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.exp";
-			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
+
+			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream("/data/org/buildingsmart/resources/IFC2X3_TC1.exp");
 			if (inexp == null) {
-				throw new PluginException(expPath + " not found");
-			}
-			
-			String expresTtl = "/src/org/buildingsmart/resources/express.ttl";
-			InputStream expresTtlStream = pluginManager.getPluginContext(this).getResourceAsInputStream(expresTtl);
-			if (expresTtlStream == null) {
-				throw new PluginException(expresTtl + " not found");
+				throw new PluginException("/data/org/buildingsmart/resources/IFC2X3_TC1.exp" + " not found");
 			}
 
-			expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			expressModel.read(expresTtlStream, null, "TTL");
-			
-			String rdfList = "/src/org/buildingsmart/resources/list.rdf";
-			InputStream rdfListStream = pluginManager.getPluginContext(this).getResourceAsInputStream(rdfList);
-			if (rdfListStream == null) {
-				throw new PluginException(rdfList + " not found");
-			}
-
-			listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			listModel.read(rdfListStream, null, "RDF/XML");
-			
-			om.read(in,null,"TTL");					
-			
 			er = new ExpressReader(inexp);
 			er.readAndBuildVersion2015();
 
 			initialized = true;
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			LOGGER.error("", e);
+		} catch (IOException e) {
+			LOGGER.error("", e);
 		}
+	}
+
+	private OntModel loadModel(PluginManager pluginManager, String expPath, String type) throws IOException {
+		OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+		InputStream inputStream = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
+		if (inputStream == null) {
+			throw new FileNotFoundException(expPath);
+		}
+		try {
+			expressModel.read(inputStream, null, type);
+		} finally {
+			inputStream.close();
+		}
+		return expressModel;
 	}
 
 	@Override
