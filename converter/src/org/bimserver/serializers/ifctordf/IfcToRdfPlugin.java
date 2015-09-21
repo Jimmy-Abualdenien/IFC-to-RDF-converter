@@ -50,14 +50,14 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 		}
 		
 		try {
-			om = loadModel(pluginManager, "/data/org/buildingsmart/resources/IFC2X3_TC1.ttl", "TTL");
-			expressModel = loadModel(pluginManager, "/data/org/buildingsmart/resources/express.ttl", "TTL");
-			listModel = loadModel(pluginManager, "/data/org/buildingsmart/resources/list.rdf", "RDF/XML");
-			
+			om = loadModel(pluginManager, "/data/IFC2X3_TC1.ttl", "TTL");
+			expressModel = loadModel(pluginManager, "/data/express.ttl", "TTL");
+			listModel = loadModel(pluginManager, "/data/list.rdf", "RDF/XML");
 
-			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream("/data/org/buildingsmart/resources/IFC2X3_TC1.exp");
+			String expPath = "/data/IFC2X3_TC1.exp";
+			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
 			if (inexp == null) {
-				throw new PluginException("/data/org/buildingsmart/resources/IFC2X3_TC1.exp" + " not found");
+				throw new PluginException(expPath + " not found");
 			}
 
 			er = new ExpressReader(inexp);
