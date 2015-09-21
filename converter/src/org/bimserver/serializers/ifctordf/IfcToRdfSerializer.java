@@ -3,7 +3,6 @@ package org.bimserver.serializers.ifctordf;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,12 +37,18 @@ public class IfcToRdfSerializer extends EmfSerializer {
 	private OntModel ontModel;
 	private ExpressReader expressReader;
 
+	private OntModel expressModel;
+
+	private OntModel listModel;
+
 	@Override
 	public void reset() {
 	}
 
-	public IfcToRdfSerializer(OntModel ontModel, ExpressReader expressReader) {
+	public IfcToRdfSerializer(OntModel ontModel, OntModel expressModel, OntModel listModel, ExpressReader expressReader) {
 		this.ontModel = ontModel;
+		this.expressModel = expressModel;
+		this.listModel = listModel;
 		this.expressReader = expressReader;
 	}
 
@@ -62,7 +67,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 		long t0 = System.currentTimeMillis();
 
-		IfcConvertor conv = new IfcConvertor(ontModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
+		IfcConvertor conv = new IfcConvertor(ontModel, expressModel, listModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
 				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
 		Model model;
 		try {

@@ -18,9 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import net.sf.json.JSONObject;
 
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
@@ -30,6 +27,8 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.ValidityReport;
 import com.hp.hpl.jena.reasoner.ValidityReport.Report;
+
+import net.sf.json.JSONObject;
 
 /*
  * IFCtoRDFConverter is the final interface for this code. Through this class, one is able to submit an IFC file and the EXPRESS schema it follows so that
@@ -229,8 +228,19 @@ public class IfcReader {
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
-					ifc_file), baseURI, exp);
+			String expresTtl = "/org/buildingsmart/resources/express.ttl";
+			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
+
+			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
+			
+			String rdfList = "/org/buildingsmart/resources/list.rdf";
+			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
+
+			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
+			
+			IfcConvertor conv = new IfcConvertor(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
 			conv.setIfcReader(this);
 			model = conv.parseModel();
 		} catch (FileNotFoundException e1) {
@@ -296,8 +306,19 @@ public class IfcReader {
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
-					ifc_file), baseURI, exp);
+			String expresTtl = "/org/buildingsmart/resources/express.ttl";
+			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
+
+			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
+			
+			String rdfList = "/org/buildingsmart/resources/list.rdf";
+			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
+
+			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
+			
+			IfcConvertor conv = new IfcConvertor(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
 			conv.setIfcReader(this);
 			model = conv.parseModel();
 		} catch (FileNotFoundException e1) {

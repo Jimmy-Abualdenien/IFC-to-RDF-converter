@@ -5,7 +5,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -15,13 +14,11 @@ import java.util.Stack;
 
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFCVO;
-import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.TypeVO;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.ontology.OntResource;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -93,18 +90,12 @@ public class IfcConvertor {
 	// Taking care of avoiding duplicate resources
 	private Map<String,Resource> resource_map=new HashMap<String,Resource>();  
 	
-	public IfcConvertor(OntModel ontModel, ExpressReader expressReader, InputStream inputStream, String baseURI, String exp){
+	public IfcConvertor(OntModel ontModel, OntModel expressModel, OntModel listModel, ExpressReader expressReader, InputStream inputStream, String baseURI, String exp){
 		this.ontModel = ontModel;
+		this.expressModel = expressModel;
+		this.listModel = listModel;
 		this.inputStream = inputStream;
 		this.baseURI = baseURI;
-		
-		this.expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		InputStream in = IfcReader.class.getResourceAsStream("/org/buildingsmart/resources/express.ttl");
-		this.expressModel.read(in, null, "TTL");
-		
-		this.listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		in = IfcReader.class.getResourceAsStream("/org/buildingsmart/resources/list.rdf");
-		this.listModel.read(in, null, "RDF/XML");
 		
 		//PREPARATION
 		ent = expressReader.getEntities();

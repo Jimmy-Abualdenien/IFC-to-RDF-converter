@@ -34,6 +34,8 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"+timeLog+"#";
 	private OntModel om;
 	private ExpressReader er;
+	private OntModel listModel;
+	private OntModel expressModel;
 		
 	@Override
 	public void init(PluginManager pluginManager) throws PluginException {
@@ -45,17 +47,35 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 		
 		om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 		try {
-			String ttlPath = "/org/buildingsmart/resources/IFC2X3_TC1.ttl";
+			String ttlPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.ttl";
 			InputStream in = pluginManager.getPluginContext(this).getResourceAsInputStream(ttlPath);
 			if (in == null) {
 				throw new PluginException(ttlPath + " not found");
 			}
 			
-			String expPath = "/org/buildingsmart/resources/IFC2X3_TC1.exp";
+			String expPath = "/src/org/buildingsmart/resources/IFC2X3_TC1.exp";
 			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
 			if (inexp == null) {
 				throw new PluginException(expPath + " not found");
 			}
+			
+			String expresTtl = "/src/org/buildingsmart/resources/express.ttl";
+			InputStream expresTtlStream = pluginManager.getPluginContext(this).getResourceAsInputStream(expresTtl);
+			if (expresTtlStream == null) {
+				throw new PluginException(expresTtl + " not found");
+			}
+
+			expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
+			
+			String rdfList = "/src/org/buildingsmart/resources/list.rdf";
+			InputStream rdfListStream = pluginManager.getPluginContext(this).getResourceAsInputStream(rdfList);
+			if (rdfListStream == null) {
+				throw new PluginException(rdfList + " not found");
+			}
+
+			listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
 			
 			om.read(in,null,"TTL");					
 			
@@ -95,7 +115,7 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 
 	@Override
 	public Serializer createSerializer(PluginConfiguration plugin) {
-		return new IfcToRdfSerializer(om, er);
+		return new IfcToRdfSerializer(om, expressModel, listModel, er);
 	}
 
 	@Override
