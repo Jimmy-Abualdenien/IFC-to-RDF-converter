@@ -46,13 +46,13 @@ public class About extends Stage
       Text msg1 = new Text("IFC-to-RDF GUI ");
       msg1.setFill(Color.WHITE);
       msg1.setFont(new Font("Arial", 16.0));
-      msg1.setX(iv.getX()+width);
+      msg1.setX(iv.getX()+width+5);
       msg1.setY(iv.getY()+height/2.0);
       root.getChildren().add(msg1);
       Text msg2 = new Text("by Jyrki Oraskari");
       msg2.setFill(Color.WHITE);
       msg2.setFont(new Font("Arial", 12.0));
-      msg2.setX(msg1.getX());
+      msg2.setX(msg1.getX()+5);
       msg2.setY(msg1.getY()+20.0);
       root.getChildren().add(msg2);
       Reflection r = new Reflection();
