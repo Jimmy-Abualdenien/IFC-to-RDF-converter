@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -14,16 +15,11 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
 import net.sf.json.JSONObject;
 
 import com.hp.hpl.jena.ontology.OntModel;
@@ -68,35 +64,44 @@ import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 
 public class IfcReader {
 
-	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
+	private String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
 			.format(Calendar.getInstance().getTime());
-	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/resources"
+	public final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/resources"
 			+ timeLog + "/";
-	public static Logger logger;
-	public static boolean logToFile = false;
+	//public Logger logger;
+	public boolean logToFile = false;
+	public BufferedWriter bw;
 	
 	/**
 	 * @param args
 	 *            filePath schemaname
+	 * @throws IOException 
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		if(args[0].equalsIgnoreCase("LOG") && args[1].equalsIgnoreCase("DIR") && args.length == 3){
-			//do not give too many files to the machine!!!!
-			logToFile = true;			
+			//do not give too many files to the machine!!!!					
 			List<String> files = showFiles(args[2]);			
 			for(String f : files){
 				if(f.endsWith(".ifc")){
-					System.out.println("Converting file : " + f);
-					setupLogger(f);
-					String path = f.substring(0,f.length()-4);
-					convert(path+".ifc", path+".ttl", DEFAULT_PATH);
+					IfcReader r = new IfcReader();
+					r.logToFile = true;	
+					r.setupLogger(f);
+					System.out.println("Converting file : " + f + "\r\n");
+					if(r.logToFile) r.bw.write("Converting file : " + f + "\r\n");
+					String path = f.substring(0,f.length()-4);		
+					r.convert(path+".ifc", path+".ttl", r.DEFAULT_PATH);
+					r.bw.flush();
+					r.bw.close();
 				}
 			}
 		}
 		else if(args[0].equalsIgnoreCase("LOG") && args.length == 3){
-			logToFile = true;
-			setupLogger(args[2]);
-			convert(args[1], args[2], DEFAULT_PATH);
+			IfcReader r = new IfcReader();
+			r.logToFile = true;
+			r.setupLogger(args[2]);
+			r.convert(args[1], args[2], r.DEFAULT_PATH);
+			r.bw.flush();
+			r.bw.close();
 		}
 		else if (args.length != 2) {
 			System.out
@@ -106,52 +111,50 @@ public class IfcReader {
 			}
 		} else {
 			if (args.length == 2 && !args[0].startsWith("-json")) {
-				convert(args[0], args[1], DEFAULT_PATH);
+				IfcReader r = new IfcReader();
+				r.convert(args[0], args[1], r.DEFAULT_PATH);
 			} else {
 				if (args[0].equals("-json")) {
 					try {
+						IfcReader r = new IfcReader();
 						FileInputStream fis = new FileInputStream(args[1]);
 						String jsonString = slurp(fis);
 						fis.close();
-						convert(jsonString);
+						r.convert(jsonString);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				} else if (args[0].equals("-jsonString")) {
-					convert(args[1]);
+					IfcReader r = new IfcReader();
+					r.convert(args[1]);
 				}
 			}
 		}
 	}
 	
-	private static void setupLogger(String path){	
+	public void setupLogger(String path){	
 		String outputFile = path.substring(0,path.length()-4) + ".log";
-		
-		logger = Logger.getLogger("MyLog");  
-	    FileHandler fh;  
-	
-	    try {
-	        fh = new FileHandler(outputFile);  
-	        logger.addHandler(fh);
-	        be.ugent.BriefFormatter formatter = new be.ugent.BriefFormatter();  
-	        fh.setFormatter(formatter);	
-	    } catch (SecurityException e) {  
-	        e.printStackTrace();  
-	    } catch (IOException e) {  
-	        e.printStackTrace();  
-	    }
+
+		try {			
+			File file = new File(outputFile);
+			if (!file.exists()) 
+				file.createNewFile();
+					
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 
-	public static void convert(String jsonConfig) {
+	public void convert(String jsonConfig) throws IOException {
 		JSONObject obj = JSONObject.fromObject(jsonConfig);
-
 		String ifc_file = obj.getString("ifc_file");
 		String output_file = obj.getString("output_file");
-
 		convert(ifc_file, output_file, DEFAULT_PATH);
 	}
 
-	private static String getExpressSchema(String ifc_file) {
+	private String getExpressSchema(String ifc_file) {
 		try {
 			FileInputStream fstream = new FileInputStream(ifc_file);
 			DataInputStream in = new DataInputStream(fstream);
@@ -192,8 +195,8 @@ public class IfcReader {
 		return out.toString();
 	}
 
-	public static void convert(String ifc_file, String output_file,
-			String baseURI) {
+	public void convert(String ifc_file, String output_file,
+			String baseURI) throws IOException {
 		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
@@ -206,8 +209,10 @@ public class IfcReader {
 		if (!exp.equalsIgnoreCase("IFC2X3_Final")
 				&& !exp.equalsIgnoreCase("IFC2X3_TC1")
 				&& !exp.equalsIgnoreCase("IFC4_ADD1")
-				&& !exp.equalsIgnoreCase("IFC4"))
+				&& !exp.equalsIgnoreCase("IFC4")){
+			if(logToFile) bw.write("ERROR: Unrecognised EXPRESS schema: " + exp + ". File should be in IFC4 or IFC2X3 schema. Stopping conversion." + "\r\n");
 			return;
+		}
 
 		// CONVERSION
 		OntModel om = null;
@@ -226,6 +231,7 @@ public class IfcReader {
 
 			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
 					ifc_file), baseURI, exp);
+			conv.setIfcReader(this);
 			model = conv.parseModel();
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
@@ -252,14 +258,15 @@ public class IfcReader {
 			}
 			long t1 = System.currentTimeMillis();
 			System.out.println("done in " + ((t1 - t0) / 1000.0) + " seconds.");
-			if(IfcReader.logToFile) IfcReader.logger.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+			if(logToFile) bw.write("done in " + ((t1 - t0) / 1000.0) + " seconds." + "\r\n");
 		} else {
 			System.out
 					.println("No ontologyModel or instanceModel found -> no files generated.");
+			if(logToFile) bw.write("No ontologyModel or instanceModel found -> no files generated." + "\r\n");
 		}
 	}
 	
-	public Model convert(String ifc_file, String baseURI) {
+	public Model convert(String ifc_file, String baseURI) throws IOException {
 		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
@@ -291,6 +298,7 @@ public class IfcReader {
 
 			IfcConvertor conv = new IfcConvertor(om, er, new FileInputStream(
 					ifc_file), baseURI, exp);
+			conv.setIfcReader(this);
 			model = conv.parseModel();
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
@@ -317,44 +325,47 @@ public class IfcReader {
 			}
 			long t1 = System.currentTimeMillis();
 			System.out.println("done in " + ((t1 - t0) / 1000.0) + " seconds.");
-			if(IfcReader.logToFile) IfcReader.logger.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+			if(logToFile) bw.write("done in " + ((t1 - t0) / 1000.0) + " seconds." + "\r\n");
 		} else {
 			System.out
 					.println("No ontologyModel or instanceModel found -> no files generated.");
-			if(IfcReader.logToFile) IfcReader.logger.info("No ontologyModel or instanceModel found -> no files generated.");
+			if(logToFile) bw.write("No ontologyModel or instanceModel found -> no files generated." + "\r\n");
 		}
 		return model;
 	}
 
 	// VALIDATION
-	private static boolean validateGeneratedModel(OntModel om, Model model) {
+	private boolean validateGeneratedModel(OntModel om, Model model) throws IOException {
 		boolean valid = false;
 
 		// Check the created model with the OWL ontology
 		System.out.println("createInfModel");
 		InfModel infModel = ModelFactory.createInfModel(
 				ReasonerRegistry.getRDFSReasoner(), om, model);
+		if(logToFile) bw.write("validate" + "\r\n");
 		System.out.println("validate");
 		ValidityReport validity = infModel.validate();
 		if (validity.isValid()) {
 			System.out
 					.println("generated RDF graph is OK! Writing TTL and RDF file...");
-			if(IfcReader.logToFile) IfcReader.logger.info("generated RDF graph is OK! Writing TTL and RDF file...");
+			if(logToFile) bw.write("generated RDF graph is OK! Writing TTL and RDF file..." + "\r\n");
 			valid = true;
 		} else {
 			System.out
 					.println("generated RDF model contains conflicts. No TTL or RDF file produced.");
-			if(IfcReader.logToFile) IfcReader.logger.info("generated RDF model contains conflicts. No TTL or RDF file produced.");
+			if(logToFile) bw.write("generated RDF model contains conflicts. No TTL or RDF file produced." + "\r\n");
 			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
 				System.out.println(" - " + i.next());
+				if(logToFile) bw.write(" - " + i.next() + "\r\n");
 			}
 		}
 		return valid;
 	}
 
-	private static void writeTTLRDFFiles(Model model, String output_file) {
+	private void writeTTLRDFFiles(Model model, String output_file) throws IOException {
 
 		System.out.println("output_file before: " + output_file);
+		if(logToFile) bw.write("output_file before: " + output_file+"\r\n");
 		
 		if (!output_file.endsWith(".ttl")) {
 			//output_file.replaceAll(".", "");
@@ -362,11 +373,13 @@ public class IfcReader {
 		}
 
 		System.out.println("output_file after: " + output_file);
+		if(logToFile) bw.write("output_file after: " + output_file+"\r\n");
 		
 		String output_file_rdf = output_file.substring(0,
 				output_file.length() - 4) + ".rdf";
 		
 		System.out.println("output_file_rdf: " + output_file_rdf);
+		if(logToFile) bw.write("output_file_rdf: " + output_file_rdf+"\r\n");
 		
 		try {
 			OutputStreamWriter char_output = new OutputStreamWriter(
@@ -377,6 +390,7 @@ public class IfcReader {
 		} catch (IOException e) {
 			System.err
 					.println("Something went wrong while writing the TTL file");
+			if(logToFile) bw.write("Something went wrong while writing the TTL file"+"\r\n");
 			System.exit(1);
 			e.printStackTrace();
 		}
@@ -389,6 +403,7 @@ public class IfcReader {
 		} catch (IOException e) {
 			System.err
 					.println("Something went wrong while writing the RDF file");
+			if(logToFile) bw.write("Something went wrong while writing the TTL file"+"\r\n");
 			System.exit(1);
 			e.printStackTrace();
 		}
@@ -401,20 +416,11 @@ public class IfcReader {
 		File[] listOfFiles = folder.listFiles();
 		
 		for (int i = 0; i < listOfFiles.length; i++) {
-		      if (listOfFiles[i].isFile()) {
+		      if (listOfFiles[i].isFile())
 		    	  goodFiles.add(listOfFiles[i].getAbsolutePath());
-		      } else if (listOfFiles[i].isDirectory()) {
-//		        System.out.println("Directory " + listOfFiles[i].getName());
-		      }
+		      else if (listOfFiles[i].isDirectory())
+		    	  goodFiles.addAll(showFiles(listOfFiles[i].getAbsolutePath()));
 		    }
-		
-//	    for (File file : files) {
-//	        if (file.isDirectory()) {
-//	        	goodFiles.addAll(showFiles(file.getAbsolutePath())); // Calls same method again.
-//	        } else {
-//	        	goodFiles.add(file.getAbsolutePath());
-//	        }
-//	    }
 	    return goodFiles;
 	}
 	

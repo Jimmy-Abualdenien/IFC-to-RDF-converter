@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -63,29 +64,36 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 		IfcConvertor conv = new IfcConvertor(ontModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
 				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
-		Model model = conv.parseModel();
-		
-		InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
-		ValidityReport validity = infModel.validate();
-		if (!validity.isValid()) {
-			StringBuilder stringBuilder = new StringBuilder("generated RDF model contains conflicts. No RDF nor TTL file produced.");
-			for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
-				stringBuilder.append(" - " + i.next() + "\n");
+		Model model;
+		try {
+			model = conv.parseModel();
+			
+			InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
+			ValidityReport validity = infModel.validate();
+			if (!validity.isValid()) {
+				StringBuilder stringBuilder = new StringBuilder("generated RDF model contains conflicts. No RDF nor TTL file produced.");
+				for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
+					stringBuilder.append(" - " + i.next() + "\n");
+				}
+				throw new SerializerException(stringBuilder.toString());
 			}
-			throw new SerializerException(stringBuilder.toString());
+	
+			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, Charsets.UTF_8);
+			BufferedWriter out = new BufferedWriter(outputStreamWriter);
+			model.write(out, "TTL");
+	
+			//you might want to opt to output to RDF/XML as well here, depending on your outputStream var
+			//String output_file_rdf = outputStream.substring(0, output_file.length() - 4) + ".rdf";
+	//		OutputStreamWriter char_output = new OutputStreamWriter(
+	//				new FileOutputStream(output_file_rdf),
+	//				Charset.forName("UTF-8").newEncoder());
+	//		BufferedWriter out = new BufferedWriter(char_output);
+	//		model.write(out, "RDF/XML");
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, Charsets.UTF_8);
-		BufferedWriter out = new BufferedWriter(outputStreamWriter);
-		model.write(out, "TTL");
-
-		//you might want to opt to output to RDF/XML as well here, depending on your outputStream var
-		//String output_file_rdf = outputStream.substring(0, output_file.length() - 4) + ".rdf";
-//		OutputStreamWriter char_output = new OutputStreamWriter(
-//				new FileOutputStream(output_file_rdf),
-//				Charset.forName("UTF-8").newEncoder());
-//		BufferedWriter out = new BufferedWriter(char_output);
-//		model.write(out, "RDF/XML");
 
 		long t1 = System.currentTimeMillis();
 		LOGGER.info("done in " + ((t1 - t0) / 1000.0) + " seconds.");
