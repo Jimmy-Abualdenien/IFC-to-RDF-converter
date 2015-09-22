@@ -21,24 +21,38 @@
                     <items>
                       <MenuItem fx:id="openLDAC2015Version" mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="L" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
                         <MenuItem disable="true" mnemonicParsing="false" text="Open as AUTCON2015">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="saveIfcOWL" mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL">
+                  <MenuItem fx:id="saveIfcOWLMenuItem" disable="true" mnemonicParsing="false" onAction="#saveIfcOWL" text="Save ifcOWL">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator></MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" visible="false" />
-                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC2X3_TC1.exp" visible="false" />
-                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC2X3_Final.exp" visible="false" />
-                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC4.exp" visible="false" />
-                        <MenuItem mnemonicParsing="false" text="Generate expressOWL for IFC4_ADD1.exp" visible="false" />
-                        <MenuItem mnemonicParsing="false" text="Save expressOWL..." visible="false" />
                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Convert an IFC file to RDF">
+                     <items>
+                        <MenuItem fx:id="openLDAC2015Version1" mnemonicParsing="false" onAction="#selectIFCFile" text="Select an IFC file">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="I" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <MenuItem mnemonicParsing="false" onAction="#selectTargetFile" text="Select the target file">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="convert2RDFMenuItem" disable="true" mnemonicParsing="false" onAction="#convertIFCToRDF" text="Convert to RDF">
+                           <accelerator>
+                              <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
+                     </items>
                   </Menu>
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem mnemonicParsing="false" onAction="#closeApplicationAction" text="Quit">
@@ -77,11 +91,10 @@
                   </LinearGradient>
                </fill>
             </Rectangle>
-            <Button fx:id="openLDAC2015VersionButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="33.0" layoutY="49.0" mnemonicParsing="false" onAction="#openLDAC2015Version" text="Open as LDAC2015" />
-            <Text layoutX="24.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Handle Ontologies" />
-            <Button fx:id="saveIfcOWLButton" accessibleHelp="Save ifcOWL ontology in file system (TTL, RDF/XML, N-3, ...)" layoutX="34.0" layoutY="85.0" mnemonicParsing="false" onAction="#saveIfcOWL" text="Save expressOWL..." />
-            <TextArea fx:id="handleOnTxt" editable="false" layoutX="163.0" layoutY="49.0" opacity="0.45" prefHeight="61.0" prefWidth="340.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" height="113.0" layoutX="14.0" layoutY="142.0" stroke="BLACK" strokeType="INSIDE" width="502.0">
+            <Button fx:id="openLDAC2015VersionButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="33.0" layoutY="49.0" mnemonicParsing="false" onAction="#openLDAC2015Version" prefHeight="25.0" prefWidth="136.0" text="Open as LDAC2015" />
+            <Text layoutX="24.0" layoutY="34.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Express to OWL" />
+            <TextArea fx:id="handleOnTxt" editable="false" layoutX="195.0" layoutY="49.0" opacity="0.45" prefHeight="61.0" prefWidth="308.0" />
+            <Rectangle fx:id="conversionArea" arcHeight="5.0" arcWidth="5.0" height="191.0" layoutX="14.0" layoutY="142.0" stroke="BLACK" strokeType="INSIDE" width="502.0">
                <fill>
                   <LinearGradient endX="1.0" endY="1.0">
                      <stops>
@@ -92,7 +105,43 @@
                </fill>
             </Rectangle>
             <Text layoutX="24.0" layoutY="166.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Convert an IFC file to RDF" />
-            <Button fx:id="openLDAC2015VersionButton1" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="33.0" layoutY="186.0" mnemonicParsing="false" onAction="#openLDAC2015Version" prefHeight="25.0" prefWidth="119.0" text="Select an IFC file" />
+            <Button fx:id="selectIFCFileButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="33.0" layoutY="186.0" mnemonicParsing="false" onAction="#selectIFCFile" prefHeight="25.0" prefWidth="136.0" text="Select an IFC file" />
+            <Label fx:id="labelIFCFile" layoutX="194.0" layoutY="190.0" prefHeight="17.0" prefWidth="308.0" />
+            <Button fx:id="selectTargetButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="32.0" layoutY="222.0" mnemonicParsing="false" onAction="#selectTargetFile" prefHeight="25.0" prefWidth="136.0" text="Select the target file" />
+            <Label fx:id="labelTargetFile" layoutX="194.0" layoutY="226.0" prefHeight="17.0" prefWidth="308.0" />
+            <Button fx:id="convert2RDFButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" disable="true" layoutX="32.0" layoutY="261.0" mnemonicParsing="false" onAction="#convertIFCToRDF" prefHeight="25.0" prefWidth="136.0" text="Convert to RDF">
+               <effect>
+                  <ColorAdjust hue="-0.26">
+                     <input>
+                        <Lighting>
+                           <bumpInput>
+                              <Shadow color="#dd2f2f" />
+                           </bumpInput>
+                           <light>
+                              <Light.Distant />
+                           </light>
+                        </Lighting>
+                     </input>
+                  </ColorAdjust>
+               </effect>
+            </Button>
+            <Button fx:id="saveIfcOWLButton" accessibleHelp="Save ifcOWL ontology in file system (TTL, RDF/XML, N-3, ...)" disable="true" layoutX="33.0" layoutY="85.0" mnemonicParsing="false" onAction="#saveIfcOWL" prefHeight="25.0" prefWidth="136.0" text="Save expressOWL...">
+               <effect>
+                  <ColorAdjust hue="-0.26">
+                     <input>
+                        <Lighting>
+                           <bumpInput>
+                              <Shadow color="#dd2f2f" />
+                           </bumpInput>
+                           <light>
+                              <Light.Distant />
+                           </light>
+                        </Lighting>
+                     </input>
+                  </ColorAdjust>
+               </effect>
+            </Button>
+            <TextArea fx:id="conversionTxt" editable="false" layoutX="195.0" layoutY="261.0" opacity="0.45" prefHeight="61.0" prefWidth="308.0" />
          </children></AnchorPane>
     
     

@@ -1,7 +1,7 @@
 /*
  * The GNU Affero General Public License
  * 
- * Copyright (c) 2015 Jyrki Oraskari (Jyrki.Oraskari@aalto.fi / rkiorri@gmail.com)
+ * Copyright (c) 2015 Jyrki Oraskari (Jyrki.Oraskari@aalto.fi / jyrki.oraskari@aalto.fi)
  * Copyright (c) 2015 Pieter Pauwels (pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ package fi.ni.gui.fx;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import org.buildingsmart.ExpressReader;
+import org.buildingsmart.IfcReader;
 import org.buildingsmart.OWLWriter;
 
 import fi.ni.rdf.Namespace;
@@ -58,7 +58,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class IFC2RDFController implements Initializable {
+public class IFC2RDFController implements Initializable, FxInterface {
 	private static ExpressReader er;
 	private static String ontologyNamespace;
 
@@ -67,24 +67,34 @@ public class IFC2RDFController implements Initializable {
 
 	@FXML
 	Rectangle handleLDAC_OnArea;
-
 	@FXML
 	MenuItem openLDAC2015Version;
 	@FXML
 	private Button openLDAC2015VersionButton;
-
 	@FXML
-	MenuItem saveIfcOWL;
+	MenuItem saveIfcOWLMenuItem;
 	@FXML
 	private Button saveIfcOWLButton;
-
+	@FXML
+	private TextArea handleOnTxt;
+	
+	@FXML
+	Rectangle conversionArea;
+	@FXML
+	private Button selectIFCFileButton;
+	@FXML
+	private Button selectTargetButton;
+	@FXML
+	private Button convert2RDFButton;
+	@FXML
+	private MenuItem convert2RDFMenuItem;
 	@FXML
 	private Label labelIFCFile;
 	@FXML
-	private Label labelOutputDirectory;
-
+	private Label labelTargetFile;
 	@FXML
-	private TextArea handleOnTxt;
+	private TextArea conversionTxt;
+
 
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
@@ -120,7 +130,7 @@ public class IFC2RDFController implements Initializable {
 		saveIfcOWLButton.setTooltip(saveIfcOWLButton_tooltip);
 		
 		// Accepts dropping
-		EventHandler<DragEvent> ad=new EventHandler<DragEvent>() {
+		EventHandler<DragEvent> ad_ontology=new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
                 Dragboard db = event.getDragboard();
@@ -133,7 +143,7 @@ public class IFC2RDFController implements Initializable {
         };
 		
 		 // Dropping over surface
-		EventHandler<DragEvent> dh=new EventHandler<DragEvent>() {
+		EventHandler<DragEvent> dh_ontology=new EventHandler<DragEvent>() {
             @Override
             public void handle(DragEvent event) {
                 Dragboard db = event.getDragboard();
@@ -172,19 +182,69 @@ public class IFC2RDFController implements Initializable {
             @Override 
             public void handle(DragEvent me) 
             {
-
                me.consume();
              }
         });
         
-        handleOnTxt.setOnDragOver(ad);
-		handleOnTxt.setOnDragDropped(dh);
-		handleLDAC_OnArea.setOnDragOver(ad);
-		handleLDAC_OnArea.setOnDragDropped(dh);
-		openLDAC2015VersionButton.setOnDragOver(ad);
-		openLDAC2015VersionButton.setOnDragDropped(dh);
-		saveIfcOWLButton.setOnDragOver(ad);
-		saveIfcOWLButton.setOnDragDropped(dh);
+        handleOnTxt.setOnDragOver(ad_ontology);
+		handleOnTxt.setOnDragDropped(dh_ontology);
+		handleLDAC_OnArea.setOnDragOver(ad_ontology);
+		handleLDAC_OnArea.setOnDragDropped(dh_ontology);
+		openLDAC2015VersionButton.setOnDragOver(ad_ontology);
+		openLDAC2015VersionButton.setOnDragDropped(dh_ontology);
+		saveIfcOWLButton.setOnDragOver(ad_ontology);
+		saveIfcOWLButton.setOnDragDropped(dh_ontology);
+
+		// Accepts dropping
+		EventHandler<DragEvent> ad_conversion=new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                if (db.hasFiles()) {
+                    event.acceptTransferModes(TransferMode.COPY);
+                } else {
+                    event.consume();
+                }
+            }
+        };
+		
+		 // Dropping over surface
+		EventHandler<DragEvent> dh_conversion=new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                Dragboard db = event.getDragboard();
+                boolean success = false;
+                if (db.hasFiles()) {
+                    success = true;
+                    for (File file:db.getFiles()) {
+                    	labelIFCFile.setText(file.getName());
+                		ifcFileName=file.getAbsolutePath();
+                		if(ifcFileName!=null && rdfTargetName!=null)
+                		{
+                			convert2RDFButton.setDisable(false);
+                			convert2RDFMenuItem.setDisable(false);
+                		}
+                    }
+                }
+                event.setDropCompleted(success);
+                event.consume();
+            }
+        };
+        
+        conversionArea.setOnDragOver(ad_conversion);
+        conversionArea.setOnDragDropped(dh_conversion);
+        selectIFCFileButton.setOnDragOver(ad_conversion);
+        selectIFCFileButton.setOnDragDropped(dh_conversion);
+        selectTargetButton.setOnDragOver(ad_conversion);
+        selectTargetButton.setOnDragDropped(dh_conversion);
+        convert2RDFButton.setOnDragOver(ad_conversion);
+        convert2RDFButton.setOnDragDropped(dh_conversion);
+        labelIFCFile.setOnDragOver(ad_conversion);
+        labelIFCFile.setOnDragDropped(dh_conversion);
+        labelTargetFile.setOnDragOver(ad_conversion);
+        labelTargetFile.setOnDragDropped(dh_conversion);
+        conversionTxt.setOnDragOver(ad_conversion);
+        conversionTxt.setOnDragDropped(dh_conversion);
 	}
 
 	@FXML
@@ -192,19 +252,23 @@ public class IFC2RDFController implements Initializable {
 		Stage stage = (Stage) myMenuBar.getScene().getWindow();
 		File file = null;
 
-		fc = new FileChooser();
-		fc.setInitialDirectory(new File("."));
+		if(fc==null)
+        {
+		 fc = new FileChooser();
+		 fc.setInitialDirectory(new File("."));
+        }
 		FileChooser.ExtensionFilter ef1;
 		ef1 = new FileChooser.ExtensionFilter("EXPRESS documents (*.exp)", "*.exp");
 		FileChooser.ExtensionFilter ef2;
 		ef2 = new FileChooser.ExtensionFilter("All Files", "*.*");
+		fc.getExtensionFilters().clear();
 		fc.getExtensionFilters().addAll(ef1, ef2);
 
 		if (file == null)
 			file = fc.showOpenDialog(stage);
 		if (file == null)
 			return;
-
+		fc.setInitialDirectory(file.getParentFile());
 		openLDAC2015Version(file); 
 
 	}
@@ -226,9 +290,10 @@ public class IFC2RDFController implements Initializable {
 					return;
 				}
 				handleOnTxt.insertText(0,"Successfully loaded the "+file.getName()+" EXPRESS file in memory\n");
+				saveIfcOWLButton.setDisable(false);
+				saveIfcOWLMenuItem.setDisable(false);
 			} else {
-				handleOnTxt.insertText(0, "Please select a valid .exp file\n");
-				handleOnTxt.insertText(0, "Please select a valid .exp file\n");
+				handleOnTxt.insertText(0, "Please select a valid .exp file\n");				
 				return;
 			}
 		} catch (FileNotFoundException e1) {
@@ -243,17 +308,21 @@ public class IFC2RDFController implements Initializable {
 		Stage stage = (Stage) myMenuBar.getScene().getWindow();
 		File file = null;
 
-		fc = new FileChooser();
-		fc.setInitialDirectory(new File("."));
+		if(fc==null)
+        {
+		 fc = new FileChooser();
+		 fc.setInitialDirectory(new File("."));
+        }
 		FileChooser.ExtensionFilter ef1;
 		ef1 = new FileChooser.ExtensionFilter("Turtle and RDF/XML (*.ttl)", "*.ttl","*.rdf");
+		fc.getExtensionFilters().clear();
 		fc.getExtensionFilters().addAll(ef1);
 
 		if (file == null)
-			file = fc.showOpenDialog(stage);
+			file = fc.showSaveDialog(stage);
 		if (file == null)
 			return;
-
+		fc.setInitialDirectory(file.getParentFile());
 			String fp = file.getAbsolutePath();
 
 			if (fp.endsWith(".ttl") || fp.endsWith(".rdf")) {
@@ -272,4 +341,83 @@ public class IFC2RDFController implements Initializable {
 		
 	}
 
+	private String ifcFileName=null; 
+	private String rdfTargetName=null;
+	
+	@FXML
+	private void selectIFCFile() {
+		Stage stage = (Stage) myMenuBar.getScene().getWindow();
+		File file = null;
+
+		if(fc==null)
+        {
+		 fc = new FileChooser();
+		 fc.setInitialDirectory(new File("."));
+        }
+		FileChooser.ExtensionFilter ef1;
+		ef1 = new FileChooser.ExtensionFilter("IFC documents (*.ifc)", "*.ifc");
+		FileChooser.ExtensionFilter ef2;
+		ef2 = new FileChooser.ExtensionFilter("All Files", "*.*");
+		fc.getExtensionFilters().clear();
+		fc.getExtensionFilters().addAll(ef1, ef2);
+
+		if (file == null)
+			file = fc.showOpenDialog(stage);
+		if (file == null)
+			return;
+		fc.setInitialDirectory(file.getParentFile());
+		labelIFCFile.setText(file.getName());
+		ifcFileName=file.getAbsolutePath();
+		if(ifcFileName!=null && rdfTargetName!=null)
+		{
+			convert2RDFButton.setDisable(false);
+			convert2RDFMenuItem.setDisable(false);
+		}
+	}
+
+	@FXML
+	private void selectTargetFile() {
+		Stage stage = (Stage) myMenuBar.getScene().getWindow();
+		File file = null;
+        if(fc==null)
+        {
+		 fc = new FileChooser();
+		 fc.setInitialDirectory(new File("."));
+        }
+		FileChooser.ExtensionFilter ef1;
+		ef1 = new FileChooser.ExtensionFilter("Turtle and RDF/XML (*.ttl)", "*.ttl","*.rdf");
+		fc.getExtensionFilters().clear();
+		fc.getExtensionFilters().addAll(ef1);
+
+		if (file == null)
+			file = fc.showSaveDialog(stage);
+		if (file == null)
+			return;
+		fc.setInitialDirectory(file.getParentFile());
+		labelTargetFile.setText(file.getName());
+		rdfTargetName=file.getAbsolutePath();
+		if(ifcFileName!=null && rdfTargetName!=null)
+		{
+			convert2RDFButton.setDisable(false);
+			convert2RDFMenuItem.setDisable(false);
+		}
+
+	}
+
+	@FXML
+	private void convertIFCToRDF() {
+		IfcReader r = new IfcReader();
+		conversionTxt.setText("");
+		try {
+			r.convert(ifcFileName, rdfTargetName, r.DEFAULT_PATH,this);			
+		} catch (IOException e) {			
+			conversionTxt.insertText(0, e.getMessage());			
+		}
+		
+	}
+
+	@Override
+	public void handle_notification(String txt) {
+		conversionTxt.insertText(0, txt+"\n");		
+	}
 }
