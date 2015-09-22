@@ -451,6 +451,8 @@ public class IfcReader {
 	    return goodFiles;
 	}
 
+	/*  These methods are created to handle the FX interface and drag&drop features */
+	
 	public void convert(String ifc_file, String output_file, String baseURI,FxInterface fx_gui) throws IOException {
 		long t0 = System.currentTimeMillis();
 
@@ -540,5 +542,119 @@ public class IfcReader {
 		}
 	}
 
+	public void convert(String ifc_file, File output_file, String baseURI,FxInterface fx_gui) throws IOException {
+		long t0 = System.currentTimeMillis();
+
+		if (!ifc_file.endsWith(".ifc")) {
+			ifc_file += ".ifc";
+		}
+
+		String exp = getExpressSchema(ifc_file);
+
+
+		// check if we are able to convert this: only four schemas are supported
+		if (!exp.equalsIgnoreCase("IFC2X3_Final")
+				&& !exp.equalsIgnoreCase("IFC2X3_TC1")
+				&& !exp.equalsIgnoreCase("IFC4_ADD1")
+				&& !exp.equalsIgnoreCase("IFC4")){
+			fx_gui.handle_notification("ERROR: Unrecognised EXPRESS schema: " + exp + ".\nFile should be in IFC4 or IFC2X3 schema. Stopping conversion.");
+			if(logToFile) bw.write("ERROR: Unrecognised EXPRESS schema: " + exp + ". File should be in IFC4 or IFC2X3 schema. Stopping conversion." + "\r\n");
+			return;
+		}
+
+		// CONVERSION
+		OntModel om = null;
+		Model model = null;
+		InputStream in = null;
+		InputStream expin = null;
+		try {
+			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
+			in = IfcReader.class.getResourceAsStream("/data/" + exp + ".ttl");
+			System.out.println("exp ttl raw: "+in);
+			om.read(in, null, "TTL");
+
+			expin = IfcConvertor.class.getResourceAsStream("/data/" + exp + ".exp");
+			ExpressReader er = new ExpressReader(expin);
+			er.readAndBuildVersion2015();
+
+			String expresTtl = "/data/express.ttl";
+			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
+
+			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
+			
+			String rdfList = "/data/list.rdf";
+			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
+
+			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
+			
+			IfcConvertor conv = new IfcConvertor(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			conv.setIfcReader(this);
+			model = conv.parseModel();
+		} catch (FileNotFoundException e1) {
+			fx_gui.handle_notification(e1.getMessage());
+			e1.printStackTrace();
+		} 
+		catch (Exception e1) {
+			fx_gui.handle_notification(e1.getMessage());
+			e1.printStackTrace();
+		}
+		finally {
+			try {
+				in.close();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			try {
+				expin.close();
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		if (om != null && model != null) {
+			boolean valid = validateGeneratedModel(om, model);
+			if (valid == true) {
+				writeTTLRDFFiles(model, output_file);
+			} else {
+				fx_gui.handle_notification("The generated RDF model is invalid");
+				return;
+			}
+			long t1 = System.currentTimeMillis();
+			fx_gui.handle_notification("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+			if(logToFile) bw.write("done in " + ((t1 - t0) / 1000.0) + " seconds." + "\r\n");
+		} else {
+			fx_gui.handle_notification("No ontologyModel or instanceModel found -> no files generated.");
+			if(logToFile) bw.write("No ontologyModel or instanceModel found -> no files generated." + "\r\n");
+		}
+	}
+
+	private void writeTTLRDFFiles(Model model, File output_file) throws IOException {
+
+		System.out.println("output_file before: " + output_file.getAbsolutePath());
+		if(logToFile) bw.write("output_file before: " + output_file.getAbsolutePath()+"\r\n");
+		
+		System.out.println("output_file after: " + output_file.getAbsolutePath());
+		if(logToFile) bw.write("output_file after: " + output_file.getAbsolutePath()+"\r\n");
+		
+		try {
+			OutputStreamWriter char_output = new OutputStreamWriter(
+					new FileOutputStream(output_file), Charset.forName("UTF-8")
+							.newEncoder());
+			BufferedWriter out = new BufferedWriter(char_output);
+			model.write(out, "TTL");
+			out.close();			
+		} catch (IOException e) {
+			System.err
+					.println("Something went wrong while writing the TTL file");
+			if(logToFile) bw.write("Something went wrong while writing the TTL file"+"\r\n");
+			System.exit(1);
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 }

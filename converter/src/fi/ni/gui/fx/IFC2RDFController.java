@@ -23,6 +23,9 @@
  * but installing the http://www.eclipse.org/efxclipse/index.html and http://gluonhq.com/open-source/scene-builder/
  * make coding easier. 
  * 
+   Royalty Free Stock Image: Blue Glass web icons, buttons
+   The File image is implemented using:
+   http://www.dreamstime.com/royalty-free-stock-image-blue-glass-web-icons-buttons-image8270526
  */
 
 package fi.ni.gui.fx;
@@ -50,6 +53,10 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
@@ -65,6 +72,8 @@ public class IFC2RDFController implements Initializable, FxInterface {
 	@FXML
 	MenuBar myMenuBar;
 
+	@FXML
+	private Label labelExFile;
 	@FXML
 	Rectangle handleLDAC_OnArea;
 	@FXML
@@ -95,7 +104,12 @@ public class IFC2RDFController implements Initializable, FxInterface {
 	@FXML
 	private TextArea conversionTxt;
 
-
+	@FXML
+    private ImageView owl_fileIcon;
+	@FXML
+    private ImageView rdf_fileIcon;
+	
+	Image fileimage = new Image(getClass().getResourceAsStream("file.png"));
 	@FXML
 	private void handleButtonAction(ActionEvent event) {
 		System.out.println("You clicked me!");
@@ -117,12 +131,15 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		Stage stage = (Stage) myMenuBar.getScene().getWindow();
 		new About(stage).show();
 	}
+	
+
 
 	final Tooltip openLDAC2015VersionButton_tooltip = new Tooltip();
 	final Tooltip saveIfcOWLButton_tooltip = new Tooltip();
-
+    private FxInterface application;
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+		this.application=this;
 		openLDAC2015VersionButton_tooltip.setText("Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015");
 		saveIfcOWLButton_tooltip.setText("Save ifcOWL ontology in file system (TTL, RDF/XML, N-3, ...)");
 		
@@ -159,25 +176,34 @@ public class IFC2RDFController implements Initializable, FxInterface {
             }
         };
         
-        handleOnTxt.setOnDragDetected(new EventHandler<MouseEvent>()
+        owl_fileIcon.setOnDragDetected(new EventHandler<MouseEvent>()
         {
 
             @Override
             public void handle(MouseEvent me) 
             {
+            	if(!owl_fileIcon.isDisabled())
+            	{
                 Dragboard db = handleOnTxt.startDragAndDrop(TransferMode.ANY);
-                if (db.hasFiles()) {
-                 
-                    for (File file:db.getFiles()) {
-                        System.out.println("+ "+file.getAbsolutePath()); 
-                    }
-                }
+                ClipboardContent content = new ClipboardContent();
+                Clipboard clipboard= Clipboard.getSystemClipboard(); 
+                try {
+					File temp = File.createTempFile("owl",".ttl");
+					saveIfcOWL(temp);
+					content.putFiles(java.util.Collections.singletonList(temp));
+	                db.setContent(content);
+	                clipboard.setContent(content);
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}                
+            	}
                 me.consume();
             }
 
          });
         
-        handleOnTxt.setOnDragDone(new EventHandler<DragEvent>() 
+        owl_fileIcon.setOnDragDone(new EventHandler<DragEvent>() 
         {
             @Override 
             public void handle(DragEvent me) 
@@ -245,6 +271,55 @@ public class IFC2RDFController implements Initializable, FxInterface {
         labelTargetFile.setOnDragDropped(dh_conversion);
         conversionTxt.setOnDragOver(ad_conversion);
         conversionTxt.setOnDragDropped(dh_conversion);
+        
+        rdf_fileIcon.setOnDragDetected(new EventHandler<MouseEvent>()
+        {
+
+            @Override
+            public void handle(MouseEvent me) 
+            {
+            	if(!rdf_fileIcon.isDisabled())
+            	{
+                Dragboard db = handleOnTxt.startDragAndDrop(TransferMode.ANY);
+
+                ClipboardContent content = new ClipboardContent();
+                Clipboard clipboard= Clipboard.getSystemClipboard(); 
+                try {
+					File temp = File.createTempFile("rdf",".ttl");
+					
+					IfcReader r = new IfcReader();
+					conversionTxt.setText("");
+					try {
+						r.convert(ifcFileName, temp, r.DEFAULT_PATH,application);			
+					} catch (IOException e) {			
+						conversionTxt.insertText(0, e.getMessage());			
+					}
+					
+					
+					content.putFiles(java.util.Collections.singletonList(temp));
+	                db.setContent(content);
+	                clipboard.setContent(content);
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}                
+            	}
+                me.consume();
+            }
+
+         });
+        
+        rdf_fileIcon.setOnDragDone(new EventHandler<DragEvent>() 
+        {
+            @Override 
+            public void handle(DragEvent me) 
+            {
+               me.consume();
+             }
+        });
+        
+        
+        
 	}
 
 	@FXML
@@ -276,6 +351,7 @@ public class IFC2RDFController implements Initializable, FxInterface {
 	private void openLDAC2015Version(File file) 
 	{
 		try {
+			labelExFile.setText(file.getName());
 			String fp = file.getAbsolutePath();
 			if (fp.endsWith(".exp")) {
 				InputStream instr;
@@ -292,6 +368,9 @@ public class IFC2RDFController implements Initializable, FxInterface {
 				handleOnTxt.insertText(0,"Successfully loaded the "+file.getName()+" EXPRESS file in memory\n");
 				saveIfcOWLButton.setDisable(false);
 				saveIfcOWLMenuItem.setDisable(false);
+				owl_fileIcon.setDisable(false);
+				owl_fileIcon.setImage(fileimage);
+				
 			} else {
 				handleOnTxt.insertText(0, "Please select a valid .exp file\n");				
 				return;
@@ -323,21 +402,26 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		if (file == null)
 			return;
 		fc.setInitialDirectory(file.getParentFile());
-			String fp = file.getAbsolutePath();
+		saveIfcOWL(file);
+	}
+	
+	private void saveIfcOWL(File file)
+	{
+		String fp = file.getAbsolutePath();
 
-			if (fp.endsWith(".ttl") || fp.endsWith(".rdf")) {
-				String fileName = file.getName().substring(0, file.getName().indexOf("."));
-				String filePathNoExt = file.getParent() + "\\" + fileName;
-				OWLWriter ow = new OWLWriter(ontologyNamespace, er.getEntities(), er.getTypes(), er.getSiblings(),
-						er.getEnumIndividuals(), er.getProperties());
-				ow.outputOWLVersion2015(filePathNoExt);
-				System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
+		if (fp.endsWith(".ttl") || fp.endsWith(".rdf")) {
+			String fileName = file.getName().substring(0, file.getName().indexOf("."));
+			String filePathNoExt = file.getParent() + "\\" + fileName;
+			OWLWriter ow = new OWLWriter(ontologyNamespace, er.getEntities(), er.getTypes(), er.getSiblings(),
+					er.getEnumIndividuals(), er.getProperties());
+			ow.outputOWLVersion2015(filePathNoExt);
+			System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
 
-				er.CleanModelAndRewrite(filePathNoExt);
-				handleOnTxt.insertText(0,"Successfully written to RDF and TTL at location : " +file.getPath()+"\n");
-			} else {
-				handleOnTxt.insertText(0,"Please supply a Turtle or RDF/XML fileName, which ends with .ttl or .rdf");
-			}
+			er.CleanModelAndRewrite(filePathNoExt);
+			handleOnTxt.insertText(0,"Successfully written to RDF and TTL at location : " +file.getPath()+"\n");
+		} else {
+			handleOnTxt.insertText(0,"Please supply a Turtle or RDF/XML fileName, which ends with .ttl or .rdf");
+		}
 		
 	}
 
@@ -373,6 +457,8 @@ public class IFC2RDFController implements Initializable, FxInterface {
 			convert2RDFButton.setDisable(false);
 			convert2RDFMenuItem.setDisable(false);
 		}
+		rdf_fileIcon.setDisable(false);
+		rdf_fileIcon.setImage(fileimage);
 	}
 
 	@FXML
