@@ -164,14 +164,10 @@ public class IfcReader {
 				while ((strLine = br.readLine()) != null) {
 					if (strLine.length() > 0) {
 						if (strLine.startsWith("FILE_SCHEMA")) {
-							if (strLine.indexOf("IFC4MVD_PP") != -1)
-								return "IFC4MVD_PP";
 							if (strLine.indexOf("IFC2X3") != -1)
 								return "IFC2X3_TC1";
 							if (strLine.indexOf("IFC4") != -1)
 								return "IFC4_ADD1";
-//							if (strLine.indexOf("IFC2X2") != -1)
-//								return "IFC2X2_ADD1";
 							else
 								return "";
 						}
@@ -223,20 +219,20 @@ public class IfcReader {
 //			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF); //this takes a LOT more time (like 30 times as much for a simple model)
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
-			in = IfcReader.class.getResourceAsStream("/data/" + exp + ".ttl");
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertor.class.getResourceAsStream("/data/" + exp + ".exp");
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			String expresTtl = "/data/express.ttl";
+			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/data/list.rdf";
+			String rdfList = "/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -312,13 +308,13 @@ public class IfcReader {
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			String expresTtl = "/data/express.ttl";
+			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/data/list.rdf";
+			String rdfList = "/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -481,21 +477,21 @@ public class IfcReader {
 		try {
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
-			in = IfcReader.class.getResourceAsStream("/data/" + exp + ".ttl");
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			System.out.println("exp ttl raw: "+in);
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertor.class.getResourceAsStream("/data/" + exp + ".exp");
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			String expresTtl = "/data/express.ttl";
+			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/data/list.rdf";
+			String rdfList = "/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -570,21 +566,21 @@ public class IfcReader {
 		try {
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
-			in = IfcReader.class.getResourceAsStream("/data/" + exp + ".ttl");
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			System.out.println("exp ttl raw: "+in);
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertor.class.getResourceAsStream("/data/" + exp + ".exp");
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			String expresTtl = "/data/express.ttl";
+			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/data/list.rdf";
+			String rdfList = "/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
