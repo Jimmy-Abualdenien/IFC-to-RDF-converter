@@ -19,6 +19,7 @@ import org.bimserver.plugins.serializers.SerializerPlugin;
 import org.bimserver.plugins.serializers.StagingProgressReporter;
 import org.buildingsmart.ExpressReader;
 import org.buildingsmart.IfcConvertor;
+import org.buildingsmart.IfcReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +70,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 		IfcConvertor conv = new IfcConvertor(ontModel, expressModel, listModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
 				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
+		conv.setIfcReader(new IfcReader());
 		Model model;
 		try {
 			model = conv.parseModel();
