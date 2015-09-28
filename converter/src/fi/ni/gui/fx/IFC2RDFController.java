@@ -250,6 +250,8 @@ public class IFC2RDFController implements Initializable, FxInterface {
                 			convert2RDFButton.setDisable(false);
                 			convert2RDFMenuItem.setDisable(false);
                 		}
+            			rdf_fileIcon.setDisable(false);
+            			rdf_fileIcon.setImage(fileimage);
                     }
                 }
                 event.setDropCompleted(success);
