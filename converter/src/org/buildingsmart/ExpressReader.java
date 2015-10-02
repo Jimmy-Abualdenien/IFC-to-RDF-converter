@@ -132,7 +132,7 @@ public class ExpressReader {
 			String in = args[0];
 			if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1") || in.equalsIgnoreCase("IFC4_ADD1") || in.equalsIgnoreCase("IFC4")){
 				try {
-					InputStream instr = ExpressReader.class.getResourceAsStream("resources/" + in + ".exp");
+					InputStream instr = ExpressReader.class.getResourceAsStream("/" + in + ".exp");
 					ExpressReader er = new ExpressReader(instr);
 					Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/" + in;										
 					er.readAndBuildVersion2015();
@@ -143,7 +143,7 @@ public class ExpressReader {
 					System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
 					
 					//modify location when using
-					//er.CleanModelAndRewrite("out\\" + in);
+					er.CleanModelAndRewrite("out\\" + in);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -281,7 +281,7 @@ public class ExpressReader {
 						inv.getClassRange().equalsIgnoreCase("INTEGER") || inv.getClassRange().equalsIgnoreCase("LOGICAL") || 
 						inv.getClassRange().equalsIgnoreCase("BOOLEAN") || inv.getClassRange().equalsIgnoreCase("STRING") || 
 						inv.getClassRange().equalsIgnoreCase("BINARY")){
-					prop.setRangeNS("express");
+					prop.setRangeNS("expr");
 				}
 				else {
 					prop.setRangeNS("ifc");
@@ -422,25 +422,9 @@ public class ExpressReader {
 					attr.setRangeNS("ifc");
 				}
 				else {
-					prop.setRangeNS("express");
-					attr.setRangeNS("express");
+					prop.setRangeNS("expr");
+					attr.setRangeNS("expr");
 				}
-
-//				if(type_name.equalsIgnoreCase("NUMBER") || type_name.equalsIgnoreCase("REAL") || 
-//						type_name.equalsIgnoreCase("INTEGER") || type_name.equalsIgnoreCase("LOGICAL") || 
-//						type_name.equalsIgnoreCase("BOOLEAN") || type_name.equalsIgnoreCase("STRING") || 
-//						type_name.equalsIgnoreCase("BINARY")){
-//					prop.setRangeNS("express");
-//					attr.setRangeNS("express");
-//				}
-//				else if(attr.isListOfList() || attr.isArray() || (attr.isList() && !attr.isSet())){
-//					prop.setRangeNS("express");
-//					attr.setRangeNS("express");
-//				}
-//				else {
-//					prop.setRangeNS("ifc");
-//					attr.setRangeNS("ifc");
-//				}
 
 				if (type_primaryType.equalsIgnoreCase("enumeration"))
 					prop.setType(PropertyVO.propertyType.TypeVO);

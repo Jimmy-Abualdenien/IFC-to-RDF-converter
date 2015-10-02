@@ -139,6 +139,10 @@ public class AttributeVO {
 		this.name = name;
 	}
 
+	public String getLowerCaseName() {
+		return Character.toLowerCase(name.charAt(0)) + name.substring(1);	
+	}
+
 	public String getOriginalName() {
 		return originalName;
 	}

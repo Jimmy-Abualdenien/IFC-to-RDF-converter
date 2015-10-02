@@ -117,7 +117,7 @@ public class OWLWriter {
 			BufferedWriter out = new BufferedWriter(new FileWriter(filePath + ".ttl"));
 			out.write("@base <" + Namespace.EXPRESS + "> .\r\n");
 			out.write("@prefix : <" + Namespace.EXPRESS + "#> .\r\n");
-			out.write("@prefix express: <" + Namespace.EXPRESS + "#> .\r\n");
+			out.write("@prefix expr: <" + Namespace.EXPRESS + "#> .\r\n");
 			out.write(getExpressOwl_header());
 
 			writePrimaryTypes2015(out);
@@ -133,8 +133,8 @@ public class OWLWriter {
 	private void outputOWLproperty2015(BufferedWriter out, PropertyVO property) {
 		try {
 			if (property.isList() || property.isArray()) {
-					out.write("ifc:" + property.getName() + "\r\n");
-					out.write("\trdfs:label \"" + property.getOriginalName()
+					out.write("ifc:" + property.getLowerCaseName() + "\r\n");
+					out.write("\trdfs:label \"" + property.getOriginalName()//getOriginalNameLowerCase()
 							+ "\" ;\r\n");
 					out.write("\trdfs:domain ifc:" + property.getDomain().getName()
 							+ " ;\r\n");
@@ -153,7 +153,7 @@ public class OWLWriter {
 					// inverse
 					if (property.getInverseProperty() != null)
 						out.write("\towl:inverseOf ifc:"
-								+ property.getInverseProperty().getName()
+								+ property.getInverseProperty().getLowerCaseName()
 								+ " ;\r\n");
 					
 					// typesetting
@@ -162,144 +162,143 @@ public class OWLWriter {
 					else
 						out.write("\trdf:type owl:ObjectProperty .\r\n\r\n");
 
-					if(!property.getRangeNS().equalsIgnoreCase("express")){
-						
-					// write List range if necessary
-					if (!property.isSet()) {
-						if (property.isListOfList()) {
-							if (!listPropertiesOutput.contains(property.getRange()
-									+ "_List")) {
+					if(!property.getRangeNS().equalsIgnoreCase("expr")){						
+						// write List range if necessary
+						if (!property.isSet()) {
+							if (property.isListOfList()) {
+								if (!listPropertiesOutput.contains(property.getRange()
+										+ "_List")) {
+									// property not already contained in resulting OWL file
+									// (.TTL) -> no need to write additional property
+								
+									listPropertiesOutput.add(property.getRange()
+											+ "_List");
+		
+									out.write(property.getRangeNS()+":" + property.getRange() + "_List_EmptyList" + "\r\n");
+									out.write("\trdf:type owl:Class ;" + "\r\n");
+									out.write("\trdfs:subClassOf list:EmptyList, "+property.getRangeNS()+":" + property.getRange() + "_List_List"+" ." + "\r\n" + "\r\n");
+																	
+									out.write(property.getRangeNS()+":" + property.getRange()
+											+ "_List_List" + "\r\n");
+									out.write("\trdf:type owl:Class ;" + "\r\n");
+									out.write("\trdfs:subClassOf list:OWLList ;" + "\r\n");								
+									
+									out.write("\trdfs:subClassOf" + "\r\n");
+									out.write("\t\t[" + "\r\n");
+									out.write("\t\t\trdf:type owl:Restriction ;"
+											+ "\r\n");
+									out.write("\t\t\towl:onProperty list:hasContents ;"
+											+ "\r\n");
+									out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":"
+											+ property.getRange() + "_List" + "\r\n");
+									out.write("\t\t] ;" + "\r\n");
+									
+	//								out.write("\trdfs:subClassOf" + "\r\n");
+	//								out.write("\t\t[" + "\r\n");
+	//								out.write("\t\t\trdf:type owl:Restriction ;"
+	//										+ "\r\n");
+	//								out.write("\t\t\towl:onProperty list:hasContents ;"
+	//										+ "\r\n");
+	//								out.write("\t\t\towl:someValuesFrom "+property.getRangeNS()+":"
+	//										+ property.getRange() + "_List" + "\r\n");
+	//								out.write("\t\t] ;" + "\r\n");
+									
+									out.write("\trdfs:subClassOf" + "\r\n");
+									out.write("\t\t[" + "\r\n");
+									out.write("\t\t\trdf:type owl:Restriction ;"
+											+ "\r\n");
+									out.write("\t\t\towl:onProperty list:isFollowedBy ;"
+											+ "\r\n");	
+									out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List_List\r\n");
+									out.write("\t\t] ;" + "\r\n");
+									
+									out.write("\trdfs:subClassOf" + "\r\n");
+									out.write("\t\t[" + "\r\n");
+									out.write("\t\t\trdf:type owl:Restriction ;"
+											+ "\r\n");
+									out.write("\t\t\towl:onProperty list:hasNext ;"
+											+ "\r\n");
+									out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List_List\r\n");
+									out.write("\t\t] ." + "\r\n\r\n");
+								}
+							}
+		
+							if (!listPropertiesOutput.contains(property.getRange())) {
 								// property not already contained in resulting OWL file
-								// (.TTL) -> no need to write additional property
+								// (.TTL)
+								// -> no need to write additional property
 							
-								listPropertiesOutput.add(property.getRange()
-										+ "_List");
-	
-								out.write(property.getRangeNS()+":" + property.getRange() + "_List_EmptyList" + "\r\n");
+								listPropertiesOutput.add(property.getRange());
+								
+								String ns = "ifc";
+								//check namespace of range
+								if(property.getRange().equalsIgnoreCase("NUMBER") || property.getRange().equalsIgnoreCase("REAL") || 
+										property.getRange().equalsIgnoreCase("INTEGER") || property.getRange().equalsIgnoreCase("LOGICAL") || 
+										property.getRange().equalsIgnoreCase("BOOLEAN") || property.getRange().equalsIgnoreCase("STRING") || 
+										property.getRange().equalsIgnoreCase("BINARY"))
+									ns="expr";
+		
+								out.write(property.getRangeNS()+":" + property.getRange() + "_EmptyList" + "\r\n");
 								out.write("\trdf:type owl:Class ;" + "\r\n");
-								out.write("\trdfs:subClassOf list:EmptyList, "+property.getRangeNS()+":" + property.getRange() + "_List_List"+" ." + "\r\n" + "\r\n");
-																
-								out.write(property.getRangeNS()+":" + property.getRange()
-										+ "_List_List" + "\r\n");
+								out.write("\trdfs:subClassOf list:EmptyList, "+property.getRangeNS()+":" + property.getRange() + "_List"+" ." + "\r\n" + "\r\n");							
+							
+								out.write(property.getRangeNS()+":" + property.getRange() + "_List"
+										+ "\r\n");
 								out.write("\trdf:type owl:Class ;" + "\r\n");
-								out.write("\trdfs:subClassOf list:OWLList ;" + "\r\n");								
+								out.write("\trdfs:subClassOf list:OWLList ;" + "\r\n");
+								
+	//							out.write("\trdfs:subClassOf" + "\r\n");
+	//							out.write("\t\t[" + "\r\n");
+	//							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+	//							out.write("\t\t\towl:onProperty list:hasContents ;"
+	//									+ "\r\n");
+	//							out.write("\t\t\towl:someValuesFrom "
+	//									+ ns + ":"
+	//									+ property.getRange() + "\r\n");
+	//							out.write("\t\t] ;" + "\r\n");
 								
 								out.write("\trdfs:subClassOf" + "\r\n");
 								out.write("\t\t[" + "\r\n");
-								out.write("\t\t\trdf:type owl:Restriction ;"
-										+ "\r\n");
+								out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 								out.write("\t\t\towl:onProperty list:hasContents ;"
 										+ "\r\n");
-								out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":"
-										+ property.getRange() + "_List" + "\r\n");
+								out.write("\t\t\towl:allValuesFrom "
+										+ ns + ":"
+										+ property.getRange() + "\r\n");
 								out.write("\t\t] ;" + "\r\n");
-								
-//								out.write("\trdfs:subClassOf" + "\r\n");
-//								out.write("\t\t[" + "\r\n");
-//								out.write("\t\t\trdf:type owl:Restriction ;"
-//										+ "\r\n");
-//								out.write("\t\t\towl:onProperty list:hasContents ;"
-//										+ "\r\n");
-//								out.write("\t\t\towl:someValuesFrom "+property.getRangeNS()+":"
-//										+ property.getRange() + "_List" + "\r\n");
-//								out.write("\t\t] ;" + "\r\n");
 								
 								out.write("\trdfs:subClassOf" + "\r\n");
 								out.write("\t\t[" + "\r\n");
-								out.write("\t\t\trdf:type owl:Restriction ;"
-										+ "\r\n");
+								out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 								out.write("\t\t\towl:onProperty list:isFollowedBy ;"
-										+ "\r\n");	
-								out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List_List\r\n");
+										+ "\r\n");
+								out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List\r\n");
 								out.write("\t\t] ;" + "\r\n");
 								
 								out.write("\trdfs:subClassOf" + "\r\n");
 								out.write("\t\t[" + "\r\n");
-								out.write("\t\t\trdf:type owl:Restriction ;"
-										+ "\r\n");
-								out.write("\t\t\towl:onProperty list:hasNext ;"
-										+ "\r\n");
-								out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List_List\r\n");
+								out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
+								out.write("\t\t\towl:onProperty list:hasNext ;" + "\r\n");
+								out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List\r\n");
 								out.write("\t\t] ." + "\r\n\r\n");
 							}
+						} else {
+							// do nothing additional for a set
 						}
-	
-						if (!listPropertiesOutput.contains(property.getRange())) {
-							// property not already contained in resulting OWL file
-							// (.TTL)
-							// -> no need to write additional property
-						
-							listPropertiesOutput.add(property.getRange());
-							
-							String ns = "ifc";
-							//check namespace of range
-							if(property.getRange().equalsIgnoreCase("NUMBER") || property.getRange().equalsIgnoreCase("REAL") || 
-									property.getRange().equalsIgnoreCase("INTEGER") || property.getRange().equalsIgnoreCase("LOGICAL") || 
-									property.getRange().equalsIgnoreCase("BOOLEAN") || property.getRange().equalsIgnoreCase("STRING") || 
-									property.getRange().equalsIgnoreCase("BINARY"))
-								ns="express";
-	
-							out.write(property.getRangeNS()+":" + property.getRange() + "_EmptyList" + "\r\n");
-							out.write("\trdf:type owl:Class ;" + "\r\n");
-							out.write("\trdfs:subClassOf list:EmptyList, "+property.getRangeNS()+":" + property.getRange() + "_List"+" ." + "\r\n" + "\r\n");							
-						
-							out.write(property.getRangeNS()+":" + property.getRange() + "_List"
-									+ "\r\n");
-							out.write("\trdf:type owl:Class ;" + "\r\n");
-							out.write("\trdfs:subClassOf list:OWLList ;" + "\r\n");
-							
-//							out.write("\trdfs:subClassOf" + "\r\n");
-//							out.write("\t\t[" + "\r\n");
-//							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-//							out.write("\t\t\towl:onProperty list:hasContents ;"
-//									+ "\r\n");
-//							out.write("\t\t\towl:someValuesFrom "
-//									+ ns + ":"
-//									+ property.getRange() + "\r\n");
-//							out.write("\t\t] ;" + "\r\n");
-							
-							out.write("\trdfs:subClassOf" + "\r\n");
-							out.write("\t\t[" + "\r\n");
-							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-							out.write("\t\t\towl:onProperty list:hasContents ;"
-									+ "\r\n");
-							out.write("\t\t\towl:allValuesFrom "
-									+ ns + ":"
-									+ property.getRange() + "\r\n");
-							out.write("\t\t] ;" + "\r\n");
-							
-							out.write("\trdfs:subClassOf" + "\r\n");
-							out.write("\t\t[" + "\r\n");
-							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-							out.write("\t\t\towl:onProperty list:isFollowedBy ;"
-									+ "\r\n");
-							out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List\r\n");
-							out.write("\t\t] ;" + "\r\n");
-							
-							out.write("\trdfs:subClassOf" + "\r\n");
-							out.write("\t\t[" + "\r\n");
-							out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-							out.write("\t\t\towl:onProperty list:hasNext ;" + "\r\n");
-							out.write("\t\t\towl:allValuesFrom "+property.getRangeNS()+":" + property.getRange() + "_List\r\n");
-							out.write("\t\t] ." + "\r\n\r\n");
-						}
-					} else {
-						// do nothing additional for a set
-					}
-				
-				return;
+					
+					return;
 					}
 
 			} else {				
-					out.write("ifc:" + property.getName() + "\r\n");
-					out.write("\trdfs:label \"" + property.getOriginalName()
+					out.write("ifc:" + property.getLowerCaseName() + "\r\n");
+					out.write("\trdfs:label \"" + property.getOriginalName()//getOriginalNameLowerCase()
 							+ "\" ;\r\n");
 					out.write("\trdfs:domain ifc:" + property.getDomain().getName()
 							+ " ;\r\n");
 					out.write("\trdfs:range "+property.getRangeNS()+":" + property.getRange() + " ;\r\n");
 					if (property.getInverseProperty() != null)
 						out.write("\towl:inverseOf ifc:"
-								+ property.getInverseProperty().getName()
+								+ property.getInverseProperty().getLowerCaseName()
 								+ " ;\r\n");
 					if (property.isSet() && property.getMaxCardinality() != 1) {
 						// System.out.println("Set Prop found : " +
@@ -336,35 +335,35 @@ public class OWLWriter {
 //			} else 
 				if (pt.getPTypeName().equalsIgnoreCase("LOGICAL")) {
 					
-				out.write("express:" + pt.getPTypeName() + "\r\n");
+				out.write("expr:" + pt.getPTypeName() + "\r\n");
 				out.write("\trdf:type owl:Class ." + "\r\n" + "\r\n");
 				out.write("\trdfs:subClassOf " + "\r\n");
 				out.write("\t\t[ " + "\r\n");
 				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-				out.write("\t\t\towl:onProperty express:hasLogical ;" + "\r\n");
-				out.write("\t\t\towl:allValuesFrom express:LogicalEnum" + "\r\n");
+				out.write("\t\t\towl:onProperty expr:hasLogical ;" + "\r\n");
+				out.write("\t\t\towl:allValuesFrom expr:LogicalEnum" + "\r\n");
 				out.write("\t\t] ." + "\r\n" + "\r\n");				
 
-				out.write("express:LogicalEnum " + "\r\n");
+				out.write("expr:LogicalEnum " + "\r\n");
 				out.write("\trdf:type owl:Class ;" + "\r\n");
-				out.write("\trdfs:subClassOf express:ENUMERATION ." + "\r\n" + "\r\n");
+				out.write("\trdfs:subClassOf expr:ENUMERATION ." + "\r\n" + "\r\n");
 				
-				out.write("express:TRUE" + "\r\n");
+				out.write("expr:TRUE" + "\r\n");
 				out.write("\trdfs:label \"TRUE\" ;");
-				out.write("\trdf:type express:LogicalEnum ;" + "\r\n");
+				out.write("\trdf:type expr:LogicalEnum ;" + "\r\n");
 				out.write("\trdf:type owl:NamedIndividual ." + "\r\n" + "\r\n");
 				
-				out.write("express:FALSE" + "\r\n");
+				out.write("expr:FALSE" + "\r\n");
 				out.write("\trdfs:label \"FALSE\" ;");
-				out.write("\trdf:type express:LogicalEnum ;" + "\r\n");
+				out.write("\trdf:type expr:LogicalEnum ;" + "\r\n");
 				out.write("\trdf:type owl:NamedIndividual ." + "\r\n" + "\r\n");
 
-				out.write("express:UNKNOWN" + "\r\n");
+				out.write("expr:UNKNOWN" + "\r\n");
 				out.write("\trdfs:label \"UNKNOWN\" ;");
-				out.write("\trdf:type express:LogicalEnum ;" + "\r\n");
+				out.write("\trdf:type expr:LogicalEnum ;" + "\r\n");
 				out.write("\trdf:type owl:NamedIndividual ." + "\r\n" + "\r\n");
 			} else {
-				out.write("express:" + pt.getPTypeName() + "\r\n");
+				out.write("expr:" + pt.getPTypeName() + "\r\n");
 				out.write("\trdf:type owl:Class ;" + "\r\n");
 
 				out.write("\trdfs:subClassOf " + "\r\n");
@@ -372,7 +371,7 @@ public class OWLWriter {
 				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 				out.write("\t\t\towl:allValuesFrom xsd:" + pt.getXSDType()
 						+ " ;" + "\r\n");
-				out.write("\t\t\towl:onProperty express:has" + pt.getXSDType().substring(0, 1).toUpperCase() + pt.getXSDType().substring(1)
+				out.write("\t\t\towl:onProperty expr:has" + pt.getXSDType().substring(0, 1).toUpperCase() + pt.getXSDType().substring(1)
 						+ "\r\n");
 				out.write("\t\t] ." + "\r\n" + "\r\n");
 
@@ -382,9 +381,9 @@ public class OWLWriter {
 				String val = hm.get(pt.getXSDType());
 				if (hm.containsKey(key)) {
 					hm.remove(key);
-					hm.put(key, val + " express:" + pt.getPTypeName());
+					hm.put(key, val + " expr:" + pt.getPTypeName());
 				} else {
-					hm.put(key, "express:" + pt.getPTypeName());
+					hm.put(key, "expr:" + pt.getPTypeName());
 				}
 			}
 		}
@@ -392,7 +391,7 @@ public class OWLWriter {
 		while (it.hasNext()) {
 			Map.Entry<String, String> pairs = (Map.Entry<String, String>) it
 					.next();
-			out.write("express:has" + pairs.getKey().substring(0, 1).toUpperCase() + pairs.getKey().substring(1) + "\r\n");
+			out.write("expr:has" + pairs.getKey().substring(0, 1).toUpperCase() + pairs.getKey().substring(1) + "\r\n");
 			out.write("\trdf:type owl:DatatypeProperty, owl:FunctionalProperty ;"
 					+ "\r\n");
 			out.write("\trdfs:label \"has" + pairs.getKey().substring(0, 1).toUpperCase() + pairs.getKey().substring(1) + "\" ;" + "\r\n");
@@ -418,15 +417,15 @@ public class OWLWriter {
 	
 	private void writeHelperClasses2015(BufferedWriter out) throws IOException {
 		// enumeration class
-		out.write("express:ENUMERATION" + "\r\n");
+		out.write("expr:ENUMERATION" + "\r\n");
 		out.write("\trdf:type owl:Class ." + "\r\n\r\n");
 
 		// select class
-		out.write("express:SELECT" + "\r\n");
+		out.write("expr:SELECT" + "\r\n");
 		out.write("\trdf:type owl:Class ." + "\r\n\r\n");
 		
 		//hasSet object property
-		out.write("express:hasSet" + "\r\n");
+		out.write("expr:hasSet" + "\r\n");
 		out.write("\trdf:type owl:ObjectProperty ;" + "\r\n");
 		out.write("\trdfs:label \"hasSet" + "\" ." + "\r\n" + "\r\n");        
 	}
@@ -540,7 +539,7 @@ public class OWLWriter {
 			out.write("\t\t\towl:allValuesFrom "+attr.getRangeNS()+":"
 					+ attr.getType().getName() + " ; \r\n");
 		}
-		out.write("\t\t\towl:onProperty ifc:" + attr.getName() + "\r\n");
+		out.write("\t\t\towl:onProperty ifc:" + attr.getLowerCaseName() + "\r\n");
 		out.write("\t\t]");
 
 		if (attr.isUnique()) {
@@ -549,13 +548,13 @@ public class OWLWriter {
 		
 		//cardinality restrictions for lists
 		if(attr.isArray())
-			writeCardinalityRestrictionsForArray(attr.getMinCard(),attr.getMaxCard(),attr.getRangeNS() + ":"+ attr.getType().getName(),attr.getName(), out,true);
+			writeCardinalityRestrictionsForArray(attr.getMinCard(),attr.getMaxCard(),attr.getRangeNS() + ":"+ attr.getType().getName(),attr.getLowerCaseName(), out,true);
 		else if (attr.isListOfList() && !attr.isSet())
-			writeCardinalityRestrictionsForListOfList(attr.getMinCard(),attr.getMaxCard(),attr.getRangeNS() + ":"+ attr.getType().getName(),attr.getName(), out,true);
+			writeCardinalityRestrictionsForListOfList(attr.getMinCard(),attr.getMaxCard(),attr.getRangeNS() + ":"+ attr.getType().getName(),attr.getLowerCaseName(), out,true);
 		else if (attr.isList() && !attr.isSet())
-			writeCardinalityRestrictionsForList(attr.getMinCard(),attr.getMaxCard(),attr.getRangeNS() + ":"+ attr.getType().getName(),attr.getName(), out,true);
+			writeCardinalityRestrictionsForList(attr.getMinCard(),attr.getMaxCard(),attr.getRangeNS() + ":"+ attr.getType().getName(),attr.getLowerCaseName(), out,true);
 //		else 
-//			System.out.println("not a set, not a list, not a list of list: " + attr.getName());
+//			System.out.println("not a set, not a list, not a list of list: " + attr.getLowerCaseName());
 
 		// cardinality restriction for property (depends on optional /
 		// set / list etc.)
@@ -579,7 +578,7 @@ public class OWLWriter {
 							+ "\r\n");
 				}
 				out.write("\t\t\t" + "owl:onProperty ifc:"
-						+ attr.getName() + " ;\r\n");
+						+ attr.getLowerCaseName() + " ;\r\n");
 				
 				if (attr.isListOfList()) {
 					out.write("\t\t\t" + "owl:onClass "+attr.getRangeNS()+":"
@@ -610,7 +609,7 @@ public class OWLWriter {
 									+ "owl:qualifiedCardinality \"" + attr.getMinCard() + "\"^^xsd:nonNegativeInteger ;"
 									+ "\r\n");
 						out.write("\t\t\t" + "owl:onProperty ifc:"
-								+ attr.getName() + " ;\r\n");
+								+ attr.getLowerCaseName() + " ;\r\n");
 						out.write("\t\t\t" + "owl:onClass "+attr.getRangeNS()+":"
 								+ attr.getType().getName() + "\r\n");					
 						out.write("\t\t" + "]");
@@ -627,7 +626,7 @@ public class OWLWriter {
 										+ "owl:minQualifiedCardinality \"" + attr.getMinCard() + "\"^^xsd:nonNegativeInteger ;"
 										+ "\r\n");
 							out.write("\t\t\t" + "owl:onProperty ifc:"
-									+ attr.getName() + " ;\r\n");
+									+ attr.getLowerCaseName() + " ;\r\n");
 							out.write("\t\t\t" + "owl:onClass "+attr.getRangeNS()+":"
 									+ attr.getType().getName() + "\r\n");					
 							out.write("\t\t" + "]");
@@ -643,7 +642,7 @@ public class OWLWriter {
 										+ "owl:maxQualifiedCardinality \"" + attr.getMaxCard() + "\"^^xsd:nonNegativeInteger ;"
 										+ "\r\n");
 							out.write("\t\t\t" + "owl:onProperty ifc:"
-									+ attr.getName() + " ;\r\n");
+									+ attr.getLowerCaseName() + " ;\r\n");
 							out.write("\t\t\t" + "owl:onClass "+attr.getRangeNS()+":"
 									+ attr.getType().getName() + "\r\n");					
 							out.write("\t\t" + "]");
@@ -661,7 +660,7 @@ public class OWLWriter {
 		out.write("\t\t[" + "\r\n");
 		out.write("\t\t\trdf:type owl:Restriction ; " + "\r\n");
 		out.write("\t\t\towl:allValuesFrom ifc:" + prop.getRange() + " ; \r\n");
-		out.write("\t\t\towl:onProperty ifc:" + prop.getName() + "\r\n");
+		out.write("\t\t\towl:onProperty ifc:" + prop.getLowerCaseName() + "\r\n");
 		out.write("\t\t]");
 
 		if (prop.getMinCardinality() == -1 && prop.getMaxCardinality() == -1) {
@@ -677,7 +676,7 @@ public class OWLWriter {
 			// This is not supposed to happen
 			System.out
 					.println("WARNING - IMPOSSIBLE: found 'unlimited' mincardinality restriction combined with a bounded maxcardinality restriction for :"
-							+ prop.getName());
+							+ prop.getLowerCaseName());
 		} else if (prop.getMinCardinality() != -1
 				&& prop.getMaxCardinality() == -1) {
 			int start = prop.getMinCardinality();
@@ -687,7 +686,7 @@ public class OWLWriter {
 				out.write("\trdfs:subClassOf" + "\r\n");
 				out.write("\t\t[" + "\r\n");
 				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-				out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;"
+				out.write("\t\t\towl:onProperty ifc:" + prop.getLowerCaseName() + " ;"
 						+ "\r\n");
 				out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
 						+ "\r\n");
@@ -702,7 +701,7 @@ public class OWLWriter {
 				out.write("\trdfs:subClassOf" + "\r\n");
 				out.write("\t\t[" + "\r\n");
 				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-				out.write("\t\t\towl:onProperty ifc:" + prop.getName() + " ;"
+				out.write("\t\t\towl:onProperty ifc:" + prop.getLowerCaseName() + " ;"
 						+ "\r\n");
 				out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
 						+ "\r\n");
@@ -722,7 +721,7 @@ public class OWLWriter {
 					out.write("\trdfs:subClassOf" + "\r\n");
 					out.write("\t\t[" + "\r\n");
 					out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-					out.write("\t\t\towl:onProperty ifc:" + prop.getName()
+					out.write("\t\t\towl:onProperty ifc:" + prop.getLowerCaseName()
 							+ " ;" + "\r\n");
 					out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
 							+ "\r\n");
@@ -739,7 +738,7 @@ public class OWLWriter {
 					out.write("\trdfs:subClassOf" + "\r\n");
 					out.write("\t\t[" + "\r\n");
 					out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-					out.write("\t\t\towl:onProperty ifc:" + prop.getName()
+					out.write("\t\t\towl:onProperty ifc:" + prop.getLowerCaseName()
 							+ " ;" + "\r\n");
 					out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
 							+ "\r\n");
@@ -752,7 +751,7 @@ public class OWLWriter {
 					out.write("\trdfs:subClassOf" + "\r\n");
 					out.write("\t\t[" + "\r\n");
 					out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-					out.write("\t\t\towl:onProperty ifc:" + prop.getName()
+					out.write("\t\t\towl:onProperty ifc:" + prop.getLowerCaseName()
 							+ " ;" + "\r\n");
 					out.write("\t\t\towl:onClass ifc:" + prop.getRange() + " ;"
 							+ "\r\n");
@@ -764,7 +763,7 @@ public class OWLWriter {
 				// This is not supposed to happen
 				System.out
 						.println("WARNING - IMPOSSIBLE: found mincardinality restriction that is greater than maxcardinality restriction for :"
-								+ prop.getName());
+								+ prop.getLowerCaseName());
 			}
 		}
 	}
@@ -832,7 +831,7 @@ public class OWLWriter {
 			out.write("\t\t] ; " + "\r\n");
 		}
 		
-		out.write("\trdfs:subClassOf express:ENUMERATION ." + "\r\n\r\n");
+		out.write("\trdfs:subClassOf expr:ENUMERATION ." + "\r\n\r\n");
 	}
 	
 	private void writeSelects(TypeVO tvo, BufferedWriter out) throws IOException{
@@ -862,7 +861,7 @@ public class OWLWriter {
 			out.write("\t\t] ; " + "\r\n");
 		}
 		
-		out.write("\trdfs:subClassOf express:SELECT ." + "\r\n\r\n");
+		out.write("\trdfs:subClassOf expr:SELECT ." + "\r\n\r\n");
 	}
 
 	private void writeListTypeVO(TypeVO tvo, BufferedWriter out) throws IOException{
@@ -881,7 +880,7 @@ public class OWLWriter {
 					content.equalsIgnoreCase("INTEGER") || content.equalsIgnoreCase("LOGICAL") || 
 					content.equalsIgnoreCase("BOOLEAN") || content.equalsIgnoreCase("STRING") || 
 					content.equalsIgnoreCase("BINARY"))
-				ns = "express";
+				ns = "expr";
 			
 			out.write("\trdfs:subClassOf "+ns+":" + content + "_List ");
 			
@@ -974,7 +973,7 @@ public class OWLWriter {
 				content.equalsIgnoreCase("INTEGER") || content.equalsIgnoreCase("LOGICAL") || 
 				content.equalsIgnoreCase("BOOLEAN") || content.equalsIgnoreCase("STRING") || 
 				content.equalsIgnoreCase("BINARY"))
-			ns = "express";		
+			ns = "expr";		
 		
 		out.write("\trdfs:subClassOf "+ns+":" + content + "_List ");
 		
@@ -1067,7 +1066,7 @@ public class OWLWriter {
 				|| content.equalsIgnoreCase("BOOLEAN")
 				|| content.equalsIgnoreCase("STRING")
 				|| content.equalsIgnoreCase("BINARY"))
-			ns = "express";
+			ns = "expr";
 
 		out.write("ifc:" + tvo.getName() + "\r\n");
 		out.write("\trdf:type owl:Class ;" + "\r\n");
@@ -1089,14 +1088,14 @@ public class OWLWriter {
 		out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
 		out.write("\t\t\towl:allValuesFrom " + ns + ":" + content + " ;"
 				+ "\r\n");
-		out.write("\t\t\towl:onProperty express:hasSet" + "\r\n");
+		out.write("\t\t\towl:onProperty expr:hasSet" + "\r\n");
 		out.write("\t\t] ;" + "\r\n");
 		out.write("\t" + "rdfs:subClassOf " + "\r\n");
 		out.write("\t\t" + "[" + "\r\n");
 		out.write("\t\t\t" + "rdf:type owl:Restriction ;" + "\r\n");
 		out.write("\t\t\t" + "owl:minQualifiedCardinality \"" + 1
 				+ "\"^^xsd:nonNegativeInteger ;" + "\r\n");
-		out.write("\t\t\towl:onProperty express:hasSet ;" + "\r\n");
+		out.write("\t\t\towl:onProperty expr:hasSet ;" + "\r\n");
 		out.write("\t\t\t" + "owl:onClass " + ns + ":" + content + "\r\n");
 		out.write("\t\t] ." + "\r\n" + "\r\n");
 	}
@@ -1120,25 +1119,25 @@ public class OWLWriter {
 		if(PrimaryTypeVO.checkIfPType(ptype)){
 			String pType = tvo.getPrimarytype();
 			if(pType.equalsIgnoreCase("LOGICAL")){
-				out.write("\trdfs:subClassOf express:LOGICAL ." + "\r\n" + "\r\n");
+				out.write("\trdfs:subClassOf expr:LOGICAL ." + "\r\n" + "\r\n");
 //				out.write("\trdfs:subClassOf " + "\r\n");
 //				out.write("\t\t[ " + "\r\n");
 //				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-//				out.write("\t\t\towl:allValuesFrom express:LOGICAL" + " ;" + "\r\n");
-//				out.write("\t\t\towl:onProperty express:hasLogical" + "\r\n");
+//				out.write("\t\t\towl:allValuesFrom expr:LOGICAL" + " ;" + "\r\n");
+//				out.write("\t\t\towl:onProperty expr:hasLogical" + "\r\n");
 //				out.write("\t\t] ." + "\r\n" + "\r\n");
 			}
 			else if(pType.equalsIgnoreCase("BOOLEAN")){
-				out.write("\trdfs:subClassOf express:BOOLEAN ." + "\r\n" + "\r\n");
+				out.write("\trdfs:subClassOf expr:BOOLEAN ." + "\r\n" + "\r\n");
 //				out.write("\trdfs:subClassOf " + "\r\n");
 //				out.write("\t\t[ " + "\r\n");
 //				out.write("\t\t\trdf:type owl:Restriction ;" + "\r\n");
-//				out.write("\t\t\towl:allValuesFrom express:BOOLEAN" + " ;" + "\r\n");
-//				out.write("\t\t\towl:onProperty express:hasBoolean" + "\r\n");
+//				out.write("\t\t\towl:allValuesFrom expr:BOOLEAN" + " ;" + "\r\n");
+//				out.write("\t\t\towl:onProperty expr:hasBoolean" + "\r\n");
 //				out.write("\t\t] ." + "\r\n" + "\r\n");
 			}
 			else
-				out.write("\trdfs:subClassOf express:" + tvo.getPrimarytype()
+				out.write("\trdfs:subClassOf expr:" + tvo.getPrimarytype()
 					+ " .\r\n\r\n");
 		}
 		else{
@@ -1150,7 +1149,7 @@ public class OWLWriter {
 				PrimaryTypeVO t = PrimaryTypeVO.getClosestResemblance(ptype);
 				if(t==null)
 					System.out.println("OWLWriter::writeTypesToOWL - Did not find useful primarytype: " + ptype);
-				out.write("\trdfs:subClassOf express:" + t.getPTypeName()
+				out.write("\trdfs:subClassOf expr:" + t.getPTypeName()
 					+ " .\r\n\r\n");
 				}
 		}
@@ -1178,7 +1177,7 @@ public class OWLWriter {
 				+ "@prefix dce: <" + Namespace.DCE + "> .\r\n"
 				+ "@prefix vann: <" + Namespace.VANN + "> .\r\n"
 				+ "@prefix list: <" + Namespace.LIST + "> .\r\n"
-				+ "@prefix express: <" + Namespace.EXPRESS + "> .\r\n"
+				+ "@prefix expr: <" + Namespace.EXPRESS + "> .\r\n"
 				+ "@prefix cc: <" + Namespace.CC + "> .\r\n"
 				+ "@prefix rdf: <" + Namespace.RDF + "> .\r\n"
 				+ "\r\n"
@@ -1198,7 +1197,7 @@ public class OWLWriter {
 				+ "\tdce:language \"en\" ; \r\n"
 				+ "\tvann:preferredNamespacePrefix \"ifc\" ; \r\n"
 				+ "\tvann:preferredNamespaceUri \""+Namespace.IFC+"\" ; \r\n"
-				+ "\towl:imports <http://users.ugent.be/~pipauwel/ontologies/express/20150917/express.owl> ; \r\n"
+				+ "\towl:imports <http://purl.org/voc/express> ; \r\n"
 				+ "\tcc:license <http://creativecommons.org/licenses/by/3.0/> . \r\n\r\n";
 		
 		s += "dce:creator \r\n\trdf:type owl:AnnotationProperty .\r\n\r\n";
@@ -1237,7 +1236,7 @@ public class OWLWriter {
 				+ "\tdce:title \"" + expressSchemaName + "\" ;\r\n"
 				+ "\tdce:description \"OWL ontology for the EXPRESS concepts\" ;\r\n"
 				+ "\tdce:language \"en\" ; \r\n"
-				+ "\tvann:preferredNamespacePrefix \"express\" ; \r\n"
+				+ "\tvann:preferredNamespacePrefix \"expr\" ; \r\n"
 				+ "\tvann:preferredNamespaceUri \""+Namespace.EXPRESS+"\" ; \r\n"
 				+ "\towl:imports <http://owl.cs.manchester.ac.uk/wp-content/uploads/2015/07/list.owl_.txt> ; \r\n"
 				+ "\tcc:license <http://creativecommons.org/licenses/by/3.0/> . \r\n\r\n";
@@ -2550,14 +2549,14 @@ public class OWLWriter {
 	private void writeExtraCardinalityRestrictionsForListOfList(
 			AttributeVO attr, BufferedWriter out) throws IOException {
 		if (attr.getMinCard_listoflist() == -1 && attr.getMaxCard_listoflist() == -1) {
-			System.out.println("WARNING: [?,?] found for : " + attr.getName()
+			System.out.println("WARNING: [?,?] found for : " + attr.getLowerCaseName()
 					+ " - " + attr.getType().getName());
 		} else if (attr.getMinCard_listoflist() == -1 && attr.getMaxCard_listoflist() != -1) {
 			// [?:2]
 			// This is not supposed to happen
 			System.out
 					.println("WARNING - IMPOSSIBLE: found 'unlimited' mincardinality restriction combined with a bounded maxcardinality restriction for :"
-							+ attr.getName());
+							+ attr.getLowerCaseName());
 		} else if (attr.getMinCard_listoflist() != -1 && attr.getMaxCard_listoflist() == -1) {
 			int start = attr.getMinCard_listoflist();
 			// [2:?]

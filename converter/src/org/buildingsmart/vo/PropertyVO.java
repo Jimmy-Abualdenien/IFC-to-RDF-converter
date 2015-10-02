@@ -86,6 +86,14 @@ public class PropertyVO {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getLowerCaseName() {
+		return Character.toLowerCase(name.charAt(0)) + name.substring(1);	
+	}
+
+	public String getOriginalNameLowerCase() {
+		return Character.toLowerCase(originalName.charAt(0)) + originalName.substring(1);	
+	}
 
 	public String getOriginalName() {
 		return originalName;
