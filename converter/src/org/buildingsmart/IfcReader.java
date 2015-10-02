@@ -218,7 +218,7 @@ public class IfcReader {
 		try {
 //			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF); //this takes a LOT more time (like 30 times as much for a simple model)
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
+			//System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
 			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 

@@ -67,7 +67,7 @@ public class IfcConvertor {
 	private String baseURI;
 	private String ontURI;
 	private String ontNS;
-	private String expressURI = "http://purl.org/vocab/express";
+	private String expressURI = "http://purl.org/voc/express";
 	private String expressNS = expressURI+"#";
 	private String listURI = "http://www.co-ode.org/ontologies/list.owl";
 	private String listNS = listURI+"#";
@@ -369,7 +369,7 @@ public class IfcConvertor {
 						&& (evo.getDerived_attribute_list() != null)
 						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
 	
-					final String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					final String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
 					final String literalString = filter_extras((String) o);					
 	
 					OntProperty p = ontModel.getOntProperty(propURI);
@@ -434,7 +434,7 @@ public class IfcConvertor {
 		if ((evo != null)
 				&& (evo.getDerived_attribute_list() != null)
 				&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
-			final String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+			final String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
 			EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o).getName()));
 
 			OntProperty p = ontModel.getOntProperty(propURI);
@@ -476,7 +476,7 @@ public class IfcConvertor {
 						&& (evo.getDerived_attribute_list() != null)
 						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {
 
-					String propURI = evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					String propURI = evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
 					OntProperty p = ontModel.getOntProperty(ontNS + propURI);
 					OntResource typerange = p.getRange();
 
@@ -524,7 +524,7 @@ public class IfcConvertor {
 						&& (evo.getDerived_attribute_list() != null)
 						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {				
 
-					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
 					OntProperty p = ontModel.getOntProperty(propURI);
 
 					addSinglePropertyFromTypeRemembrance(r, p, literals.getFirst(), typeremembrance);
@@ -534,7 +534,7 @@ public class IfcConvertor {
 			else if ((evo != null)
 					&& (evo.getDerived_attribute_list() != null)
 					&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
-				String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getName();
+				String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
 				OntProperty p = ontModel.getOntProperty(propURI);
 
 				addRegularListProperty(r, p, literals);				
@@ -704,7 +704,7 @@ public class IfcConvertor {
 		return el;
 	}
 	
-	private OntResource getListContentType(OntClass range) throws IOException{
+	private OntResource getListContentType(OntClass range) throws IOException{				
 		if(range.asClass().getURI().equalsIgnoreCase(expressNS + "STRING_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "STRING_List")))
 			return expressModel.getOntResource(expressNS + "STRING");
 		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "REAL_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "REAL_List")))
@@ -720,11 +720,13 @@ public class IfcConvertor {
 		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "NUMBER_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "NUMBER_List")))
 			return expressModel.getOntResource(expressNS + "NUMBER");
 		else if(range.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
-			String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);	
+			String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);
 			return ontModel.getOntResource(listvaluepropURI);
 		}
 		else{
-			if(myIfcReader.logToFile) myIfcReader.bw.write("WARNING: did not find listcontenttype for : "+range.getLocalName() + "\r\n");
+			if(myIfcReader.logToFile) {
+				myIfcReader.bw.write("WARNING: did not find listcontenttype for : "+range.getLocalName() + "\r\n");
+			}
 			return null;
 		}
 //		ExtendedIterator<OntClass> iter = range.listSuperClasses();
