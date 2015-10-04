@@ -3,17 +3,21 @@ package org.buildingsmart;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 import net.sf.json.JSONObject;
 
@@ -59,18 +63,61 @@ import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 
 public class IfcReaderStream {
 
-	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
+	private String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
 			.format(Calendar.getInstance().getTime());
-	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"
+	private final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"
 			+ timeLog + "#";
+	
+	//public Logger logger;
+	public boolean logToFile = false;
+	public BufferedWriter bw;
 
 	/**
 	 * @param args
-	 *            filePath schemaname
+	 *            inputFilePath outputFilePath
 	 */
-	public static void main(String[] args) {
-		//TODO: only IFC4_ADD1, IFC4, IFC2X3_TC1, and IFC2X3_Final files should be accepted, nothing else
-		if (args.length != 2) {
+	public static void main(String[] args) throws IOException {
+		if(args[0].equalsIgnoreCase("LOG") && args[1].equalsIgnoreCase("DIR") && args.length == 3){
+			//do not give too many files to the machine!!!!					
+			List<String> files = showFiles(args[2]);			
+			for(String f : files){
+				if(f.endsWith(".ifc")){
+					IfcReaderStream r = new IfcReaderStream();
+					r.logToFile = true;	
+					r.setupLogger(f);
+					System.out.println("Converting file : " + f + "\r\n");
+					if(r.logToFile) r.bw.write("Converting file : " + f + "\r\n");
+					String path = f.substring(0,f.length()-4);		
+					r.convert(path+".ifc", path+".ttl", r.DEFAULT_PATH);
+					r.bw.flush();
+					r.bw.close();
+				}
+			}
+		}
+		else if(args[0].equalsIgnoreCase("DIR") && args.length == 2){
+			//do not give too many files to the machine!!!!					
+			List<String> files = showFiles(args[1]);			
+			for(String f : files){
+				if(f.endsWith(".ifc")){
+					IfcReaderStream r = new IfcReaderStream();					
+					System.out.println("Converting file : " + f + "\r\n");
+					if(r.logToFile) r.bw.write("Converting file : " + f + "\r\n");
+					String path = f.substring(0,f.length()-4);		
+					r.convert(path+".ifc", path+".ttl", r.DEFAULT_PATH);
+					r.bw.flush();
+					r.bw.close();
+				}
+			}
+		}
+		else if(args[0].equalsIgnoreCase("LOG") && args.length == 3){
+			IfcReaderStream r = new IfcReaderStream();
+			r.logToFile = true;
+			r.setupLogger(args[2]);
+			r.convert(args[1], args[2], r.DEFAULT_PATH);
+			r.bw.flush();
+			r.bw.close();
+		}
+		else if (args.length != 2) {
 			System.out
 					.println("Usage: java IfcReader ifc_filename output_filename \nExample: java IfcReaderStream C:\\sample.ifc c:\\output.ttl (we only convert to TTL)");
 			for (int i = 0; i < args.length; i++) {
@@ -78,25 +125,58 @@ public class IfcReaderStream {
 			}
 		} else {
 			if (args.length == 2 && !args[0].startsWith("-json")) {
-				convert(args[0], args[1], DEFAULT_PATH);
+				IfcReader r = new IfcReader();
+				r.convert(args[0], args[1], r.DEFAULT_PATH);
 			} else {
 				if (args[0].equals("-json")) {
 					try {
+						IfcReader r = new IfcReader();
 						FileInputStream fis = new FileInputStream(args[1]);
 						String jsonString = slurp(fis);
 						fis.close();
-						convert(jsonString);
+						r.convert(jsonString);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				} else if (args[0].equals("-jsonString")) {
-					convert(args[1]);
+					IfcReader r = new IfcReader();
+					r.convert(args[1]);
 				}
 			}
 		}
 	}
+	
+	public static List<String> showFiles(String dir) {
+		List<String> goodFiles = new ArrayList<String>();
+		
+		File folder = new File(dir);
+		File[] listOfFiles = folder.listFiles();
+		
+		for (int i = 0; i < listOfFiles.length; i++) {
+		      if (listOfFiles[i].isFile())
+		    	  goodFiles.add(listOfFiles[i].getAbsolutePath());
+		      else if (listOfFiles[i].isDirectory())
+		    	  goodFiles.addAll(showFiles(listOfFiles[i].getAbsolutePath()));
+		    }
+	    return goodFiles;
+	}
+	
+	public void setupLogger(String path){	
+		String outputFile = path.substring(0,path.length()-4) + ".log";
 
-	public static void convert(String jsonConfig) {
+		try {			
+			File file = new File(outputFile);
+			if (!file.exists()) 
+				file.createNewFile();
+					
+			FileWriter fw = new FileWriter(file.getAbsoluteFile());
+			bw = new BufferedWriter(fw);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public void convert(String jsonConfig) throws IOException {
 		JSONObject obj = JSONObject.fromObject(jsonConfig);
 
 		String ifc_file = obj.getString("ifc_file");
@@ -119,8 +199,6 @@ public class IfcReaderStream {
 								return "IFC2X3_TC1";
 							if (strLine.indexOf("IFC4") != -1)
 								return "IFC4_ADD1";
-//							if (strLine.indexOf("IFC2X2") != -1)
-//								return "IFC2X2_ADD1";
 							else
 								return "";
 						}
@@ -144,8 +222,8 @@ public class IfcReaderStream {
 		return out.toString();
 	}
 
-	public static void convert(String ifc_file, String output_file,
-			String baseURI) {
+	public void convert(String ifc_file, String output_file,
+			String baseURI) throws IOException {
 		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
@@ -158,36 +236,39 @@ public class IfcReaderStream {
 		if (!exp.equalsIgnoreCase("IFC2X3_Final")
 				&& !exp.equalsIgnoreCase("IFC2X3_TC1")
 				&& !exp.equalsIgnoreCase("IFC4_ADD1")
-				&& !exp.equalsIgnoreCase("IFC4"))
+				&& !exp.equalsIgnoreCase("IFC4")){
+			if(logToFile) bw.write("ERROR: Unrecognised EXPRESS schema: " + exp + ". File should be in IFC4 or IFC2X3 schema. Stopping conversion." + "\r\n");
 			return;
+		}
 
 		// CONVERSION
 		OntModel om = null;
 		
 		InputStream in = null;
 		InputStream expin = null;
-		try {
+		try {			
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			in = IfcReaderStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".ttl");		
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertorStream.class.getResourceAsStream("/org/buildingsmart/resources/" + exp + ".exp");
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
 			ExpressReader er = new ExpressReader(expin);
 			er.readAndBuildVersion2015();
 
-			IfcConvertorStream conv = new IfcConvertorStream(om, er, new FileInputStream(
-					ifc_file), baseURI);
+			String expresTtl = "/express.ttl";
+			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
+			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
 			
-			
-			if (!output_file.endsWith(".ttl")) {
-				output_file += ".ttl";
-			}
+			String rdfList = "/list.rdf";
+			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
+			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
 
-			System.out.println("output_file: " + output_file);
-			
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			conv.setIfcReader(this);
 			FileOutputStream out=new FileOutputStream(output_file);
-			conv.parseModel2Stream(out);
-
+			conv.parseModel2Stream(out);		
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} finally {
@@ -202,8 +283,6 @@ public class IfcReaderStream {
 				e1.printStackTrace();
 			}
 		}
-
-		
 	}
 
 }

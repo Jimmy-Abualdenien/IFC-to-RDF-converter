@@ -455,21 +455,16 @@ public class IfcConvertor {
 	private int fillProperties_handleListObject(Resource r, EntityVO evo,
 			int attribute_pointer, Object o) throws IOException {
 		final LinkedList<Object> tmp_list = (LinkedList<Object>) o;
-		LinkedList<String> literals=new LinkedList<String>();		
-
-//				if(tmp_list.size()==0)
-//					attribute_pointer++;
+		LinkedList<String> literals=new LinkedList<String>();
 		
 		//process list
 		for (int j = 0; j < tmp_list.size(); j++) {
 			Object o1 = tmp_list.get(j);
 			if (String.class.isInstance(o1)) {
-				if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null) {
+				if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null)
 					typeremembrance = typ.get(ExpressReader.formatClassName((String) o1));	
-				}
-				else{
-					literals.add(filter_extras((String) o1));
-				}
+				else
+					literals.add(filter_extras((String) o1));				
 			}
 			if (IFCVO.class.isInstance(o1)) {
 				if ((evo != null)
@@ -559,9 +554,7 @@ public class IfcConvertor {
 			else {
 				String xsdType = getXSDTypeFromRange(range);
 				if(xsdType == null)
-				{
 					xsdType = getXSDTypeFromRangeExpensiveMethod(range);
-				}
 				if(xsdType!=null){					
 					String xsdTypeCAP = Character.toUpperCase(xsdType.charAt(0)) + xsdType.substring(1);
 					OntProperty valueProp = expressModel.getOntProperty(expressNS + "has" + xsdTypeCAP);
@@ -585,36 +578,6 @@ public class IfcConvertor {
 		else {
 			if(myIfcReader.logToFile) myIfcReader.bw.write("12 - WARNING: found other kind of property: " + p + " - " + range.getLocalName() + "\r\n");									
 		}
-	}
-	
-	private String getXSDTypeFromRange(OntResource range){		
-		if(range.asClass().getURI().equalsIgnoreCase(expressNS + "STRING") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "STRING")))
-			return "string";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "REAL") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "REAL")))
-			return "double";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "INTEGER") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "INTEGER")))
-			return "integer";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BINARY") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BINARY")))
-			return "hexBinary";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BOOLEAN") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BOOLEAN")))
-			return "boolean";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "LOGICAL") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "LOGICAL")))
-			return "logical";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "NUMBER") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "NUMBER")))
-			return "double";
-		else
-			return null;
-	}
-	
-	private String getXSDTypeFromRangeExpensiveMethod(OntResource range){
-		ExtendedIterator<OntClass> iter = range.asClass().listSuperClasses();
-		while (iter.hasNext()){
-			OntClass superc = iter.next();
-			String type = getXSDTypeFromRange(superc);
-			if(type!=null)
-				return type;
-		}
-		return null;
 	}
 	
 	private void addEnumProperty(Resource r, Property p, OntResource range, String literalString) throws IOException{
@@ -665,8 +628,7 @@ public class IfcConvertor {
 	private void addRegularListProperty(Resource r, OntProperty p, List<String> el) throws IOException{		
 		OntResource range = p.getRange();
 		if(range.isClass()){
-			OntClass c = range.asClass();
-			OntResource listrange = getListContentType(c);
+			OntResource listrange = getListContentType(range.asClass());
 			
 			if(listrange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
 				if(myIfcReader.logToFile) myIfcReader.bw.write("14 - WARNING: Found unhandled ListOfList" + "\r\n");
@@ -729,26 +691,6 @@ public class IfcConvertor {
 			}
 			return null;
 		}
-//		ExtendedIterator<OntClass> iter = range.listSuperClasses();
-//		while(iter.hasNext()){
-//			OntClass superc = iter.next();
-//			if(listModel.containsResource(superc.asResource())){
-//				return (OntResource) superc.asResource();
-//			}			
-//		}
-//		return null;
-		
-//		if(range.hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
-//			String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);	
-//			return ontModel.getOntResource(listvaluepropURI);
-//		}
-//		
-//		OntClass cl = range.asClass().getSuperClass();
-//		if(cl==null)
-//			return null;
-//		else{
-//			return getListContentType(cl);
-//		}
 	}
 	
 	private void fillClassInstanceList(LinkedList<Object> tmp_list, OntResource typerange, OntProperty p, Resource r) throws IOException{
@@ -804,9 +746,7 @@ public class IfcConvertor {
 		//GetListType
 		String xsdType = getXSDTypeFromRange(listrange);
 		if(xsdType == null)
-		{
 			xsdType = getXSDTypeFromRangeExpensiveMethod(listrange);
-		}
 		if(xsdType!=null){
 			String xsdTypeCAP = Character.toUpperCase(xsdType.charAt(0)) + xsdType.substring(1);
 			OntProperty valueProp = expressModel.getOntProperty(expressNS + "has" + xsdTypeCAP);
@@ -874,5 +814,35 @@ public class IfcConvertor {
 		} catch (Exception e) {
 			return Long.MIN_VALUE;
 		}
+	}
+	
+	private String getXSDTypeFromRange(OntResource range){		
+		if(range.asClass().getURI().equalsIgnoreCase(expressNS + "STRING") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "STRING")))
+			return "string";
+		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "REAL") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "REAL")))
+			return "double";
+		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "INTEGER") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "INTEGER")))
+			return "integer";
+		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BINARY") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BINARY")))
+			return "hexBinary";
+		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BOOLEAN") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BOOLEAN")))
+			return "boolean";
+		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "LOGICAL") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "LOGICAL")))
+			return "logical";
+		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "NUMBER") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "NUMBER")))
+			return "double";
+		else
+			return null;
+	}
+	
+	private String getXSDTypeFromRangeExpensiveMethod(OntResource range){
+		ExtendedIterator<OntClass> iter = range.asClass().listSuperClasses();
+		while (iter.hasNext()){
+			OntClass superc = iter.next();
+			String type = getXSDTypeFromRange(superc);
+			if(type!=null)
+				return type;
+		}
+		return null;
 	}
 }

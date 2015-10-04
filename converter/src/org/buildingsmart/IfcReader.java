@@ -95,6 +95,21 @@ public class IfcReader {
 				}
 			}
 		}
+		else if(args[0].equalsIgnoreCase("DIR") && args.length == 2){
+			//do not give too many files to the machine!!!!					
+			List<String> files = showFiles(args[1]);			
+			for(String f : files){
+				if(f.endsWith(".ifc")){
+					IfcReader r = new IfcReader();					
+					System.out.println("Converting file : " + f + "\r\n");
+					if(r.logToFile) r.bw.write("Converting file : " + f + "\r\n");
+					String path = f.substring(0,f.length()-4);		
+					r.convert(path+".ifc", path+".ttl", r.DEFAULT_PATH);
+					r.bw.flush();
+					r.bw.close();
+				}
+			}
+		}
 		else if(args[0].equalsIgnoreCase("LOG") && args.length == 3){
 			IfcReader r = new IfcReader();
 			r.logToFile = true;
@@ -218,7 +233,6 @@ public class IfcReader {
 		try {
 //			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM_RDFS_INF); //this takes a LOT more time (like 30 times as much for a simple model)
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			//System.out.println("exp ttl: "+"/data/" + exp + ".ttl");
 			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
@@ -228,13 +242,11 @@ public class IfcReader {
 
 			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
-
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
 			String rdfList = "/list.rdf";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
-
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			listModel.read(rdfListStream, null, "RDF/XML");
 			
@@ -650,7 +662,5 @@ public class IfcReader {
 			e.printStackTrace();
 		}
 		
-	}
-	
-	
+	}	
 }
