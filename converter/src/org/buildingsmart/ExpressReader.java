@@ -5,7 +5,6 @@ import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,6 +21,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.apache.jena.ontology.OntModel;
+import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.reasoner.ValidityReport;
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.InverseVO;
@@ -29,15 +32,6 @@ import org.buildingsmart.vo.NamedIndividualVO;
 import org.buildingsmart.vo.PrimaryTypeVO;
 import org.buildingsmart.vo.PropertyVO;
 import org.buildingsmart.vo.TypeVO;
-
-import com.hp.hpl.jena.ontology.OntModel;
-import com.hp.hpl.jena.ontology.OntModelSpec;
-import com.hp.hpl.jena.rdf.model.InfModel;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-import com.hp.hpl.jena.reasoner.ValidityReport;
-import com.hp.hpl.jena.reasoner.ValidityReport.Report;
 
 import fi.ni.rdf.Namespace;
 
@@ -162,7 +156,7 @@ public class ExpressReader {
 		
 		
 		//InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), om);
-		ValidityReport validity = om.validate();
+		//ValidityReport validity = om.validate();
 //		if (validity.isValid()) {
 			System.out
 					.println("generated RDF graph is OK! Writing TTL and RDF file...");
