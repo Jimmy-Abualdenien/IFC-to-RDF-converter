@@ -116,7 +116,7 @@ public class IfcConvertorStream {
 		//PREPARATION
 		ent = expressReader.getEntities();
 		typ = expressReader.getTypes();
-		ontURI = "http://www.buildingsmart-tech.org/ifcOWL" + exp;
+		ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
 		ontNS = ontURI + "#";
 	}
 	
@@ -772,11 +772,11 @@ public class IfcConvertorStream {
 					property_resource_map.put(key,r2);
 					addLiteralToResource(r2,valueProp,xsdType,literalString);
 				}
-				ttl_writer.triple(new Triple(r.asNode(), ontModel.getOntProperty(ontNS + "hasListContent").asNode(), r2.asNode()));
+				ttl_writer.triple(new Triple(r.asNode(), listModel.getOntProperty(listNS + "hasContents").asNode(), r2.asNode()));
 				if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("added property: " + r.getLocalName() + " - " + "-hasContents-" + " - " + r2.getLocalName() + "\r\n");
 
 				if(i<listelements.size()-1){								
-					ttl_writer.triple(new Triple(r.asNode(), ontModel.getOntProperty(ontNS + "isFollowedBy").asNode(), reslist.get(i+1).asNode()));
+					ttl_writer.triple(new Triple(r.asNode(), listModel.getOntProperty(listNS + "isFollowedBy").asNode(), reslist.get(i+1).asNode()));
 					if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("added property: " + r.getLocalName() + " - " + "-isFollowedBy-" + " - " + reslist.get(i+1).getLocalName() + "\r\n");
 				}	
 			}
@@ -873,7 +873,7 @@ public class IfcConvertorStream {
 		   resource_map.put(uri, r);
 		   try
 		   {
-		     ttl_writer.triple(new Triple(r.asNode(), RDF.type.asNode(), rclass.asNode()));
+			   ttl_writer.triple(new Triple(r.asNode(), RDF.type.asNode(), rclass.asNode()));
 		   }
 		   catch(Exception e)
 		   {
