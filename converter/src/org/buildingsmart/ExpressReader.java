@@ -120,8 +120,8 @@ public class ExpressReader {
 
 	public static void main(String[] args) throws IOException {
 		//args should be: IFC2X3_Final, IFC2X3_TC1, IFC4 or IFC4_ADD1, nothing else is accepted here
-		if(args.length != 1)
-		 	System.out.println("Usage: java ExpressReader expressSchemaname \nExample: java ExpressReader IFC2X3_TC1 (only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options)");
+		if(args.length != 2)
+		 	System.out.println("Usage: java ExpressReader expressSchemaname pathToOutputFile \nExample: java ExpressReader IFC2X3_TC1 C:/outputfile.owl \nNote: only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options");
 		else {
 			String in = args[0];
 			if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1") || in.equalsIgnoreCase("IFC4_ADD1") || in.equalsIgnoreCase("IFC4")){
@@ -133,18 +133,18 @@ public class ExpressReader {
 		
 					OWLWriter ow = new OWLWriter(in, er.entities,
 							er.types, er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
-					ow.outputOWLVersion2015("out\\" + in);
+					ow.outputOWLVersion2015(args[1]);
 					System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
 					
 					//modify location when using
-					er.CleanModelAndRewrite("out\\" + in);
+					er.CleanModelAndRewrite(args[1]);
 					
 				} catch (Exception e) {
 					e.printStackTrace();
 				} 
 			}
 			else
-			 	System.out.println("Usage: java ExpressReader expressSchemaname \nExample: java ExpressReader IFC2X3_TC1 (only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options)");
+			 	System.out.println("Usage: java ExpressReader expressSchemaname pathToOutputFile \nExample: java ExpressReader IFC2X3_TC1 C:/outputfile.owl \nNote: only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options");
 		}
 	}
 	
