@@ -247,6 +247,9 @@ public class IFC2RDFController implements Initializable, FxInterface {
                 		ifcFileName=file.getAbsolutePath();
                 		if(ifcFileName!=null && rdfTargetName!=null)
                 		{
+                			convert2RDFButton.setDefaultButton(true);
+                			selectIFCFileButton.setDefaultButton(false);
+                			selectTargetButton.setDefaultButton(false);
                 			convert2RDFButton.setDisable(false);
                 			convert2RDFMenuItem.setDisable(false);
                 		}
@@ -368,6 +371,8 @@ public class IFC2RDFController implements Initializable, FxInterface {
 					return;
 				}
 				handleOnTxt.insertText(0,"Successfully loaded the "+file.getName()+" EXPRESS file in memory\n");
+				openLDAC2015VersionButton.setDefaultButton(false);
+				saveIfcOWLButton.setDefaultButton(true);
 				saveIfcOWLButton.setDisable(false);
 				saveIfcOWLMenuItem.setDisable(false);
 				owl_fileIcon.setDisable(false);
@@ -456,9 +461,11 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		ifcFileName=file.getAbsolutePath();
 		if(ifcFileName!=null && rdfTargetName!=null)
 		{
+			convert2RDFButton.setDefaultButton(true);
 			convert2RDFButton.setDisable(false);
 			convert2RDFMenuItem.setDisable(false);
 		}
+		selectIFCFileButton.setDefaultButton(false);
 		rdf_fileIcon.setDisable(false);
 		rdf_fileIcon.setImage(fileimage);
 	}
@@ -486,9 +493,11 @@ public class IFC2RDFController implements Initializable, FxInterface {
 		rdfTargetName=file.getAbsolutePath();
 		if(ifcFileName!=null && rdfTargetName!=null)
 		{
+			convert2RDFButton.setDefaultButton(true);
 			convert2RDFButton.setDisable(false);
 			convert2RDFMenuItem.setDisable(false);
 		}
+		selectTargetButton.setDefaultButton(false);
 
 	}
 

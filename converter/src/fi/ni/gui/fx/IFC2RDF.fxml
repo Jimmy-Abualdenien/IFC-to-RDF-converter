@@ -110,38 +110,8 @@
             <Label fx:id="labelIFCFile" layoutX="192.0" layoutY="212.0" prefHeight="17.0" prefWidth="308.0" />
             <Button fx:id="selectTargetButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" defaultButton="true" layoutX="33.0" layoutY="240.0" mnemonicParsing="false" onAction="#selectTargetFile" prefHeight="25.0" prefWidth="136.0" text="Select the target file" />
             <Label fx:id="labelTargetFile" layoutX="192.0" layoutY="244.0" prefHeight="17.0" prefWidth="308.0" />
-            <Button fx:id="convert2RDFButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" disable="true" layoutX="33.0" layoutY="359.0" mnemonicParsing="false" onAction="#convertIFCToRDF" prefHeight="25.0" prefWidth="136.0" text="Convert to RDF">
-               <effect>
-                  <ColorAdjust hue="-0.26">
-                     <input>
-                        <Lighting>
-                           <bumpInput>
-                              <Shadow color="#dd2f2f" />
-                           </bumpInput>
-                           <light>
-                              <Light.Distant />
-                           </light>
-                        </Lighting>
-                     </input>
-                  </ColorAdjust>
-               </effect>
-            </Button>
-            <Button fx:id="saveIfcOWLButton" accessibleHelp="Save ifcOWL ontology in file system (TTL, RDF/XML, N-3, ...)" disable="true" layoutX="33.0" layoutY="123.0" mnemonicParsing="false" onAction="#saveIfcOWL" prefHeight="25.0" prefWidth="136.0" text="Save expressOWL...">
-               <effect>
-                  <ColorAdjust hue="-0.26">
-                     <input>
-                        <Lighting>
-                           <bumpInput>
-                              <Shadow color="#dd2f2f" />
-                           </bumpInput>
-                           <light>
-                              <Light.Distant />
-                           </light>
-                        </Lighting>
-                     </input>
-                  </ColorAdjust>
-               </effect>
-            </Button>
+            <Button fx:id="convert2RDFButton" accessibleHelp="Open EXP schema and convert to in-memory JENA OWL ontology, using the conversion procedure agreed upon at LDAC2015" disable="true" layoutX="33.0" layoutY="359.0" mnemonicParsing="false" onAction="#convertIFCToRDF" prefHeight="25.0" prefWidth="136.0" text="Convert to RDF" />
+            <Button fx:id="saveIfcOWLButton" accessibleHelp="Save ifcOWL ontology in file system (TTL, RDF/XML, N-3, ...)" disable="true" layoutX="33.0" layoutY="123.0" mnemonicParsing="false" onAction="#saveIfcOWL" prefHeight="25.0" prefWidth="136.0" text="Save expressOWL..." />
             <TextArea fx:id="conversionTxt" editable="false" layoutX="188.0" layoutY="271.0" opacity="0.45" prefHeight="113.0" prefWidth="315.0" />
             <ImageView fx:id="owl_fileIcon" disable="true" fitHeight="39.0" fitWidth="54.0" layoutX="33.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="rdf_fileIcon" disable="true" fitHeight="39.0" fitWidth="54.0" layoutX="33.0" layoutY="308.0" pickOnBounds="true" preserveRatio="true" />
