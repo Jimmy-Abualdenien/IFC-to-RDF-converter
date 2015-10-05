@@ -16,7 +16,7 @@ Through the GUI, you are able to run both the EXPRESS-to-OWL conversion process 
 What to do:
 
 1. Clone or download this GitHub project
-2. Locate the executable JAR: JARS/IFC-to-RDF_GUI.jar
+2. Locate the executable JAR: JARS/IFC-to-RDF_GUI.jar (https://github.com/pipauwel/IFC-to-RDF-converter/JARS/EXPRESS-to-OWL.jar)
 3. Execute the IFC-to-RDF_GUI.jar directly by double-clicking
 4. Follow instructions in the interface
 
