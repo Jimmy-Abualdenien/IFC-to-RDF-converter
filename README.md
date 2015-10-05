@@ -1,19 +1,29 @@
 # Overview
-This project provides you with an EXPRESS-to-OWL and IFC-to-RDF conversion service. The converter can be accessed in a number of ways: using a commandline tool (written in Java), using a RESTful Web interface, or using a Graphical User Interface (GUI). <b>We strongly recommend to use the GUI (see https://github.com/pipauwel/IFC-to-RDF-converter#using-the-gui and https://github.com/pipauwel/IFC-to-RDF-converter#using-the-gui-1 ).</b>
+This project provides you with an EXPRESS-to-OWL and IFC-to-RDF conversion service. The converter can be accessed in a number of ways: using a commandline tool (written in Java), using a RESTful Web interface, or using a Graphical User Interface (GUI). <b>We strongly recommend to use the GUI (see https://github.com/pipauwel/IFC-to-RDF-converter#using-the-gui).</b>
 
-Author: Pieter Pauwels
+Authors: Pieter Pauwels, Jyrki Oraskari
 
-Contributors: Jyrki Oraskari, Ruben De Laat, Walter Terkaj
+Contributors: Ruben De Laat, Walter Terkaj
 
-# EXPRESS-to-OWL conversion
-The code allows to convert the EXPRESS schemas of IFC into OWL ontologies. The following ontologies are supported:
+# Using the GUI
+Through the GUI, you are able to run both the EXPRESS-to-OWL conversion process and the IFC-to-RDF conversion process. The following schemas are supported:
 
 * IFC4_ADD1.exp (http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc4-add1-release)
 * IFC4.exp (http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc4-release)
 * IFC2X3_TC1.exp (http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc2x3-tc1-release)
 * IFC2X3_Final.exp (http://www.buildingsmart-tech.org/specifications/ifc-releases/ifc2x3-release)
 
-## Using the command line interface
+What to do:
+
+1. Clone or download this GitHub project
+2. Locate the executable JAR: JARS/IFC-to-RDF_GUI.jar
+3. Execute the IFC-to-RDF_GUI.jar directly by double-clicking
+4. Follow instructions in the interface
+
+If you prefer a command-line interface (or you want to batch convert IFC files), please follow below instructions.
+
+# Using the command line interface
+## EXPRESS-to-OWL conversion
 1. Clone or download this GitHub project
 2. Locate the executable JAR: JARS/EXPRESS-to-OWL.jar
 3. Open a command-line interface and execute the following command:
@@ -27,14 +37,7 @@ Note: `expressSchemaname` should be `IFC4_ADD1`, `IFC4`, `IFC2X3_TC1`, or `IFC2X
 Example: java -jar EXPRESS-to-OWL.jar IFC2X3_TC1 C:/path/to/outputfile
 ```
 
-## Using the GUI
-1. Clone or download this GitHub project
-2. Locate the executable JAR: JARS/IFC-to-RDF_GUI.jar
-3. Execute the IFC-to-RDF_GUI.jar directly by double-clicking
-4. Follow instructions in the interface
-
-# IFC-to-RDF conversion
-## Using the command line interface
+## IFC-to-RDF conversion
 ###Single file conversion
 1. Clone or download this GitHub project
 2. Locate the executable JAR: JARS/IFC-to-RDF_NOGUI.jar
@@ -92,12 +95,6 @@ Note: All IFC files that are found in the input folder, including its subfolders
 ```
 Example: java -jar IFC-to-RDF_NOGUI.jar LOG DIR C:/path/to/inputfolder/
 ```
-
-## Using the GUI
-1. Clone or download this GitHub project
-2. Locate the executable JAR: JARS/IFC-to-RDF_GUI.jar
-3. Execute the IFC-to-RDF_GUI.jar directly by double-clicking
-4. Follow instructions in the interface
 
 # More information
 For more information, please contact pipauwel@gmail.com or pipauwel.pauwels@ugent.be, or file an issue in the repository.
