@@ -116,6 +116,7 @@
             <ImageView fx:id="owl_fileIcon" disable="true" fitHeight="39.0" fitWidth="54.0" layoutX="33.0" layoutY="79.0" pickOnBounds="true" preserveRatio="true" />
             <ImageView fx:id="rdf_fileIcon" disable="true" fitHeight="39.0" fitWidth="54.0" layoutX="33.0" layoutY="308.0" pickOnBounds="true" preserveRatio="true" />
             <Label fx:id="labelExFile" layoutX="184.0" layoutY="53.0" prefHeight="17.0" prefWidth="308.0" />
+            <CheckBox fx:id="streamConversion" layoutX="33.0" layoutY="275.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="136.0" selected="true" text="Stream conversion" />
          </children></AnchorPane>
     
     

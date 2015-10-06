@@ -43,22 +43,29 @@ public class About extends Stage
       iv.setX(10.0);
       iv.setY((180.0-height)/2.0);
       root.getChildren().add(iv);
-      Text msg1 = new Text("IFC-to-RDF GUI ");
+      Text msg1 = new Text("IFC-to-RDF 2015");
       msg1.setFill(Color.WHITE);
       msg1.setFont(new Font("Arial", 16.0));
       msg1.setX(iv.getX()+width+5);
       msg1.setY(iv.getY()+height/2.0);
       root.getChildren().add(msg1);
-      Text msg2 = new Text("by Jyrki Oraskari");
+      Text msg2 = new Text("Authors: Jyrki Oraskari, Pieter Pauwels");
       msg2.setFill(Color.WHITE);
       msg2.setFont(new Font("Arial", 12.0));
-      msg2.setX(msg1.getX()+5);
-      msg2.setY(msg1.getY()+20.0);
+      msg2.setX(msg1.getX());
+      msg2.setY(msg1.getY()+25.0);
       root.getChildren().add(msg2);
+      
+      Text msg3 = new Text("Contributors: Ruben De Laat, Walter Terkaj");
+      msg3.setFill(Color.WHITE);
+      msg3.setFont(new Font("Arial", 12.0));
+      msg3.setX(msg1.getX());
+      msg3.setY(msg1.getY()+40.0);
+      root.getChildren().add(msg3);
       Reflection r = new Reflection();
       r.setFraction(1.0);
       root.setEffect(r);
-      Scene scene = new Scene(root, 250.0, 180.0, Color.BLACK);
+      Scene scene = new Scene(root, 450.0, 250.0, Color.BLACK);
       EventHandler<MouseEvent> ehme;
       ehme = new EventHandler<MouseEvent>()
       {

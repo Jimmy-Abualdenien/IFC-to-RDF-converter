@@ -20,7 +20,10 @@ import net.sf.json.JSONObject;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
+import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+
+import fi.ni.gui.fx.FxInterface;
 
 /*
  * IFCtoRDFConverterStreann is the final interface for this code. Through this class, one is able to submit an IFC file and the EXPRESS schema it follows so that
@@ -36,7 +39,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 /*
  * The GNU Affero General Public License
  * 
- * Copyright (c) 2014 Jyrki Oraskari (original)
+ * Copyright (c) 2014, 2015 Jyrki Oraskari (original)
  * Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
@@ -57,8 +60,11 @@ public class IfcReaderStream {
 
 	private String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss")
 			.format(Calendar.getInstance().getTime());
-	private final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"
-			+ timeLog + "#";
+	//private final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"
+	//		+ timeLog + "#";
+	
+	public final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/resources"
+			+ timeLog + "/";
 	
 	//public Logger logger;
 	public boolean logToFile = false;
@@ -216,7 +222,6 @@ public class IfcReaderStream {
 
 	public void convert(String ifc_file, String output_file,
 			String baseURI) throws IOException {
-		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
 			ifc_file += ".ifc";
@@ -273,6 +278,138 @@ public class IfcReaderStream {
 				expin.close();
 			} catch (Exception e1) {
 				e1.printStackTrace();
+			}
+		}
+	}
+	
+	/*  These methods are created to handle the FX interface and drag&drop features */
+	
+	public void convert(String ifc_file, String output_file, String baseURI,FxInterface fx_gui) throws IOException {
+
+		if (!ifc_file.endsWith(".ifc")) {
+			ifc_file += ".ifc";
+		}
+
+		String exp = getExpressSchema(ifc_file);
+
+		// check if we are able to convert this: only four schemas are supported
+		if (!exp.equalsIgnoreCase("IFC2X3_Final")
+				&& !exp.equalsIgnoreCase("IFC2X3_TC1")
+				&& !exp.equalsIgnoreCase("IFC4_ADD1")
+				&& !exp.equalsIgnoreCase("IFC4")){
+			fx_gui.handle_notification("ERROR: Unrecognised EXPRESS schema: " + exp + ".");
+			fx_gui.handle_notification("File should be in IFC4 or IFC2X3 schema. Stopping conversion.");
+			return;
+		}
+
+		// CONVERSION
+		OntModel om = null;
+		
+		InputStream in = null;
+		InputStream expin = null;
+		FileOutputStream out=null;
+		try {			
+			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
+			om.read(in, null, "TTL");
+
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
+			ExpressReader er = new ExpressReader(expin);
+			er.readAndBuildVersion2015();
+
+			String expresTtl = "/express.ttl";
+			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
+			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
+			
+			String rdfList = "/list.rdf";
+			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
+			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
+
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			conv.setIfcReader(this);
+			out=new FileOutputStream(output_file);
+			conv.parseModel2Stream(out);		
+			fx_gui.handle_notification(ifc_file+ " converted to RDF.");
+		} catch (FileNotFoundException e1) {
+			fx_gui.handle_notification(e1.getMessage());
+		} finally {
+			try {
+				out.close();
+				in.close();
+			} catch (Exception e1) {
+				fx_gui.handle_notification(e1.getMessage());
+			}
+			try {
+				expin.close();
+			} catch (Exception e1) {
+				fx_gui.handle_notification(e1.getMessage());
+			}
+		}
+	}
+
+	public void convert(String ifc_file, File output_file, String baseURI,FxInterface fx_gui) throws IOException {
+
+		if (!ifc_file.endsWith(".ifc")) {
+			ifc_file += ".ifc";
+		}
+
+		String exp = getExpressSchema(ifc_file);
+
+		// check if we are able to convert this: only four schemas are supported
+		if (!exp.equalsIgnoreCase("IFC2X3_Final")
+				&& !exp.equalsIgnoreCase("IFC2X3_TC1")
+				&& !exp.equalsIgnoreCase("IFC4_ADD1")
+				&& !exp.equalsIgnoreCase("IFC4")){
+			fx_gui.handle_notification("ERROR: Unrecognised EXPRESS schema: " + exp + ".");
+			fx_gui.handle_notification("File should be in IFC4 or IFC2X3 schema. Stopping conversion.");
+			return;
+		}
+
+		// CONVERSION
+		OntModel om = null;
+		
+		InputStream in = null;
+		InputStream expin = null;
+		FileOutputStream out=null;
+		try {			
+			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
+			om.read(in, null, "TTL");
+
+			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
+			ExpressReader er = new ExpressReader(expin);
+			er.readAndBuildVersion2015();
+
+			String expresTtl = "/express.ttl";
+			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
+			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			expressModel.read(expresTtlStream, null, "TTL");
+			
+			String rdfList = "/list.rdf";
+			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
+			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
+			listModel.read(rdfListStream, null, "RDF/XML");
+
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			conv.setIfcReader(this);
+			out=new FileOutputStream(output_file);
+			conv.parseModel2Stream(out);
+			fx_gui.handle_notification(ifc_file+ " converted to RDF.");
+		} catch (FileNotFoundException e1) {
+			fx_gui.handle_notification(e1.getMessage());
+		} finally {
+			try {
+				out.close();
+				in.close();
+			} catch (Exception e1) {
+				fx_gui.handle_notification(e1.getMessage());
+			}
+			try {
+				expin.close();
+			} catch (Exception e1) {
+				fx_gui.handle_notification(e1.getMessage());
 			}
 		}
 	}

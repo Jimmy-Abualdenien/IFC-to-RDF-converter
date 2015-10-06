@@ -45,7 +45,7 @@ import net.sf.json.JSONObject;
 /*
  * The GNU Affero General Public License
  * 
- * Copyright (c) 2014 Jyrki Oraskari (original)
+ * Copyright (c) 2014, 2015 Jyrki Oraskari (original)
  * Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / pipauwel@gmail.com)
  * 
  * This program is free software: you can redistribute it and/or modify
