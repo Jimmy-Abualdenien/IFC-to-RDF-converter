@@ -55,25 +55,25 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 	@Override
 	protected boolean write(OutputStream outputStream, ProgressReporter progressReporter) throws SerializerException {
-		// Quite inefficient, first write the model to IFC (byte buffer), then
-		// call the IfcToRdf code
+		// Quite inefficient, first write the model to IFC (byte buffer), then call the IfcToRdf code
+
 		SerializerPlugin serializerPlugin = getPluginManager().getSerializerPlugin("org.bimserver.ifc.step.serializer.Ifc2x3tc1StepSerializerPlugin", true);
 		Serializer serializer = serializerPlugin.createSerializer(null);
 		serializer.init(getModel(), null, getPluginManager(), null, getPackageMetaData(), true);
-		ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
-		StagingProgressReporter halvingProgressReporter = new StagingProgressReporter(progressReporter, 2);
-		serializer.writeToOutputStream(outputStream2, halvingProgressReporter);
-		halvingProgressReporter.incStage();
-		InputStream inputStream = new ByteArrayInputStream(outputStream2.toByteArray());
+
+//		ByteArrayOutputStream outputStream2 = new ByteArrayOutputStream();
+//		StagingProgressReporter halvingProgressReporter = new StagingProgressReporter(progressReporter, 2);
+//		serializer.writeToOutputStream(outputStream2, halvingProgressReporter);
+//		halvingProgressReporter.incStage();
+//		InputStream inputStream = new ByteArrayInputStream(outputStream2.toByteArray());
 
 		long t0 = System.currentTimeMillis();
 
-		IfcConvertor conv = new IfcConvertor(ontModel, expressModel, listModel, expressReader, inputStream, "http://linkedbuildingdata.net/ifc/instances"
-				+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
-		conv.setIfcReader(new IfcReader());
-		Model model;
 		try {
-			model = conv.parseModel();
+			IfcConvertor conv = new IfcConvertor(ontModel, expressModel, listModel, expressReader, serializer.getInputStream(), "http://linkedbuildingdata.net/ifc/instances"
+					+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
+			conv.setIfcReader(new IfcReader());
+			Model model = conv.parseModel();
 			
 			InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
 			ValidityReport validity = infModel.validate();
@@ -98,8 +98,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 	//		model.write(out, "RDF/XML");
 		
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("", e);
 		}
 
 		long t1 = System.currentTimeMillis();

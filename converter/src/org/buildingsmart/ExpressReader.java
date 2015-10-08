@@ -24,7 +24,6 @@ import java.util.StringTokenizer;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.reasoner.ValidityReport;
 import org.buildingsmart.vo.AttributeVO;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.InverseVO;
@@ -71,6 +70,7 @@ import fi.ni.rdf.Namespace;
 
 public class ExpressReader {
 
+	private static final Map<String, String> formattedClassNameCache = new HashMap<>();
 	private Map<String, EntityVO> entities = new HashMap<String, EntityVO>();
 	private Map<String, TypeVO> types = new HashMap<String, TypeVO>();
 	private List<NamedIndividualVO> enumIndividuals = new ArrayList<NamedIndividualVO>();
@@ -691,10 +691,16 @@ public class ExpressReader {
 	}
 
 	// FORMATTING and BUILDING
-	static public String formatClassName(String s) {
-		if (s == null)
+	static public String formatClassName(String unformatted) {
+		if (unformatted == null) {
 			return null;
-		return filter_extras(s).toUpperCase();
+		}
+		String formatted = formattedClassNameCache.get(unformatted);
+		if (formatted == null) {
+			formatted = filter_extras(unformatted).toUpperCase();
+			formattedClassNameCache.put(unformatted, formatted);
+		}
+		return formatted;
 	}
 
 	static public String formatProperty(String s, boolean isList) {

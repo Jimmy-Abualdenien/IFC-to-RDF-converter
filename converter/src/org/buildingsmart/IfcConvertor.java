@@ -61,28 +61,28 @@ import org.buildingsmart.vo.TypeVO;
 
 
 public class IfcConvertor {
+	private static final String EXPRESS_URL = "http://purl.org/voc/express";
+	private static final String EXPRESS_NS = EXPRESS_URL + "#";
 
 	//input variables
-	private String baseURI;
-	private String ontURI;
-	private String ontNS;
-	private String expressURI = "http://purl.org/voc/express";
-	private String expressNS = expressURI+"#";
-	private String listURI = "http://www.co-ode.org/ontologies/list.owl";
-	private String listNS = listURI+"#";
+	private final String baseURI;
+	private final String ontURI;
+	private final String ontNS;
+	private final String listURI = "http://www.co-ode.org/ontologies/list.owl";
+	private final String listNS = listURI+"#";
 		
 	//EXPRESS basis
-	private Map<String, EntityVO> ent;
-	private Map<String, TypeVO> typ;
+	private final Map<String, EntityVO> ent;
+	private final Map<String, TypeVO> typ;
 	
 	//conversion variables
 	private int IDcounter = 0;	
 	private Map<Long, IFCVO> linemap = new HashMap<Long, IFCVO>();
 	private Model im;
-	private InputStream inputStream;
-	private OntModel ontModel;
-	private OntModel expressModel;
-	private OntModel listModel;
+	private final InputStream inputStream;
+	private final OntModel ontModel;
+	private final OntModel expressModel;
+	private final OntModel listModel;
 	
 	private IfcReader myIfcReader;
 	
@@ -113,7 +113,7 @@ public class IfcConvertor {
 		im.setNsPrefix("ifc", ontNS);
 		im.setNsPrefix("inst", baseURI);
 		im.setNsPrefix("list", listNS);
-		im.setNsPrefix("express", expressNS);
+		im.setNsPrefix("express", EXPRESS_NS);
 		
 		//Read the whole file into a linemap Map object
 		readModel();
@@ -142,7 +142,7 @@ public class IfcConvertor {
 				while ((strLine = br.readLine()) != null) {
 					if (strLine.length() > 0) {
 						if (strLine.charAt(0) == '#') {
-							StringBuffer sb = new StringBuffer();
+							StringBuilder sb = new StringBuilder();
 							String stmp = strLine;
 							sb.append(stmp.trim());
 							while (!stmp.contains(";")) {
@@ -167,11 +167,12 @@ public class IfcConvertor {
 	private void parse_IFC_LineStatement(String line) {
 		IFCVO ifcvo = new IFCVO();
 		int state = 0;
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		int cl_count = 0;
 		LinkedList<Object> current = ifcvo.getObjectList();
 		Stack<LinkedList<Object>> list_stack = new Stack<LinkedList<Object>>();
-		for (int i = 0; i < line.length(); i++) {
+		int length = line.length();
+		for (int i = 0; i < length; i++) {
 			char ch = line.charAt(i);
 			switch (state) {
 			case 0:
@@ -374,12 +375,12 @@ public class IfcConvertor {
 					OntProperty p = ontModel.getOntProperty(propURI);
 					OntResource range = p.getRange();
 					if(range.isClass()){
-						OntClass c = expressModel.getOntClass(expressNS + "ENUMERATION");
+						OntClass c = expressModel.getOntClass(EXPRESS_NS + "ENUMERATION");
 						if(range.asClass().hasSuperClass(c)){
 							addEnumProperty(r,p,range,literalString);
 						}								
 						//Check for SELECT
-						else if(range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "SELECT"))){
+						else if(range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "SELECT"))){
 							if(myIfcReader.logToFile) myIfcReader.bw.write("1 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString + "\r\n");
 						}									
 						else if(range.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
@@ -393,7 +394,7 @@ public class IfcConvertor {
 							}
 							if(xsdType!=null){
 								String xsdTypeCAP = Character.toUpperCase(xsdType.charAt(0)) + xsdType.substring(1);
-								OntProperty valueProp = expressModel.getOntProperty(expressNS + "has" + xsdTypeCAP);
+								OntProperty valueProp = expressModel.getOntProperty(EXPRESS_NS + "has" + xsdTypeCAP);
 								
 								// Create only when needed...
 								String key=valueProp.toString()+":"+xsdType+":"+literalString;
@@ -474,12 +475,13 @@ public class IfcConvertor {
 					OntProperty p = ontModel.getOntProperty(ontNS + propURI);
 					OntResource typerange = p.getRange();
 
-					if(typerange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
+					OntClass ontClass = listModel.getOntClass(listNS + "OWLList");
+					if(typerange.asClass().hasSuperClass(ontClass)){
 						//EXPRESS LISTs
 						String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
 						OntResource listrange = ontModel.getOntResource(listvaluepropURI);
 
-						if(listrange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
+						if(listrange.asClass().hasSuperClass(ontClass)){
 							if(myIfcReader.logToFile) myIfcReader.bw.write("6 - WARNING: Found unhandled ListOfList" + "\r\n");
 						}													
 						else{
@@ -543,11 +545,11 @@ public class IfcConvertor {
 		
 		if(range.isClass()){
 			//Check for ENUM
-			if(range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "ENUMERATION"))){
+			if(range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "ENUMERATION"))){
 				addEnumProperty(r,p,range,literalString);									
 			}								
 			//Check for SELECT
-			else if(range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "SELECT"))){
+			else if(range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "SELECT"))){
 				if(myIfcReader.logToFile) myIfcReader.bw.write("9 - WARNING TODO: found SELECT property: " + p + " - " + range.getLocalName() + " - " + literalString + "\r\n");
 			}								
 			else {
@@ -556,7 +558,7 @@ public class IfcConvertor {
 					xsdType = getXSDTypeFromRangeExpensiveMethod(range);
 				if(xsdType!=null){					
 					String xsdTypeCAP = Character.toUpperCase(xsdType.charAt(0)) + xsdType.substring(1);
-					OntProperty valueProp = expressModel.getOntProperty(expressNS + "has" + xsdTypeCAP);
+					OntProperty valueProp = expressModel.getOntProperty(EXPRESS_NS + "has" + xsdTypeCAP);
 					
 					// Create only when needed...
 					String key=valueProp.toString()+":"+xsdType+":"+literalString;
@@ -607,11 +609,11 @@ public class IfcConvertor {
 		}
 		else if(xsdType.equalsIgnoreCase("logical")){
 			if(literalString.equalsIgnoreCase(".F."))
-				r1.addProperty(valueProp, expressModel.getResource(expressNS + "FALSE"));
+				r1.addProperty(valueProp, expressModel.getResource(EXPRESS_NS + "FALSE"));
 			else if(literalString.equalsIgnoreCase(".T."))
-				r1.addProperty(valueProp, expressModel.getResource(expressNS + "TRUE"));
+				r1.addProperty(valueProp, expressModel.getResource(EXPRESS_NS + "TRUE"));
 			else if(literalString.equalsIgnoreCase(".U."))
-				r1.addProperty(valueProp, expressModel.getResource(expressNS + "UNKNOWN"));
+				r1.addProperty(valueProp, expressModel.getResource(EXPRESS_NS + "UNKNOWN"));
 			else
 				if(myIfcReader.logToFile) myIfcReader.bw.write("WARNING: found odd logical value: " + literalString + "\r\n");
 		}
@@ -666,20 +668,20 @@ public class IfcConvertor {
 	}
 	
 	private OntResource getListContentType(OntClass range) throws IOException{				
-		if(range.asClass().getURI().equalsIgnoreCase(expressNS + "STRING_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "STRING_List")))
-			return expressModel.getOntResource(expressNS + "STRING");
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "REAL_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "REAL_List")))
-			return expressModel.getOntResource(expressNS + "REAL");
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "INTEGER_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "INTEGER_List")))
-			return expressModel.getOntResource(expressNS + "INTEGER");
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BINARY_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BINARY_List")))
-			return expressModel.getOntResource(expressNS + "BINARY");
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BOOLEAN_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BOOLEAN_List")))
-			return expressModel.getOntResource(expressNS + "BOOLEAN");
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "LOGICAL_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "LOGICAL_List")))
-			return expressModel.getOntResource(expressNS + "LOGICAL");
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "NUMBER_List") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "NUMBER_List")))
-			return expressModel.getOntResource(expressNS + "NUMBER");
+		if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "STRING_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "STRING_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "STRING");
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "REAL_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "REAL_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "REAL");
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "INTEGER_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "INTEGER_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "INTEGER");
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "BINARY_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "BINARY_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "BINARY");
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "BOOLEAN_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "BOOLEAN_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "BOOLEAN");
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "LOGICAL_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "LOGICAL_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "LOGICAL");
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "NUMBER_List") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "NUMBER_List")))
+			return expressModel.getOntResource(EXPRESS_NS + "NUMBER");
 		else if(range.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
 			String listvaluepropURI = ontNS + range.getLocalName().substring(0, range.getLocalName().length()-5);
 			return ontModel.getOntResource(listvaluepropURI);
@@ -748,7 +750,7 @@ public class IfcConvertor {
 			xsdType = getXSDTypeFromRangeExpensiveMethod(listrange);
 		if(xsdType!=null){
 			String xsdTypeCAP = Character.toUpperCase(xsdType.charAt(0)) + xsdType.substring(1);
-			OntProperty valueProp = expressModel.getOntProperty(expressNS + "has" + xsdTypeCAP);
+			OntProperty valueProp = expressModel.getOntProperty(EXPRESS_NS + "has" + xsdTypeCAP);
 			
 			//Adding Content only if found
 			for(int i = 0; i<reslist.size();i++){	
@@ -778,8 +780,9 @@ public class IfcConvertor {
 	
 	// HELPER METHODS
 	private String filter_extras(String txt) {
-		StringBuffer sb = new StringBuffer();
-		for (int n = 0; n < txt.length(); n++) {
+		StringBuilder sb = new StringBuilder();
+		int length = txt.length();
+		for (int n = 0; n < length; n++) {
 			char ch = txt.charAt(n);
 			switch (ch) {
 			case '\'':
@@ -794,8 +797,9 @@ public class IfcConvertor {
 	}
 
 	private String filter_points(String txt) {
-		StringBuffer sb = new StringBuffer();
-		for (int n = 0; n < txt.length(); n++) {
+		StringBuilder sb = new StringBuilder();
+		int length = txt.length();
+		for (int n = 0; n < length; n++) {
 			char ch = txt.charAt(n);
 			switch (ch) {
 			case '.':
@@ -816,19 +820,19 @@ public class IfcConvertor {
 	}
 	
 	private String getXSDTypeFromRange(OntResource range){		
-		if(range.asClass().getURI().equalsIgnoreCase(expressNS + "STRING") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "STRING")))
+		if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "STRING") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "STRING")))
 			return "string";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "REAL") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "REAL")))
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "REAL") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "REAL")))
 			return "double";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "INTEGER") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "INTEGER")))
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "INTEGER") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "INTEGER")))
 			return "integer";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BINARY") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BINARY")))
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "BINARY") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "BINARY")))
 			return "hexBinary";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "BOOLEAN") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "BOOLEAN")))
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "BOOLEAN") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "BOOLEAN")))
 			return "boolean";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "LOGICAL") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "LOGICAL")))
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "LOGICAL") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "LOGICAL")))
 			return "logical";
-		else if(range.asClass().getURI().equalsIgnoreCase(expressNS + "NUMBER") || range.asClass().hasSuperClass(expressModel.getOntClass(expressNS + "NUMBER")))
+		else if(range.asClass().getURI().equalsIgnoreCase(EXPRESS_NS + "NUMBER") || range.asClass().hasSuperClass(expressModel.getOntClass(EXPRESS_NS + "NUMBER")))
 			return "double";
 		else
 			return null;
