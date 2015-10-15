@@ -1,9 +1,9 @@
 package org.bimserver.serializers.ifctordf;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(IfcToRdfPlugin.class);
 	private boolean initialized;
-	private File schemaFile;
+	private Path schemaFile;
 	private static String timeLog = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
 	private static final String DEFAULT_PATH = "http://linkedbuildingdata.net/ifc/instances"+timeLog+"#";
 	private OntModel om;
