@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
@@ -119,32 +120,42 @@ public class ExpressReader {
 	}
 
 	public static void main(String[] args) throws IOException {
-		//args should be: IFC2X3_Final, IFC2X3_TC1, IFC4 or IFC4_ADD1, nothing else is accepted here
-		if(args.length != 2)
-		 	System.out.println("Usage: java ExpressReader expressSchemaname pathToOutputFile \nExample: java ExpressReader IFC2X3_TC1 C:/outputfile.owl \nNote: only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options");
+		// args should be: IFC2X3_Final, IFC2X3_TC1, IFC4 or IFC4_ADD1, nothing
+		// else is accepted here
+		if (args.length != 2)
+			System.out
+					.println("Usage: java ExpressReader expressSchemaname pathToOutputFile \nExample: java ExpressReader IFC2X3_TC1 C:/outputfile.owl \nNote: only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options");
 		else {
 			String in = args[0];
-			if(in.equalsIgnoreCase("IFC2X3_Final") || in.equalsIgnoreCase("IFC2X3_TC1") || in.equalsIgnoreCase("IFC4_ADD1") || in.equalsIgnoreCase("IFC4")){
+			if (in.equalsIgnoreCase("IFC2X3_Final")
+					|| in.equalsIgnoreCase("IFC2X3_TC1")
+					|| in.equalsIgnoreCase("IFC4_ADD1")
+					|| in.equalsIgnoreCase("IFC4")) {
 				try {
-					InputStream instr = ExpressReader.class.getResourceAsStream("/" + in + ".exp");
+					InputStream instr = ExpressReader.class
+							.getResourceAsStream("/" + in + ".exp");
 					ExpressReader er = new ExpressReader(instr);
-					Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/" + in;										
+					Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/"
+							+ in;
 					er.readAndBuildVersion2015();
-		
-					OWLWriter ow = new OWLWriter(in, er.entities,
-							er.types, er.getSiblings(), er.getEnumIndividuals(), er.getProperties());
+
+					er.outputEntitiesAndTypes(args[1], in);
+
+					OWLWriter ow = new OWLWriter(in, er.entities, er.types,
+							er.getSiblings(), er.getEnumIndividuals(),
+							er.getProperties());
 					ow.outputOWLVersion2015(args[1]);
-					System.out.println("Ended converting the EXPRESS schema into corresponding OWL file");
-					
-					//modify location when using
+					System.out
+							.println("Ended converting the EXPRESS schema into corresponding OWL file");
+
+					// modify location when using
 					er.CleanModelAndRewrite(args[1]);
-					
 				} catch (Exception e) {
 					e.printStackTrace();
-				} 
-			}
-			else
-			 	System.out.println("Usage: java ExpressReader expressSchemaname pathToOutputFile \nExample: java ExpressReader IFC2X3_TC1 C:/outputfile.owl \nNote: only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options");
+				}
+			} else
+				System.out
+						.println("Usage: java ExpressReader expressSchemaname pathToOutputFile \nExample: java ExpressReader IFC2X3_TC1 C:/outputfile.owl \nNote: only 'IFC2X3_Final', 'IFC2X3_TC1', 'IFC4_ADD1' and 'IFC4' are accepted options");
 		}
 	}
 	
@@ -627,6 +638,28 @@ public class ExpressReader {
 		generate_derived_inverse_list();
 	}
 
+	private void outputEntitiesAndTypes(String filePathNoExt, String schemaName) {
+		String filePath = filePathNoExt.substring(0,filePathNoExt.lastIndexOf("\\"));
+		System.out.println("writing output to : " + filePath+"ent"+schemaName+".ser and " + filePath+"typ"+schemaName+".ser");
+		
+		FileOutputStream fos;
+		try {
+			fos = new FileOutputStream(filePath+"\\"+"ent"+schemaName+".ser");
+
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
+			oos.writeObject(entities);
+			oos.close();
+
+			fos = new FileOutputStream(filePath+"\\"+"typ"+schemaName+".ser");
+
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(types);
+			oos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}	
+	
 	// WRITING ATTRIBUTE AND INVERSE STRUCTURE
 	private void generate_derived_attribute_list() throws IOException {
 		Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();

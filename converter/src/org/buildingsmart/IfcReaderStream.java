@@ -20,7 +20,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
-import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
 import fi.ni.gui.fx.FxInterface;
@@ -99,11 +98,8 @@ public class IfcReaderStream {
 				if(f.endsWith(".ifc")){
 					IfcReaderStream r = new IfcReaderStream();					
 					System.out.println("Converting file : " + f + "\r\n");
-					if(r.logToFile) r.bw.write("Converting file : " + f + "\r\n");
 					String path = f.substring(0,f.length()-4);		
 					r.convert(path+".ifc", path+".ttl", r.DEFAULT_PATH);
-					r.bw.flush();
-					r.bw.close();
 				}
 			}
 		}
@@ -123,12 +119,12 @@ public class IfcReaderStream {
 			}
 		} else {
 			if (args.length == 2 && !args[0].startsWith("-json")) {
-				IfcReader r = new IfcReader();
+				IfcReaderStream r = new IfcReaderStream();
 				r.convert(args[0], args[1], r.DEFAULT_PATH);
 			} else {
 				if (args[0].equals("-json")) {
 					try {
-						IfcReader r = new IfcReader();
+						IfcReaderStream r = new IfcReaderStream();
 						FileInputStream fis = new FileInputStream(args[1]);
 						String jsonString = slurp(fis);
 						fis.close();
@@ -137,7 +133,7 @@ public class IfcReaderStream {
 						e.printStackTrace();
 					}
 				} else if (args[0].equals("-jsonString")) {
-					IfcReader r = new IfcReader();
+					IfcReaderStream r = new IfcReaderStream();
 					r.convert(args[1]);
 				}
 			}
@@ -222,6 +218,7 @@ public class IfcReaderStream {
 
 	public void convert(String ifc_file, String output_file,
 			String baseURI) throws IOException {
+		long t0 = System.currentTimeMillis();
 
 		if (!ifc_file.endsWith(".ifc")) {
 			ifc_file += ".ifc";
@@ -249,8 +246,9 @@ public class IfcReaderStream {
 			om.read(in, null, "TTL");
 
 			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
-			ExpressReader er = new ExpressReader(expin);
-			er.readAndBuildVersion2015();
+//			ExpressReader er = new ExpressReader(expin);
+//			er.readAndBuildVersion2015();
+			System.out.println("finished reading express");
 
 			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
@@ -262,10 +260,13 @@ public class IfcReaderStream {
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			listModel.read(rdfListStream, null, "RDF/XML");
 
-			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+//			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, exp);
 			conv.setIfcReader(this);
 			FileOutputStream out=new FileOutputStream(output_file);
+			System.out.println("started parsing stream");
 			conv.parseModel2Stream(out);		
+			System.out.println("finished!!");
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 		} finally {
@@ -280,10 +281,31 @@ public class IfcReaderStream {
 				e1.printStackTrace();
 			}
 		}
+		
+//		if(logToFile){
+//			Model RDFModel = org.apache.jena.util.FileManager.get().loadModel(inputfile, inputtype);
+//			InfModel infmodel = ModelFactory.createRDFSModel(RDFModel);
+//			if (om != null && model != null) {
+//				boolean valid = validateGeneratedModel(om, model);
+//				if (valid == true) {
+//					writeTTLRDFFiles(model, output_file);
+//				} else {
+//					System.err.println("The generated RDF model is invalid");
+//					System.exit(1);
+//				}
+//				long t1 = System.currentTimeMillis();
+//				System.out.println("done in " + ((t1 - t0) / 1000.0) + " seconds.");
+//				if(logToFile) bw.write("done in " + ((t1 - t0) / 1000.0) + " seconds." + "\r\n");
+//			} else {
+//				System.out
+//						.println("No ontologyModel or instanceModel found -> no files generated.");
+//				if(logToFile) bw.write("No ontologyModel or instanceModel found -> no files generated." + "\r\n");
+//			}
+//		}
 	}
+		
 	
-	/*  These methods are created to handle the FX interface and drag&drop features */
-	
+	/*  These methods are created to handle the FX interface and drag&drop features */	
 	public void convert(String ifc_file, String output_file, String baseURI,FxInterface fx_gui) throws IOException {
 
 		if (!ifc_file.endsWith(".ifc")) {

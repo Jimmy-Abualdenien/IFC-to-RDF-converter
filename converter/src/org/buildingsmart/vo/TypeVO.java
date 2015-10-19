@@ -19,11 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package org.buildingsmart.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TypeVO {
+public class TypeVO implements Serializable {
+	private static final long serialVersionUID = -3366648676376786356L;
 	private String name;
 	private String primarytype;
 	private List<String> select_entities = new LinkedList<String>();

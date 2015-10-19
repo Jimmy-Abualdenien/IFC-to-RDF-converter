@@ -1,5 +1,6 @@
 package org.buildingsmart.vo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -28,7 +29,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class EntityVO {
+public class EntityVO implements Serializable {
+	private static final long serialVersionUID = -3172893316956350157L;
 	private String name;
 	private List<AttributeVO> attributes = new LinkedList<AttributeVO>();
 	private List<InverseVO> inverses = new LinkedList<InverseVO>();

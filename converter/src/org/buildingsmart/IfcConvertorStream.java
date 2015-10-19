@@ -2,10 +2,15 @@ package org.buildingsmart;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -33,6 +38,8 @@ import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+
+import fi.ni.rdf.Namespace;
 
 
 /*
@@ -69,7 +76,7 @@ import org.apache.jena.vocabulary.RDFS;
 
 /*
  * !!!
- * apache-jena-2.12.1 need to be used
+ * apache-jena-2.12.1 needs to be used
  * Otherwise gives: Exception in thread "main" java.lang.NoSuchFieldError: JSONLD  ERROR
  * 
  * 
@@ -93,7 +100,7 @@ public class IfcConvertorStream {
 	//conversion variables
 	private int IDcounter = 0;	
 	private Map<Long, IFCVO> linemap = new HashMap<Long, IFCVO>();
-
+		
 	private StreamRDF ttl_writer;
 	private InputStream inputStream;
 	private OntModel ontModel;
@@ -101,6 +108,10 @@ public class IfcConvertorStream {
 	private OntModel listModel;
 	
 	private IfcReaderStream myIfcReaderStream;
+
+	//for removing duplicates in line entries
+	private Map<String,Resource> listOfUniqueResources= new HashMap<String,Resource>();
+	private Map<Long,Long> listOfDuplicateLineEntries= new HashMap<Long,Long>();
 	
 	// Taking care of avoiding duplicate resources
 	private Map<String,Resource> property_resource_map=new HashMap<String,Resource>();  
@@ -120,23 +131,65 @@ public class IfcConvertorStream {
 		ontNS = ontURI + "#";
 	}
 	
+	public IfcConvertorStream(OntModel ontModel, OntModel expressModel, OntModel listModel, InputStream inputStream, String baseURI, String exp){
+		this.ontModel = ontModel;
+		this.expressModel = expressModel;
+		this.listModel = listModel;
+		this.inputStream = inputStream;
+		this.baseURI = baseURI;
+		
+		//PREPARATION
+		readExpressLists(exp);
+		ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+		ontNS = ontURI + "#";
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void readExpressLists(String schemaName){
+	    InputStream fis;
+		try {
+//			fis = new FileInputStream("/data/ent"+schemaName+".ser");
+			//fis = new FileInputStream("C:\\Users\\generic\\Documents\\GitHub\\IFC-to-RDF-converter\\converter\\data\\ent"+schemaName+".ser");
+			fis = IfcConvertor.class.getResourceAsStream("/ent"+schemaName+".ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			this.ent = (Map<String,EntityVO>) ois.readObject();
+			ois.close();		
+
+//			fis = new FileInputStream("C:\\Users\\generic\\Documents\\GitHub\\IFC-to-RDF-converter\\converter\\data\\typ"+schemaName+".ser");
+			fis = IfcConvertor.class.getResourceAsStream("/typ"+schemaName+".ser");
+			ois = new ObjectInputStream(fis);
+			this.typ = (Map<String,TypeVO>) ois.readObject();
+			ois.close();		
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void setIfcReader(IfcReaderStream r){
 		this.myIfcReaderStream = r;
 	}
 
-	public void parseModel2Stream(FileOutputStream out) throws IOException{		
+	public void parseModel2Stream(OutputStream out) throws IOException{		
 		ttl_writer = StreamRDFWriter.getWriterStream(out, RDFFormat.TURTLE_BLOCKS) ;
 		ttl_writer.prefix("ifcowl", ontNS);
 		ttl_writer.prefix("inst", baseURI);
 		ttl_writer.prefix("list", listNS);
 		ttl_writer.prefix("express", expressNS);		
+		ttl_writer.prefix("rdf", Namespace.RDF);		
+		ttl_writer.prefix("xsd", Namespace.XSD);
 		ttl_writer.start();
 		
 		//Read the whole file into a linemap Map object
-		readModel();	
+		readModel();
+		System.gc();
+		System.out.println("model parsed");
+		resolveDuplicates();
 
 		//map entries of the linemap Map object to the ontology Model and make new instances in the model	
 		mapEntries();
+		System.out.println("entries mapped, now creating instances");
 		createInstances();
 		
 		// Save memory
@@ -145,7 +198,7 @@ public class IfcConvertorStream {
 		System.gc();
 		
 		ttl_writer.finish();
-		}
+	}
 	
 	private void readModel() {
 		try {
@@ -180,6 +233,7 @@ public class IfcConvertorStream {
 	
 	private void parse_IFC_LineStatement(String line) {
 		IFCVO ifcvo = new IFCVO();
+		ifcvo.setFullLineAfterNum(line.substring(line.indexOf("=")+1));
 		int state = 0;
 		StringBuffer sb = new StringBuffer();
 		int cl_count = 0;
@@ -263,6 +317,26 @@ public class IfcConvertorStream {
 		IDcounter++;
 	}
 	
+	private void resolveDuplicates() throws IOException{
+		Map<String,IFCVO> listOfUniqueResources= new HashMap<String,IFCVO>();
+		List<Long> entriesToRemove=new ArrayList<Long>();
+		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
+			IFCVO vo = entry.getValue();
+			String t = vo.getFullLineAfterNum();
+			if(!listOfUniqueResources.containsKey(t))				
+				listOfUniqueResources.put(t, vo);
+			else{
+				//found duplicate
+				entriesToRemove.add(entry.getKey());//linemap.remove(entry.getKey());
+				listOfDuplicateLineEntries.put(vo.getLine_num(), listOfUniqueResources.get(t).getLine_num());
+			}
+		}
+		if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("found and removed " + listOfDuplicateLineEntries.size() +" duplicates! \r\n");
+		for(Long x : entriesToRemove){
+			linemap.remove(x);
+		}
+	}
+	
 	private void mapEntries(){
 		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
 			IFCVO vo = entry.getValue();
@@ -275,7 +349,11 @@ public class IfcConvertorStream {
 					if (s.length() < 1)
 						continue;
 					if (s.charAt(0) == '#') {
-						Object or = linemap.get(toLong(s.substring(1)));
+						Object or = null;
+						if(listOfDuplicateLineEntries.containsKey(toLong(s.substring(1))))
+							or=linemap.get(listOfDuplicateLineEntries.get(toLong(s.substring(1))));
+						else
+							or = linemap.get(toLong(s.substring(1)));
 						vo.getObjectList().set(i, or);
 					}
 				}
@@ -290,7 +368,11 @@ public class IfcConvertorStream {
 							if (s.length() < 1)
 								continue;
 							if (s.charAt(0) == '#') {
-								Object or = linemap.get(toLong(s.substring(1)));
+								Object or = null;
+								if(listOfDuplicateLineEntries.containsKey(toLong(s.substring(1))))
+									or=linemap.get(listOfDuplicateLineEntries.get(toLong(s.substring(1))));
+								else
+									or = linemap.get(toLong(s.substring(1)));
 								if (or == null) {
 									System.err
 											.println("Reference to non-existing line in the IFC file.");
@@ -308,8 +390,11 @@ public class IfcConvertorStream {
 									if (s.length() < 1)
 										continue;
 									if (s.charAt(0) == '#') {
-										Object or = linemap.get(toLong(s
-												.substring(1)));
+										Object or = null;
+										if(listOfDuplicateLineEntries.containsKey(toLong(s.substring(1))))
+											or=linemap.get(listOfDuplicateLineEntries.get(toLong(s.substring(1))));
+										else
+											or = linemap.get(toLong(s.substring(1)));
 										if (or == null) {
 											System.err
 													.println("Reference to non-existing line in the IFC file.");
@@ -327,17 +412,26 @@ public class IfcConvertorStream {
 	}
 	
 	private void createInstances() throws IOException{		
+		int i = 0;
 		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
-			IFCVO ifc_lineEntry = entry.getValue();	
+			IFCVO ifc_lineEntry = entry.getValue();			
 			String typeName = ent.get(ifc_lineEntry.getName()).getName();			
 			OntClass cl = ontModel.getOntClass(ontNS + typeName);
-			Resource r =  getResource(baseURI + typeName + "_" + ifc_lineEntry.getLine_num(),cl);
-			
+				
+			Resource r = getResource(baseURI + typeName + "_" + ifc_lineEntry.getLine_num(),cl);
+			listOfUniqueResources.put(ifc_lineEntry.getFullLineAfterNum(),r);
+				
 			if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("-------------------------------" + "\r\n");
 			if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write(r.getLocalName() + "\r\n");
 			if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("-------------------------------" + "\r\n");
-			
+					
 			fillProperties(ifc_lineEntry, r, cl);
+			i++;
+
+			if( i % 100 == 0 ){
+				System.gc();
+				System.out.println("writing entry : " + i);
+			}
 		}
 		// The map is used only to avoid duplicates.
 		// So, it can be cleared here
@@ -464,7 +558,8 @@ public class IfcConvertorStream {
 	}
 
 	private int fillProperties_handleListObject(Resource r, EntityVO evo,
-			int attribute_pointer, Object o) throws IOException {
+			int attribute_pointer, Object o) throws IOException {	
+		
 		@SuppressWarnings("unchecked")
 		final LinkedList<Object> tmp_list = (LinkedList<Object>) o;
 		LinkedList<String> literals=new LinkedList<String>();		
@@ -539,10 +634,8 @@ public class IfcConvertorStream {
 					&& (evo.getDerived_attribute_list() != null)
 					&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
 				String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
-				OntProperty p = ontModel.getOntProperty(propURI);
-
+				OntProperty p = ontModel.getOntProperty(propURI);				
 				addRegularListProperty(r, p, literals);
-				
 			}
 		}
 		attribute_pointer++;

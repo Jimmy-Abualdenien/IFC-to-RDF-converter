@@ -1,5 +1,7 @@
 package org.buildingsmart.vo;
 
+import java.io.Serializable;
+
 /*
 The GNU Affero General Public License
 
@@ -19,7 +21,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class AttributeVO {
+public class AttributeVO implements Serializable {
+	private static final long serialVersionUID = -7269719435899663513L;
 	private String name;
 	private String originalName;
 	private EntityVO domain;

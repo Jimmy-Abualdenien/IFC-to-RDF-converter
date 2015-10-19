@@ -20,7 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 package org.buildingsmart.vo;
 
-public class InverseVO {
+import java.io.Serializable;
+
+public class InverseVO implements Serializable {
+	private static final long serialVersionUID = -6700903862493542784L;
 	private String name;
 	private String classRange;
 	private String inverseOfProperty;

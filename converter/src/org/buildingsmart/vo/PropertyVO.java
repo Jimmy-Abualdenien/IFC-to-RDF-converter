@@ -1,5 +1,6 @@
 package org.buildingsmart.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
 import fi.ni.rdf.Namespace;
@@ -24,7 +25,8 @@ Copyright (c) 2014 Pieter Pauwels (modifications - pipauwel.pauwels@ugent.be / p
  along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-public class PropertyVO {
+public class PropertyVO implements Serializable {
+	private static final long serialVersionUID = 3706277260287854899L;
 	private String name;
 	private String originalName;
 	private EntityVO domain;

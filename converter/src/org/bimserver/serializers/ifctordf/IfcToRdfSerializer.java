@@ -3,6 +3,7 @@ package org.bimserver.serializers.ifctordf;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,7 +27,9 @@ import org.bimserver.plugins.serializers.SerializerPlugin;
 import org.bimserver.plugins.serializers.StagingProgressReporter;
 import org.buildingsmart.ExpressReader;
 import org.buildingsmart.IfcConvertor;
+import org.buildingsmart.IfcConvertorStream;
 import org.buildingsmart.IfcReader;
+import org.buildingsmart.IfcReaderStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +39,6 @@ public class IfcToRdfSerializer extends EmfSerializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(IfcToRdfSerializer.class);
 
 	private OntModel ontModel;
-	private ExpressReader expressReader;
 
 	private OntModel expressModel;
 
@@ -46,11 +48,10 @@ public class IfcToRdfSerializer extends EmfSerializer {
 	public void reset() {
 	}
 
-	public IfcToRdfSerializer(OntModel ontModel, OntModel expressModel, OntModel listModel, ExpressReader expressReader) {
+	public IfcToRdfSerializer(OntModel ontModel, OntModel expressModel, OntModel listModel) {
 		this.ontModel = ontModel;
 		this.expressModel = expressModel;
 		this.listModel = listModel;
-		this.expressReader = expressReader;
 	}
 
 	@Override
@@ -70,24 +71,26 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		long t0 = System.currentTimeMillis();
 
 		try {
-			IfcConvertor conv = new IfcConvertor(ontModel, expressModel, listModel, expressReader, serializer.getInputStream(), "http://linkedbuildingdata.net/ifc/instances"
+			IfcConvertorStream conv = new IfcConvertorStream(ontModel, expressModel, listModel, serializer.getInputStream(), "http://linkedbuildingdata.net/ifc/instances"
 					+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
-			conv.setIfcReader(new IfcReader());
-			Model model = conv.parseModel();
+			conv.setIfcReader(new IfcReaderStream());
+			conv.parseModel2Stream(outputStream);
+			//FileOutputStream out=new FileOutputStream(output_file);
 			
-			InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
-			ValidityReport validity = infModel.validate();
-			if (!validity.isValid()) {
-				StringBuilder stringBuilder = new StringBuilder("generated RDF model contains conflicts. No RDF nor TTL file produced.");
-				for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
-					stringBuilder.append(" - " + i.next() + "\n");
-				}
-				throw new SerializerException(stringBuilder.toString());
-			}
+			//THIS TAKES TOO MUCH TIME
+//			InfModel infModel = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), ontModel, model);
+//			ValidityReport validity = infModel.validate();
+//			if (!validity.isValid()) {
+//				StringBuilder stringBuilder = new StringBuilder("generated RDF model contains conflicts. No RDF nor TTL file produced.");
+//				for (Iterator<Report> i = validity.getReports(); i.hasNext();) {
+//					stringBuilder.append(" - " + i.next() + "\n");
+//				}
+//				throw new SerializerException(stringBuilder.toString());
+//			}
 	
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, Charsets.UTF_8);
-			BufferedWriter out = new BufferedWriter(outputStreamWriter);
-			model.write(out, "TTL");
+//			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream, Charsets.UTF_8);
+//			BufferedWriter out = new BufferedWriter(outputStreamWriter);
+//			model.write(out, "TTL");
 	
 			//you might want to opt to output to RDF/XML as well here, depending on your outputStream var
 			//String output_file_rdf = outputStream.substring(0, output_file.length() - 4) + ".rdf";

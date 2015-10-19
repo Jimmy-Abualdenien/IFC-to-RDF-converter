@@ -31,11 +31,22 @@ import java.util.Map;
 public class IFCVO {
 	
     private Long line_num ;	
-	private String name = null;
+	private String fullLineAfterNum;
+    private String name = null;
 	private LinkedList<Object> list = new LinkedList<Object>();	
 	private Map<String,LinkedList<IFCVO>> inverse_pointer_sets = new HashMap<String,LinkedList<IFCVO>>();
-	
+
+
 	public IFCVO() {}
+	
+	
+	public String getFullLineAfterNum() {
+		return fullLineAfterNum;
+	}
+
+	public void setFullLineAfterNum(String fullLineAfterNum) {
+		this.fullLineAfterNum = fullLineAfterNum;
+	}
 	
 	public Long getLine_num() {
 		return line_num;
@@ -68,5 +79,4 @@ public class IFCVO {
 	public void setInverse_pointer_sets(Map<String,LinkedList<IFCVO>> inverse_pointer_sets) {
 		this.inverse_pointer_sets = inverse_pointer_sets;
 	}
-
 }
