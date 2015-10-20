@@ -3,6 +3,7 @@ package org.bimserver.serializers.ifctordf;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -14,6 +15,7 @@ import org.apache.jena.rdf.model.ModelFactory;
 import org.bimserver.emf.Schema;
 import org.bimserver.models.store.ObjectDefinition;
 import org.bimserver.plugins.PluginConfiguration;
+import org.bimserver.plugins.PluginContext;
 import org.bimserver.plugins.PluginException;
 import org.bimserver.plugins.PluginManager;
 import org.bimserver.plugins.renderengine.RenderEngineException;
@@ -50,11 +52,15 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 			listModel = loadModel(pluginManager, "/data/list.rdf", "RDF/XML");
 
 			String expPath = "/data/IFC2X3_TC1.exp";
-			InputStream inexp = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
+			PluginContext pluginContext = pluginManager.getPluginContext(this);
+			Path path = pluginContext.getRootPath().resolve(expPath);
+			InputStream inexp = Files.newInputStream(path);
 			if (inexp == null) {
 				throw new PluginException(expPath + " not found");
 			}
-
+			er = new ExpressReader(inexp);
+			er.readAndBuildVersion2015();
+			
 			initialized = true;
 		} catch (FileNotFoundException e) {
 			LOGGER.error("", e);
@@ -65,7 +71,9 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 
 	private OntModel loadModel(PluginManager pluginManager, String expPath, String type) throws IOException {
 		OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-		InputStream inputStream = pluginManager.getPluginContext(this).getResourceAsInputStream(expPath);
+		PluginContext pluginContext = pluginManager.getPluginContext(this);
+		Path path = pluginContext.getRootPath().resolve(expPath);
+		InputStream inputStream = Files.newInputStream(path);
 		if (inputStream == null) {
 			throw new FileNotFoundException(expPath);
 		}
