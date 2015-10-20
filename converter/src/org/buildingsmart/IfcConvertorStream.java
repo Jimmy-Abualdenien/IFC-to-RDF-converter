@@ -153,7 +153,6 @@ public class IfcConvertorStream {
 		
 		//Read the whole file into a linemap Map object
 		readModel();
-		System.gc();
 		System.out.println("model parsed");
 		resolveDuplicates();
 
@@ -165,7 +164,6 @@ public class IfcConvertorStream {
 		// Save memory
 		linemap.clear();
 		linemap = null;
-		System.gc();
 		
 		ttl_writer.finish();
 	}
@@ -399,7 +397,6 @@ public class IfcConvertorStream {
 			i++;
 
 			if( i % 100 == 0 ){
-				System.gc();
 				System.out.println("writing entry : " + i);
 			}
 		}
