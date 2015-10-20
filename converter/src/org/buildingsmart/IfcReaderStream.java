@@ -11,16 +11,20 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONObject;
 
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.buildingsmart.vo.EntityVO;
+import org.buildingsmart.vo.TypeVO;
 
 import fi.ni.gui.fx.FxInterface;
 
@@ -260,8 +264,32 @@ public class IfcReaderStream {
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			listModel.read(rdfListStream, null, "RDF/XML");
 
+			InputStream fis = IfcConvertor.class.getResourceAsStream("/ent"+exp+".ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Map<String, EntityVO> ent = null;
+			try {
+				ent = (Map<String,EntityVO>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				ois.close();
+			}
+
+			fis = IfcConvertor.class.getResourceAsStream("/typ"+exp+".ser");
+			ois = new ObjectInputStream(fis);
+			Map<String, TypeVO> typ = null;
+			try {
+				typ = (Map<String,TypeVO>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				ois.close();
+			}
+			
+			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+			
 //			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
-			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, exp);
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			FileOutputStream out=new FileOutputStream(output_file);
 			System.out.println("started parsing stream");
@@ -348,8 +376,32 @@ public class IfcReaderStream {
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			listModel.read(rdfListStream, null, "RDF/XML");
+			
+			InputStream fis = IfcConvertor.class.getResourceAsStream("/ent"+exp+".ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Map<String, EntityVO> ent = null;
+			try {
+				ent = (Map<String,EntityVO>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				ois.close();
+			}
 
-			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			fis = IfcConvertor.class.getResourceAsStream("/typ"+exp+".ser");
+			ois = new ObjectInputStream(fis);
+			Map<String, TypeVO> typ = null;
+			try {
+				typ = (Map<String,TypeVO>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				ois.close();
+			}
+			
+			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+			
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			out=new FileOutputStream(output_file);
 			conv.parseModel2Stream(out);		
@@ -414,7 +466,30 @@ public class IfcReaderStream {
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			listModel.read(rdfListStream, null, "RDF/XML");
 
-			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
+			InputStream fis = IfcConvertor.class.getResourceAsStream("/ent"+exp+".ser");
+			ObjectInputStream ois = new ObjectInputStream(fis);
+			Map<String, EntityVO> ent = null;
+			try {
+				ent = (Map<String,EntityVO>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				ois.close();
+			}
+
+			fis = IfcConvertor.class.getResourceAsStream("/typ"+exp+".ser");
+			ois = new ObjectInputStream(fis);
+			Map<String, TypeVO> typ = null;
+			try {
+				typ = (Map<String,TypeVO>) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} finally {
+				ois.close();
+			}
+
+			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + "IFC2X3_TC1";
+			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			out=new FileOutputStream(output_file);
 			conv.parseModel2Stream(out);

@@ -1,39 +1,23 @@
 package org.bimserver.serializers.ifctordf;
 
-import java.io.BufferedWriter;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.jena.ontology.OntModel;
-import org.apache.jena.rdf.model.InfModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.reasoner.ReasonerRegistry;
-import org.apache.jena.reasoner.ValidityReport;
-import org.apache.jena.reasoner.ValidityReport.Report;
 import org.bimserver.plugins.serializers.EmfSerializer;
 import org.bimserver.plugins.serializers.ProgressReporter;
 import org.bimserver.plugins.serializers.Serializer;
 import org.bimserver.plugins.serializers.SerializerException;
 import org.bimserver.plugins.serializers.SerializerPlugin;
-import org.bimserver.plugins.serializers.StagingProgressReporter;
-import org.buildingsmart.ExpressReader;
-import org.buildingsmart.IfcConvertor;
 import org.buildingsmart.IfcConvertorStream;
-import org.buildingsmart.IfcReader;
 import org.buildingsmart.IfcReaderStream;
+import org.buildingsmart.vo.EntityVO;
+import org.buildingsmart.vo.TypeVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Charsets;
 
 public class IfcToRdfSerializer extends EmfSerializer {
 	private static final Logger LOGGER = LoggerFactory.getLogger(IfcToRdfSerializer.class);
@@ -44,14 +28,20 @@ public class IfcToRdfSerializer extends EmfSerializer {
 
 	private OntModel listModel;
 
+	private Map<String, EntityVO> ent;
+
+	private Map<String, TypeVO> typ;
+
 	@Override
 	public void reset() {
 	}
 
-	public IfcToRdfSerializer(OntModel ontModel, OntModel expressModel, OntModel listModel) {
+	public IfcToRdfSerializer(OntModel ontModel, OntModel expressModel, OntModel listModel, Map<String, EntityVO> ent, Map<String, TypeVO> typ) {
 		this.ontModel = ontModel;
 		this.expressModel = expressModel;
 		this.listModel = listModel;
+		this.ent = ent;
+		this.typ = typ;
 	}
 
 	@Override
@@ -71,8 +61,9 @@ public class IfcToRdfSerializer extends EmfSerializer {
 		long t0 = System.currentTimeMillis();
 
 		try {
-			IfcConvertorStream conv = new IfcConvertorStream(ontModel, expressModel, listModel, serializer.getInputStream(), "http://linkedbuildingdata.net/ifc/instances"
-					+ new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", "IFC2X3_TC1");
+			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + "IFC2X3_TC1";
+
+			IfcConvertorStream conv = new IfcConvertorStream(ontModel, expressModel, listModel, serializer.getInputStream(), "http://linkedbuildingdata.net/ifc/instances" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", ent, typ, ontURI);
 			conv.setIfcReader(new IfcReaderStream());
 			conv.parseModel2Stream(outputStream);
 			//FileOutputStream out=new FileOutputStream(output_file);

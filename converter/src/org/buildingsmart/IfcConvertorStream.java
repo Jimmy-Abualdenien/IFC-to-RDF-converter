@@ -2,14 +2,9 @@ package org.buildingsmart;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,13 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
-
-import org.apache.jena.riot.RDFFormat;
-import org.apache.jena.riot.system.StreamRDF;
-import org.apache.jena.riot.system.StreamRDFWriter;
-import org.buildingsmart.vo.EntityVO;
-import org.buildingsmart.vo.IFCVO;
-import org.buildingsmart.vo.TypeVO;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
 import org.apache.jena.graph.Triple;
@@ -35,9 +23,15 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
+import org.apache.jena.riot.RDFFormat;
+import org.apache.jena.riot.system.StreamRDF;
+import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
+import org.buildingsmart.vo.EntityVO;
+import org.buildingsmart.vo.IFCVO;
+import org.buildingsmart.vo.TypeVO;
 
 import fi.ni.rdf.Namespace;
 
@@ -85,17 +79,17 @@ import fi.ni.rdf.Namespace;
 public class IfcConvertorStream {
 
 	//input variables
-	private String baseURI;
-	private String ontURI;
-	private String ontNS;
-	private String expressURI = "http://purl.org/voc/express";
-	private String expressNS = expressURI+"#";
-	private String listURI = "http://www.co-ode.org/ontologies/list.owl";
-	private String listNS = listURI+"#";
+	private final String baseURI;
+	private final String ontURI;
+	private final String ontNS;
+	private static final String expressURI = "http://purl.org/voc/express";
+	private static final String expressNS = expressURI+"#";
+	private static final String listURI = "http://www.co-ode.org/ontologies/list.owl";
+	private static final String listNS = listURI+"#";
 	
 	//EXPRESS basis
-	private Map<String, EntityVO> ent;
-	private Map<String, TypeVO> typ;
+	private final Map<String, EntityVO> ent;
+	private final Map<String, TypeVO> typ;
 	
 	//conversion variables
 	private int IDcounter = 0;	
@@ -103,9 +97,9 @@ public class IfcConvertorStream {
 		
 	private StreamRDF ttl_writer;
 	private InputStream inputStream;
-	private OntModel ontModel;
-	private OntModel expressModel;
-	private OntModel listModel;
+	private final OntModel ontModel;
+	private final OntModel expressModel;
+	private final OntModel listModel;
 	
 	private IfcReaderStream myIfcReaderStream;
 
@@ -117,54 +111,30 @@ public class IfcConvertorStream {
 	private Map<String,Resource> property_resource_map=new HashMap<String,Resource>();  
 	private Map<String,Resource> resource_map=new HashMap<String,Resource>();  
 	
-	public IfcConvertorStream(OntModel ontModel, OntModel expressModel, OntModel listModel, ExpressReader expressReader, InputStream inputStream, String baseURI, String exp){
+	public IfcConvertorStream(OntModel ontModel, OntModel expressModel, OntModel listModel, ExpressReader expressReader, InputStream inputStream, String baseURI, Map<String, EntityVO> ent, Map<String, TypeVO> typ, String ontURI){
 		this.ontModel = ontModel;
 		this.expressModel = expressModel;
 		this.listModel = listModel;
 		this.inputStream = inputStream;
 		this.baseURI = baseURI;
+		this.ent = ent;
+		this.typ = typ;
+		this.ontURI = ontURI;
 		
 		//PREPARATION
-		ent = expressReader.getEntities();
-		typ = expressReader.getTypes();
-		ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
 		ontNS = ontURI + "#";
 	}
 	
-	public IfcConvertorStream(OntModel ontModel, OntModel expressModel, OntModel listModel, InputStream inputStream, String baseURI, String exp){
+	public IfcConvertorStream(OntModel ontModel, OntModel expressModel, OntModel listModel, InputStream inputStream, String baseURI, Map<String, EntityVO> ent, Map<String, TypeVO> typ, String ontURI){
 		this.ontModel = ontModel;
 		this.expressModel = expressModel;
 		this.listModel = listModel;
 		this.inputStream = inputStream;
 		this.baseURI = baseURI;
-		
-		//PREPARATION
-		readExpressLists(exp);
-		ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
-		ontNS = ontURI + "#";
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void readExpressLists(String schemaName){
-	    InputStream fis;
-		try {
-//			fis = new FileInputStream("/data/ent"+schemaName+".ser");
-			//fis = new FileInputStream("C:\\Users\\generic\\Documents\\GitHub\\IFC-to-RDF-converter\\converter\\data\\ent"+schemaName+".ser");
-			fis = IfcConvertor.class.getResourceAsStream("/ent"+schemaName+".ser");
-			ObjectInputStream ois = new ObjectInputStream(fis);
-			this.ent = (Map<String,EntityVO>) ois.readObject();
-			ois.close();		
-
-//			fis = new FileInputStream("C:\\Users\\generic\\Documents\\GitHub\\IFC-to-RDF-converter\\converter\\data\\typ"+schemaName+".ser");
-			fis = IfcConvertor.class.getResourceAsStream("/typ"+schemaName+".ser");
-			ois = new ObjectInputStream(fis);
-			this.typ = (Map<String,TypeVO>) ois.readObject();
-			ois.close();		
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
+		this.ent = ent;
+		this.typ = typ;
+		this.ontURI = ontURI;
+		this.ontNS = ontURI + "#";
 	}
 	
 	public void setIfcReader(IfcReaderStream r){
