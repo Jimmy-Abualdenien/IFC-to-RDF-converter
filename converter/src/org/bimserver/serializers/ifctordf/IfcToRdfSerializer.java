@@ -64,6 +64,7 @@ public class IfcToRdfSerializer extends EmfSerializer {
 			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + "IFC2X3_TC1";
 
 			IfcConvertorStream conv = new IfcConvertorStream(ontModel, expressModel, listModel, serializer.getInputStream(), "http://linkedbuildingdata.net/ifc/instances" + new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime()) + "#", ent, typ, ontURI);
+			conv.setProgressReporter(progressReporter);
 			conv.setIfcReader(new IfcReaderStream());
 			conv.parseModel2Stream(outputStream);
 			//FileOutputStream out=new FileOutputStream(output_file);
