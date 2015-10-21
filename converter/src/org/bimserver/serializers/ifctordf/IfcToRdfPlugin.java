@@ -57,20 +57,6 @@ public class IfcToRdfPlugin extends AbstractSerializerPlugin {
 			om = loadModel(pluginManager, "data/IFC2X3_TC1.ttl", "TTL");
 			expressModel = loadModel(pluginManager, "data/express.ttl", "TTL");
 			listModel = loadModel(pluginManager, "data/list.rdf", "RDF/XML");
-
-			String expPath = "data/IFC2X3_TC1.exp";
-			pluginContext = pluginManager.getPluginContext(this);
-			Path path = pluginContext.getRootPath().resolve(expPath);
-			InputStream inexp = Files.newInputStream(path);
-			try {
-				if (inexp == null) {
-					throw new PluginException(expPath + " not found");
-				}
-				er = new ExpressReader(inexp);
-				er.readAndBuildVersion2015();
-			} finally {
-				inexp.close();
-			}
 			
 			String exp = "IFC2X3_TC1";
 			

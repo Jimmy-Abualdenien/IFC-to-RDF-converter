@@ -249,11 +249,6 @@ public class IfcReaderStream {
 			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
-//			ExpressReader er = new ExpressReader(expin);
-//			er.readAndBuildVersion2015();
-			System.out.println("finished reading express");
-
 			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -288,7 +283,6 @@ public class IfcReaderStream {
 			
 			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
 			
-//			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, er, new FileInputStream(ifc_file), baseURI, exp);
 			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			FileOutputStream out=new FileOutputStream(output_file);
@@ -364,8 +358,6 @@ public class IfcReaderStream {
 			om.read(in, null, "TTL");
 
 			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
-			ExpressReader er = new ExpressReader(expin);
-			er.readAndBuildVersion2015();
 
 			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
@@ -452,10 +444,6 @@ public class IfcReaderStream {
 			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
 			om.read(in, null, "TTL");
 
-			expin = IfcConvertor.class.getResourceAsStream("/" + exp + ".exp");
-			ExpressReader er = new ExpressReader(expin);
-			er.readAndBuildVersion2015();
-
 			String expresTtl = "/express.ttl";
 			InputStream expresTtlStream = IfcConvertor.class.getResourceAsStream(expresTtl);
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -488,7 +476,7 @@ public class IfcReaderStream {
 				ois.close();
 			}
 
-			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + "IFC2X3_TC1";
+			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
 			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			out=new FileOutputStream(output_file);
