@@ -243,7 +243,6 @@ public class IfcReaderStream {
 		OntModel om = null;
 		
 		InputStream in = null;
-		InputStream expin = null;
 		try {			
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			in = IfcReader.class.getResourceAsStream("/" + exp + ".ttl");
@@ -298,7 +297,6 @@ public class IfcReaderStream {
 				e1.printStackTrace();
 			}
 			try {
-				expin.close();
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			}
@@ -437,7 +435,6 @@ public class IfcReaderStream {
 		OntModel om = null;
 		
 		InputStream in = null;
-		InputStream expin = null;
 		FileOutputStream out=null;
 		try {			
 			om = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
@@ -492,7 +489,6 @@ public class IfcReaderStream {
 				fx_gui.handle_notification(e1.getMessage());
 			}
 			try {
-				expin.close();
 			} catch (Exception e1) {
 				fx_gui.handle_notification(e1.getMessage());
 			}
