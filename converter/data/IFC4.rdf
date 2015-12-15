@@ -12498,7 +12498,6 @@
     <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
   </rdf:Description>
   <rdf:Description rdf:about="http://www.buildingsmart-tech.org/ifcOWL/IFC4">
-    <dce:creator>Nam Vu Hoang  (nam.vuhoang@gmail.com)</dce:creator>
     <vann:preferredNamespaceUri>http://www.buildingsmart-tech.org/ifcOWL/IFC4</vann:preferredNamespaceUri>
     <vann:preferredNamespacePrefix>ifc</vann:preferredNamespacePrefix>
     <dce:creator>Pieter Pauwels (pipauwel.pauwels@ugent.be)</dce:creator>
