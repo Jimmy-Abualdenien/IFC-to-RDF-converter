@@ -1,4 +1,4 @@
-@prefix :      <http://purl.org/vocab/express#> .
+@prefix :      <http://purl.org/voc/express#> .
 @prefix cc:    <http://creativecommons.org/ns#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -9,7 +9,7 @@
 @prefix vann:  <http://purl.org/vocab/vann/> .
 @prefix list:  <http://www.co-ode.org/ontologies/list.owl#> .
 
-<http://purl.org/vocab/express>
+<http://purl.org/voc/express>
         a                              owl:Ontology ;
         rdfs:comment                   "Serialized using C++ RDF library by Walter Terkaj (ITIA-CNR, walter.terkaj@itia.cnr.it) based on Redland API C library. Fri Sep 25 14:02:03 2015\n" , "Ontology automatically generated using 'genOnto' converter developed by Walter Terkaj (ITIA-CNR, walter.terkaj@itia.cnr.it) with revision support from Pieter Pauwels (pipauwel.pauwels@ugent.be)" ;
         cc:license                     "http://creativecommons.org/licenses/by/3.0/" ;
@@ -19,7 +19,7 @@
         dce:language                   "en" ;
         dce:title                      "EXPRESS" ;
         vann:preferredNamespacePrefix  "expr" ;
-        vann:preferredNamespaceUri     "http://purl.org/vocab/express" ;
+        vann:preferredNamespaceUri     "http://purl.org/voc/express" ;
         owl:imports                    <http://owl.cs.manchester.ac.uk/wp-content/uploads/2015/07/list.owl_.txt> .
 
 expr:INTEGER_List_List
