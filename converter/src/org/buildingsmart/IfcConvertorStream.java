@@ -29,7 +29,6 @@ import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.bimserver.plugins.serializers.ProgressReporter;
 import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFCVO;
 import org.buildingsmart.vo.TypeVO;
@@ -106,9 +105,7 @@ public class IfcConvertorStream {
 	//for removing duplicates in line entries
 	private Map<String,Resource> listOfUniqueResources= new HashMap<String,Resource>();
 	private Map<Long,Long> listOfDuplicateLineEntries= new HashMap<Long,Long>();
-	
-	private ProgressReporter progressReporter;
-	
+		
 	// Taking care of avoiding duplicate resources
 	private Map<String,Resource> property_resource_map=new HashMap<String,Resource>();  
 	private Map<String,Resource> resource_map=new HashMap<String,Resource>();  
@@ -127,23 +124,8 @@ public class IfcConvertorStream {
 	public void setIfcReader(IfcReaderStream r){
 		this.myIfcReaderStream = r;
 	}
-
-	private void updateProgress(int progress, int max) {
-		if (progressReporter != null) {
-			progressReporter.update(progress, max);
-		}
-	}
-	
-	private void updateProgress(String title) {
-		if (progressReporter != null) {
-			progressReporter.setTitle(title);
-		}
-	}
 	
 	public void parseModel2Stream(OutputStream out) throws IOException{
-		updateProgress(-1, 100);
-		updateProgress("Reading IFC model");
-
 		ttl_writer = StreamRDFWriter.getWriterStream(out, RDFFormat.TURTLE_BLOCKS) ;
 		ttl_writer.prefix("ifcowl", ontNS);
 		ttl_writer.prefix("inst", baseURI);
@@ -156,16 +138,12 @@ public class IfcConvertorStream {
 		//Read the whole file into a linemap Map object
 		readModel();
 
-		updateProgress("Resolving duplicates");
-
 		System.out.println("model parsed");
 
 		resolveDuplicates();
 
 		//map entries of the linemap Map object to the ontology Model and make new instances in the model	
 		mapEntries();
-
-		updateProgress("Creating instances");
 
 		System.out.println("entries mapped, now creating instances");
 		createInstances();
@@ -175,8 +153,6 @@ public class IfcConvertorStream {
 		linemap = null;
 		
 		ttl_writer.finish();
-
-		updateProgress(100, 100);
 	}
 	
 	private void readModel() {
@@ -406,8 +382,6 @@ public class IfcConvertorStream {
 					
 			fillProperties(ifc_lineEntry, r, cl);
 			i++;
-			
-			updateProgress(i, linemap.size());
 		}
 		// The map is used only to avoid duplicates.
 		// So, it can be cleared here
@@ -950,9 +924,5 @@ public class IfcConvertorStream {
 		   }
 		}
 		return r;
-	}
-
-	public void setProgressReporter(ProgressReporter progressReporter) {
-		this.progressReporter = progressReporter;
 	}
 }
