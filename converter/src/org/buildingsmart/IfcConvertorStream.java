@@ -563,8 +563,9 @@ public class IfcConvertorStream {
 						String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
 						OntResource listrange = ontModel.getOntResource(listvaluepropURI);
 
-						if(listrange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList")))
+						if(listrange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
 							if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("6 - WARNING: Found unhandled ListOfList" + "\r\n");
+						}
 						else{
 							fillClassInstanceList(tmp_list, typerange, p, r);
 							j = tmp_list.size()-1;
