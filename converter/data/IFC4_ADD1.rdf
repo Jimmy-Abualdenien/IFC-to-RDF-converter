@@ -45041,7 +45041,6 @@
     <dce:contributor>Jakob Beetz (j.beetz@tue.nl)</dce:contributor>
     <dce:identifier>IFC4_ADD1</dce:identifier>
     <owl:imports rdf:resource="http://purl.org/voc/express"/>
-    <dce:creator>Nam Vu Hoang  (nam.vuhoang@gmail.com)</dce:creator>
     <dce:date>2015/10/02</dce:date>
     <dce:contributor>Maria Poveda Villalon (mpoveda@fi.upm.es)</dce:contributor>
     <dce:description>OWL ontology for the IFC conceptual data schema and exchange file format for Building Information Model (BIM) data</dce:description>
