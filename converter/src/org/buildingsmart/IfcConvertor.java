@@ -722,7 +722,7 @@ public class IfcConvertor {
 	
 	private void addClassInstanceListProperties(List<Resource> reslist, List<IFCVO> entlist, OntResource listrange) throws IOException{
 		OntProperty listp = listModel.getOntProperty(listNS + "hasContents");
-		OntProperty isfollowed = listModel.getOntProperty(listNS + "isFollowedBy");
+		OntProperty isfollowed = listModel.getOntProperty(listNS + "hasNext");
 		
 		for(int i = 0; i<reslist.size();i++){	
 			Resource r = reslist.get(i);					
@@ -769,8 +769,8 @@ public class IfcConvertor {
 				if(myIfcReader.logToFile) myIfcReader.bw.write("added property: " + r.getLocalName() + " - " + "-hasContents-" + " - " + r2.getLocalName() + "\r\n");
 
 				if(i<listelements.size()-1){								
-					r.addProperty(listModel.getOntProperty(listNS + "isFollowedBy"),reslist.get(i+1));
-					if(myIfcReader.logToFile) myIfcReader.bw.write("added property: " + r.getLocalName() + " - " + "-isFollowedBy-" + " - " + reslist.get(i+1).getLocalName() + "\r\n");
+					r.addProperty(listModel.getOntProperty(listNS + "hasNext"),reslist.get(i+1));
+					if(myIfcReader.logToFile) myIfcReader.bw.write("added property: " + r.getLocalName() + " - " + "-hasNext-" + " - " + reslist.get(i+1).getLocalName() + "\r\n");
 				}	
 			}
 		}	
