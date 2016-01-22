@@ -48,8 +48,6 @@ function configureServer(base_path){
 				if(isIFCResource(fspath, item)){ // we have an IFC resource
 					var file = fspath + '/' + item;
 					var orig_ext = extension;
-					console.log('file : ' + file);
-					console.log('extension : ' + extension);
 					if(extension != null){
 						file = file + extension;
 					} else  {
@@ -212,14 +210,6 @@ function configureServer(base_path){
 
 function generateRDF(fspath, item, url){	
 	var java = spawn('java', ['-Xms2048m', '-Xmx3072m', '-jar', 'workspace/IFC-to-RDF_NOGUI.jar', fspath+'/'+item+'.ifc', fspath+'/'+item+'.ttl']);
-	java.stderr.on('data', function (data) {
-		console.log('stderr: ' + data);
-	});
-	java.on('exit', function(java_code) {
-		if (java_code == 0) {
-			//All is handled by jar file normally
-		} 
-	});
 }
 
 function clone(x){
