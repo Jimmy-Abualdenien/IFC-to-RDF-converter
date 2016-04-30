@@ -209,7 +209,19 @@ function configureServer(base_path){
 }
 
 function generateRDF(fspath, item, url){	
-	var java = spawn('java', ['-Xms2048m', '-Xmx3072m', '-jar', 'workspace/IFC-to-RDF_NOGUI.jar', fspath+'/'+item+'.ifc', fspath+'/'+item+'.ttl']);
+	console.log('output: ' + fspath + '/' + item + '.ifc');
+	var java = spawn('java', ['-Xms2048m', '-Xmx3072m', '-jar', 'workspace/IFC-to-RDF_NOGUI', fspath+'/'+item+'.ifc', fspath+'/'+item+'.ttl']);
+    var result = '';
+    java.stdout.on('data', function(data) {
+            result += 'out ' + data.toString();
+    });
+    java.stderr.on('data', function(data) {
+            result += 'error ' + data.toString();
+    });
+    java.on('close', function(code) {
+			console.log('this is the result: ' + result);
+            return result;
+    });
 }
 
 function clone(x){

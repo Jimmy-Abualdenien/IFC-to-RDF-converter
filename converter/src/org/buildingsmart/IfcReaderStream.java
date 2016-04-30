@@ -253,10 +253,10 @@ public class IfcReaderStream {
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/list.rdf";
+			String rdfList = "/list.ttl";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			listModel.read(rdfListStream, null, "RDF/XML");
+			listModel.read(rdfListStream, null, "TTL");
 
 			InputStream fis = IfcConvertor.class.getResourceAsStream("/ent"+exp+".ser");
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -280,7 +280,7 @@ public class IfcReaderStream {
 				ois.close();
 			}
 			
-			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+			String ontURI = "http://ifcowl.openbimstandards.org/" + exp;
 			
 			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
@@ -362,10 +362,10 @@ public class IfcReaderStream {
 			OntModel expressModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
 			expressModel.read(expresTtlStream, null, "TTL");
 			
-			String rdfList = "/list.rdf";
+			String rdfList = "/list.ttl";
 			InputStream rdfListStream = IfcConvertor.class.getResourceAsStream(rdfList);
 			OntModel listModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM);
-			listModel.read(rdfListStream, null, "RDF/XML");
+			listModel.read(rdfListStream, null, "TTL");
 			
 			InputStream fis = IfcConvertor.class.getResourceAsStream("/ent"+exp+".ser");
 			ObjectInputStream ois = new ObjectInputStream(fis);
@@ -389,7 +389,7 @@ public class IfcReaderStream {
 				ois.close();
 			}
 			
-			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+			String ontURI = "http://ifcowl.openbimstandards.org/" + exp;
 			
 			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
@@ -473,7 +473,7 @@ public class IfcReaderStream {
 				ois.close();
 			}
 
-			String ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+			String ontURI = "http://ifcowl.openbimstandards.org/" + exp;
 			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			out=new FileOutputStream(output_file);

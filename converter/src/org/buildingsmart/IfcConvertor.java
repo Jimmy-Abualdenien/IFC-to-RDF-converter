@@ -61,14 +61,14 @@ import org.buildingsmart.vo.TypeVO;
 
 
 public class IfcConvertor {
-	private static final String EXPRESS_URL = "http://purl.org/voc/express";
+	private static final String EXPRESS_URL = "https://w3id.org/express";
 	private static final String EXPRESS_NS = EXPRESS_URL + "#";
 
 	//input variables
 	private final String baseURI;
 	private final String ontURI;
 	private final String ontNS;
-	private final String listURI = "http://www.co-ode.org/ontologies/list.owl";
+	private final String listURI = "https://w3id.org/list";
 	private final String listNS = listURI+"#";
 		
 	//EXPRESS basis
@@ -99,7 +99,7 @@ public class IfcConvertor {
 		//PREPARATION
 		ent = expressReader.getEntities();
 		typ = expressReader.getTypes();
-		ontURI = "http://www.buildingsmart-tech.org/ifcOWL/" + exp;
+		ontURI = "http://ifcowl.openbimstandards.org/" + exp;
 		ontNS = ontURI + "#";
 	}
 	

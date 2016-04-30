@@ -82,9 +82,9 @@ public class IfcConvertorStream {
 	//input variables
 	private final String baseURI;
 	private final String ontNS;
-	private static final String expressURI = "http://purl.org/voc/express";
+	private static final String expressURI = "https://w3id.org/express";
 	private static final String expressNS = expressURI+"#";
-	private static final String listURI = "http://www.co-ode.org/ontologies/list.owl";
+	private static final String listURI = "https://w3id.org/list";
 	private static final String listNS = listURI+"#";
 	
 	//EXPRESS basis
