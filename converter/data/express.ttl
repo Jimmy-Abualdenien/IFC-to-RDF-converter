@@ -1,26 +1,26 @@
-@prefix :      <http://purl.org/voc/express#> .
+@prefix :      <https://w3id.org/express#> .
 @prefix cc:    <http://creativecommons.org/ns#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix dce:   <http://purl.org/dc/elements/1.1/> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix expr:  <http://purl.org/voc/express#> .
+@prefix expr:  <https://w3id.org/express#> .
 @prefix vann:  <http://purl.org/vocab/vann/> .
-@prefix list:  <http://www.co-ode.org/ontologies/list.owl#> .
+@prefix list:  <https://w3id.org/list#> .
 
-<http://purl.org/voc/express>
+<https://w3id.org/express>
         a                              owl:Ontology ;
         rdfs:comment                   "Serialized using C++ RDF library by Walter Terkaj (ITIA-CNR, walter.terkaj@itia.cnr.it) based on Redland API C library. Fri Sep 25 14:02:03 2015\n" , "Ontology automatically generated using 'genOnto' converter developed by Walter Terkaj (ITIA-CNR, walter.terkaj@itia.cnr.it) with revision support from Pieter Pauwels (pipauwel.pauwels@ugent.be)" ;
         cc:license                     "http://creativecommons.org/licenses/by/3.0/" ;
         dce:creator                    "Walter Terkaj (walter.terkaj@itia.cnr.it)" , "Pieter Pauwels (pipauwel.pauwels@ugent.be)" ;
-        dce:date                       "2015/09/25" ;
+        dce:date                       "2015/12/11" ;
         dce:description                "OWL ontology for EXPRESS concepts" ;
         dce:language                   "en" ;
         dce:title                      "EXPRESS" ;
         vann:preferredNamespacePrefix  "expr" ;
-        vann:preferredNamespaceUri     "http://purl.org/voc/express" ;
-        owl:imports                    <http://owl.cs.manchester.ac.uk/wp-content/uploads/2015/07/list.owl_.txt> .
+        vann:preferredNamespaceUri     "https://w3id.org/express" ;
+        owl:imports                    <https://w3id.org/list> .
 
 expr:INTEGER_List_List
         a                owl:Class ;

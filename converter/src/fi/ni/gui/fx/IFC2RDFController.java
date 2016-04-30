@@ -363,7 +363,7 @@ public class IFC2RDFController implements Initializable, FxInterface {
 				instr = new FileInputStream(fp);
 				er = new ExpressReader(instr);
 				ontologyNamespace = file.getName().substring(0, file.getName().indexOf("."));
-				Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/" + ontologyNamespace;
+				Namespace.IFC = "http://ifcowl.openbimstandards.org/" + ontologyNamespace;
 				er.readAndBuildVersion2015();
 				if (handleOnTxt == null) {
 					System.out.println("txt field null ");

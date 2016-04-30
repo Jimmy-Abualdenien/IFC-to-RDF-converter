@@ -83,7 +83,7 @@ public class ExpressReader {
 
 	public ExpressReader(InputStream schemaInputStream) {
 		this.schemaInputStream = schemaInputStream;
-		Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL";
+		Namespace.IFC = "http://ifcowl.openbimstandards.org/";
 	}
 	
 	public void readAndBuildVersion2014(){		
@@ -135,7 +135,7 @@ public class ExpressReader {
 					InputStream instr = ExpressReader.class
 							.getResourceAsStream("/" + in + ".exp");
 					ExpressReader er = new ExpressReader(instr);
-					Namespace.IFC = "http://www.buildingsmart-tech.org/ifcOWL/"
+					Namespace.IFC = "http://ifcowl.openbimstandards.org/"
 							+ in;
 					er.readAndBuildVersion2015();
 
