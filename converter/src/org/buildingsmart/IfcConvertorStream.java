@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.apache.jena.datatypes.xsd.XSDDatatype;
+import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
@@ -27,6 +28,7 @@ import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.riot.system.StreamRDFWriter;
 import org.apache.jena.util.iterator.ExtendedIterator;
+import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
 import org.buildingsmart.vo.EntityVO;
@@ -127,13 +129,18 @@ public class IfcConvertorStream {
 	
 	public void parseModel2Stream(OutputStream out) throws IOException{
 		ttl_writer = StreamRDFWriter.getWriterStream(out, RDFFormat.TURTLE_BLOCKS) ;
+		ttl_writer.base(baseURI);
 		ttl_writer.prefix("ifcowl", ontNS);
 		ttl_writer.prefix("inst", baseURI);
 		ttl_writer.prefix("list", listNS);
 		ttl_writer.prefix("express", expressNS);		
 		ttl_writer.prefix("rdf", Namespace.RDF);		
-		ttl_writer.prefix("xsd", Namespace.XSD);
+		ttl_writer.prefix("xsd", Namespace.XSD);		
+		ttl_writer.prefix("owl", Namespace.OWL);
 		ttl_writer.start();
+		
+		ttl_writer.triple(new Triple(NodeFactory.createURI(baseURI), RDF.type.asNode(), OWL.Ontology.asNode()));
+		ttl_writer.triple(new Triple(NodeFactory.createURI(baseURI), OWL.imports.asNode(), NodeFactory.createURI(ontNS)));
 		
 		//Read the whole file into a linemap Map object
 		readModel();

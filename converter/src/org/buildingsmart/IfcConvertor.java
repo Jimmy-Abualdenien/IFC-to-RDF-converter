@@ -28,6 +28,8 @@ import org.buildingsmart.vo.EntityVO;
 import org.buildingsmart.vo.IFCVO;
 import org.buildingsmart.vo.TypeVO;
 
+import fi.ni.rdf.Namespace;
+
 /*
  * IFCtoRDFConverter is the final interface for this code. Through this class, one is able to submit an IFC file and the EXPRESS schema it follows so that
  * a corresponding IFC/RDF graph can be built.
@@ -110,10 +112,13 @@ public class IfcConvertor {
 	public Model parseModel() throws IOException{
 		//setup models
 		im = ModelFactory.createDefaultModel();
-		im.setNsPrefix("ifc", ontNS);
+		im.setNsPrefix("ifcowl", ontNS);
 		im.setNsPrefix("inst", baseURI);
 		im.setNsPrefix("list", listNS);
-		im.setNsPrefix("express", EXPRESS_NS);
+		im.setNsPrefix("express", EXPRESS_NS);		
+		im.setNsPrefix("rdf", Namespace.RDF);		
+		im.setNsPrefix("xsd", Namespace.XSD);		
+		im.setNsPrefix("owl", Namespace.OWL);
 		
 		//Read the whole file into a linemap Map object
 		readModel();

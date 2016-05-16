@@ -285,6 +285,10 @@ public class IfcReaderStream {
 			IfcConvertorStream conv = new IfcConvertorStream(om, expressModel, listModel, new FileInputStream(ifc_file), baseURI, ent, typ, ontURI);
 			conv.setIfcReader(this);
 			FileOutputStream out=new FileOutputStream(output_file);
+			String s = "# baseURI: " + baseURI;
+			s+="\r\n# imports: " + ontURI + "\r\n\r\n";
+			out.write(s.getBytes());
+			out.flush();
 			System.out.println("started parsing stream");
 			conv.parseModel2Stream(out);		
 			System.out.println("finished!!");
