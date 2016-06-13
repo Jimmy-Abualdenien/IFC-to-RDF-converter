@@ -91,17 +91,18 @@ public class IfcReaderStream {
 		String[] options = new String[] {"--log", "--dir", "--json", "--json-string", "--keep-duplicates"};
 		Boolean[] optionValues = new Boolean[] { false, false, false, false, false };
 				
-		
 		List<String> argsList = new ArrayList<String>(Arrays.asList(args));
 		for(int i = 0; i < options.length; ++i) {
 			optionValues[i] = argsList.contains(options[i]);
 		}
 		
+		// State of flags has been stored in optionValues. Remove them from our option strings
+		// in order to make testing the required amount of positional arguments easier.
 		for (String flag : options) {
 			argsList.remove(flag);
 		}
 		
-		final int numRequiredOptions = optionValues[FLAG_DIR] ? 1 : 2;
+		final int numRequiredOptions = (optionValues[FLAG_DIR] || optionValues[FLAG_JSON] || optionValues[FLAG_JSON_STRING]) ? 1 : 2;
 		
 		if (argsList.size() != numRequiredOptions) {
 			System.out.println("Usage:\n"
@@ -133,6 +134,8 @@ public class IfcReaderStream {
 			
 		} else {
 		
+			// Create arrays regardless of a directory or
+			// single file is specified to reduce code paths.
 			final List<String> inputFiles;
 			final List<String> outputFiles;
 			
