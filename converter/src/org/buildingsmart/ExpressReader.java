@@ -2,9 +2,11 @@ package org.buildingsmart;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -25,13 +27,13 @@ import java.util.StringTokenizer;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.buildingsmart.vo.AttributeVO;
-import org.buildingsmart.vo.EntityVO;
-import org.buildingsmart.vo.InverseVO;
-import org.buildingsmart.vo.NamedIndividualVO;
-import org.buildingsmart.vo.PrimaryTypeVO;
-import org.buildingsmart.vo.PropertyVO;
-import org.buildingsmart.vo.TypeVO;
+import org.openbimstandards.ifcowl.vo.AttributeVO;
+import org.openbimstandards.ifcowl.vo.EntityVO;
+import org.openbimstandards.ifcowl.vo.InverseVO;
+import org.openbimstandards.ifcowl.vo.NamedIndividualVO;
+import org.openbimstandards.ifcowl.vo.PrimaryTypeVO;
+import org.openbimstandards.ifcowl.vo.PropertyVO;
+import org.openbimstandards.ifcowl.vo.TypeVO;
 
 import fi.ni.rdf.Namespace;
 
@@ -140,6 +142,7 @@ public class ExpressReader {
 					er.readAndBuildVersion2015();
 
 					er.outputEntitiesAndTypes(args[1], in);
+					er.outputEntityPropertyList(args[1], in);
 
 					OWLWriter ow = new OWLWriter(in, er.entities, er.types,
 							er.getSiblings(), er.getEnumIndividuals(),
@@ -659,6 +662,47 @@ public class ExpressReader {
 			e.printStackTrace();
 		}
 	}	
+	
+	private void outputEntityPropertyList(String filePathNoExt, String schemaName){
+		String filePath = filePathNoExt.substring(0,filePathNoExt.lastIndexOf("\\"));
+		System.out.println("writing output to : " + filePath+"proplist"+schemaName+".csv and " + filePath+"proplist"+schemaName+".csv");
+		try {
+			File file = new File(filePath+"\\"+"proplist"+schemaName+".csv");
+			FileWriter fw = new FileWriter(file);
+			BufferedWriter bw = new BufferedWriter(fw);	
+			
+			Iterator<Entry<String, EntityVO>> it = entities.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<String, EntityVO> pairs = it.next();
+				EntityVO evo = pairs.getValue();
+				List<AttributeVO> attrs = evo.getDerived_attribute_list();
+				for(AttributeVO attr : attrs){
+					String setorlist = "ENTITY";
+					if(attr.isSet())
+						setorlist = "SET";
+					else if (attr.isArray())
+						setorlist = "ARRAY";
+					else if (attr.isListOfList())
+						setorlist = "LISTOFLIST";
+					else if (attr.isList())
+						setorlist = "LIST";
+					
+					bw.write(evo.getName() + "," + attr.getOriginalName() + "," + attr.getName() +  "," + setorlist + "\r\n");		
+				}	
+
+//				List<InverseVO> invs = evo.getDerived_inverse_list();
+//				for(InverseVO inv : invs){
+//					PropertyVO prop = inv.getAssociatedProperty();
+//					bw.write("INVERSE:::" + evo.getName() + "," + prop.getOriginalName() + "," + prop.getName() + "\r\n");		
+//				}	
+				bw.flush();
+			}
+			bw.close();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	// WRITING ATTRIBUTE AND INVERSE STRUCTURE
 	private void generate_derived_attribute_list() throws IOException {

@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +24,8 @@ import net.sf.json.JSONObject;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.ontology.OntModelSpec;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.buildingsmart.vo.EntityVO;
-import org.buildingsmart.vo.TypeVO;
+import org.openbimstandards.ifcowl.vo.EntityVO;
+import org.openbimstandards.ifcowl.vo.TypeVO;
 
 import fi.ni.gui.fx.FxInterface;
 
@@ -263,6 +264,13 @@ public class IfcReaderStream {
 			Map<String, EntityVO> ent = null;
 			try {
 				ent = (Map<String,EntityVO>) ois.readObject();
+//				Iterator it = ent.entrySet().iterator();
+//		        System.out.println("ENTITIES");
+//			    while (it.hasNext()) {
+//			        Map.Entry pair = (Map.Entry)it.next();
+//			        System.out.println(pair.getKey() + " = " + pair.getValue());
+//			        //it.remove(); // avoids a ConcurrentModificationException
+//			    }
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {
@@ -274,6 +282,13 @@ public class IfcReaderStream {
 			Map<String, TypeVO> typ = null;
 			try {
 				typ = (Map<String,TypeVO>) ois.readObject();
+//				Iterator it = typ.entrySet().iterator();
+//		        System.out.println("TYPES");
+//			    while (it.hasNext()) {
+//			        Map.Entry pair = (Map.Entry)it.next();
+//			        System.out.println(pair.getKey() + " = " + pair.getValue());
+//			        //it.remove(); // avoids a ConcurrentModificationException
+//			    }
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} finally {

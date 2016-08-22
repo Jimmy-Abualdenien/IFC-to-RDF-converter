@@ -24,9 +24,9 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.RDFS;
-import org.buildingsmart.vo.EntityVO;
-import org.buildingsmart.vo.IFCVO;
-import org.buildingsmart.vo.TypeVO;
+import org.openbimstandards.ifcowl.vo.EntityVO;
+import org.openbimstandards.ifcowl.vo.IFCVO;
+import org.openbimstandards.ifcowl.vo.TypeVO;
 
 import fi.ni.rdf.Namespace;
 

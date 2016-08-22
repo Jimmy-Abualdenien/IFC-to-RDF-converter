@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +32,9 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.RDFS;
-import org.buildingsmart.vo.EntityVO;
-import org.buildingsmart.vo.IFCVO;
-import org.buildingsmart.vo.TypeVO;
+import org.openbimstandards.ifcowl.vo.EntityVO;
+import org.openbimstandards.ifcowl.vo.IFCVO;
+import org.openbimstandards.ifcowl.vo.TypeVO;
 
 import fi.ni.rdf.Namespace;
 
@@ -376,8 +377,13 @@ public class IfcConvertorStream {
 	private void createInstances() throws IOException{		
 		int i = 0;
 		for (Map.Entry<Long, IFCVO> entry : linemap.entrySet()) {
-			IFCVO ifc_lineEntry = entry.getValue();			
-			String typeName = ent.get(ifc_lineEntry.getName()).getName();			
+			IFCVO ifc_lineEntry = entry.getValue();		
+			String typeName = "";
+			if(ent.containsKey(ifc_lineEntry.getName()))
+				typeName = ent.get(ifc_lineEntry.getName()).getName();
+			else if(typ.containsKey(ifc_lineEntry.getName()))
+				typeName = typ.get(ifc_lineEntry.getName()).getName();				
+			
 			OntClass cl = ontModel.getOntClass(ontNS + typeName);
 				
 			Resource r = getResource(baseURI + typeName + "_" + ifc_lineEntry.getLine_num(),cl);
@@ -400,27 +406,58 @@ public class IfcConvertorStream {
 	private void fillProperties(IFCVO ifc_lineEntry,Resource r, OntClass cl) throws IOException {		
 	
 		EntityVO evo = ent.get(ExpressReader.formatClassName(ifc_lineEntry.getName()));
-		if (evo == null)
-			System.err.println("Does not exist: " + ifc_lineEntry.getName());
-	
-		final String subject = evo.getName() + "_" + ifc_lineEntry.getLine_num();
-	
-		typeremembrance = null;
-		int attribute_pointer = 0;
-		for (Object o: ifc_lineEntry.getObjectList()) {
-			
-			if (String.class.isInstance(o)) {
-				attribute_pointer = fillProperties_handleStringObject(r, evo,
-						subject, attribute_pointer, o);
-			} else if (IFCVO.class.isInstance(o)) {
-				attribute_pointer = fillProperties_handleIFC_Object(r,
-						evo, attribute_pointer, o);
-			} else if (LinkedList.class.isInstance(o)) {
-				attribute_pointer = fillProperties_handleListObject(r, evo,
-						attribute_pointer, o);
-			}	
-			if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.flush();
+		TypeVO tvo = typ.get(ExpressReader.formatClassName(ifc_lineEntry.getName()));
+		
+		if(tvo==null && evo==null){
+			System.err.println("Type nor entity exists: " + ifc_lineEntry.getName());
 		}
+		
+		if (evo == null && tvo!=null){
+//			System.err.println("Entity does not exist: " + ifc_lineEntry.getName());	
+			final String subject = tvo.getName() + "_" + ifc_lineEntry.getLine_num();
+			
+			typeremembrance = null;
+			int attribute_pointer = 0;
+			for (Object o: ifc_lineEntry.getObjectList()) {
+				
+				if (String.class.isInstance(o)) {
+					System.out.println("WARNING: unhandled type property found.");
+//					attribute_pointer = fillProperties_handleStringObject(r, tvo,
+//							subject, attribute_pointer, o);
+				} else if (IFCVO.class.isInstance(o)) {
+					System.out.println("WARNING: unhandled type property found.");
+//					attribute_pointer = fillProperties_handleIFC_Object(r,
+//							tvo, attribute_pointer, o);
+				} else if (LinkedList.class.isInstance(o)) {
+					attribute_pointer = fillProperties_handleListObject(r, tvo, o);
+				}	
+				if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.flush();
+			}		
+		}
+		
+		if (tvo == null && evo !=null){
+//			System.err.println("Type does not exist: " + ifc_lineEntry.getName());	
+			final String subject = evo.getName() + "_" + ifc_lineEntry.getLine_num();
+			
+			typeremembrance = null;
+			int attribute_pointer = 0;
+			for (Object o: ifc_lineEntry.getObjectList()) {
+				
+				if (String.class.isInstance(o)) {
+					attribute_pointer = fillProperties_handleStringObject(r, evo,
+							subject, attribute_pointer, o);
+				} else if (IFCVO.class.isInstance(o)) {
+					attribute_pointer = fillProperties_handleIFC_Object(r,
+							evo, attribute_pointer, o);
+				} else if (LinkedList.class.isInstance(o)) {
+					attribute_pointer = fillProperties_handleListObject(r, evo,
+							attribute_pointer, o);
+				}	
+				if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.flush();
+			}
+		}
+	
+		
 		if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.flush();
 	}
 
@@ -439,6 +476,10 @@ public class IfcConvertorStream {
 					OntProperty p = ontModel.getOntProperty(propURI);
 					OntResource range = p.getRange();
 					if(range.isClass()){
+//						Iterator<OntClass> x = range.asClass().listSuperClasses();
+//						while(x.hasNext()){
+//							System.out.println("found superclass : " + x.next().getLocalName());
+//						} 
 						OntClass c = expressModel.getOntClass(expressNS + "ENUMERATION");
 						if(range.asClass().hasSuperClass(c)){
 							addEnumProperty(r,p,range,literalString);
@@ -451,6 +492,7 @@ public class IfcConvertorStream {
 							if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("1a - WARNING TODO: found LIST property: " + subject + " -- " + p + " - " + range.getLocalName() + " - " + literalString + "\r\n");
 						}
 						else {	
+							System.out.println("getXSDTypeFromRange(range) : " + range);
 							String xsdType = getXSDTypeFromRange(range);
 							if(xsdType == null)
 							{
@@ -600,6 +642,90 @@ public class IfcConvertorStream {
 		return attribute_pointer;
 	}
 
+	private int fillProperties_handleListObject(Resource r, TypeVO tvo,
+			Object o) throws IOException {	
+		System.out.println("Ping handleListObject()");
+		
+		@SuppressWarnings("unchecked")
+		final LinkedList<Object> tmp_list = (LinkedList<Object>) o;
+		LinkedList<String> literals=new LinkedList<String>();		
+		
+		//process list
+		for (int j = 0; j < tmp_list.size(); j++) {
+			Object o1 = tmp_list.get(j);
+			if (String.class.isInstance(o1)) {
+				if (typ.get(ExpressReader.formatClassName((String) o1)) != null && typeremembrance==null)
+					typeremembrance = typ.get(ExpressReader.formatClassName((String) o1));	
+				else
+					literals.add(filter_extras((String) o1));				
+			}
+			if (IFCVO.class.isInstance(o1)) {
+				if ((tvo != null)) {
+					String propURI = tvo.evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
+					OntProperty p = ontModel.getOntProperty(ontNS + propURI);
+					OntResource typerange = p.getRange();
+
+					if(typerange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
+						//EXPRESS LISTs
+						String listvaluepropURI = ontNS + typerange.getLocalName().substring(0, typerange.getLocalName().length()-5);	
+						OntResource listrange = ontModel.getOntResource(listvaluepropURI);
+
+						if(listrange.asClass().hasSuperClass(listModel.getOntClass(listNS + "OWLList"))){
+							if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("6 - WARNING: Found unhandled ListOfList" + "\r\n");
+						}
+						else{
+							fillClassInstanceList(tmp_list, typerange, p, r);
+							j = tmp_list.size()-1;
+						}
+					}			
+					else{
+						//EXPRESS SETs
+						EntityVO evorange = ent.get(ExpressReader.formatClassName(((IFCVO)o1).getName()));								
+						OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
+
+						Resource r1 = getResource(baseURI + evorange.getName() + "_" + ((IFCVO) o1).getLine_num(),rclass);
+						ttl_writer.triple(new Triple(r.asNode(), p.asNode(), r1.asNode()));	
+						if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("added property: " + r.getLocalName() + " - " + p.getLocalName() + " - " + r1.getLocalName() + "\r\n");		
+					}
+				}
+			}
+			if(LinkedList.class.isInstance(o1) && typeremembrance != null){
+				LinkedList<Object> tmp_list_inlist = (LinkedList<Object>) o1;
+				for(int jj = 0; jj<tmp_list_inlist.size(); jj++){
+					Object o2 = tmp_list_inlist.get(jj);
+					if(String.class.isInstance(o2)){
+						literals.add(filter_extras((String) o2));
+					}
+				}
+			}
+		}
+
+		//interpret parse
+		if (literals.size() > 0) {
+			if(typeremembrance != null){
+				if ((evo != null)
+						&& (evo.getDerived_attribute_list() != null)
+						&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {				
+
+					String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
+					OntProperty p = ontModel.getOntProperty(propURI);
+
+					addSinglePropertyFromTypeRemembrance(r, p, literals.getFirst(), typeremembrance);
+				}
+				typeremembrance = null;
+			}
+			else if ((evo != null)
+					&& (evo.getDerived_attribute_list() != null)
+					&& (evo.getDerived_attribute_list().size() > attribute_pointer)) {						
+				String propURI = ontNS + evo.getDerived_attribute_list().get(attribute_pointer).getLowerCaseName();
+				OntProperty p = ontModel.getOntProperty(propURI);				
+				addRegularListProperty(r, p, literals);
+			}
+		}
+		attribute_pointer++;
+		return attribute_pointer;
+	}
+	
 	private void addSinglePropertyFromTypeRemembrance(Resource r, OntProperty p, String literalString, TypeVO typeremembrance) throws IOException{				
 		OntResource range = ontModel.getOntResource(ontNS + typeremembrance.getName());
 		
@@ -786,13 +912,22 @@ public class IfcConvertorStream {
 		for(int i = 0; i<reslist.size();i++){	
 			Resource r = reslist.get(i);					
 			
-			EntityVO evorange = ent.get(ExpressReader.formatClassName(entlist.get(i).getName()));									
-			OntResource rclass = ontModel.getOntResource(ontNS + evorange.getName());
-			
-			Resource r1 = getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num(),rclass);
-			ttl_writer.triple(new Triple(r.asNode(), listp.asNode(), r1.asNode()));
-			if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("created property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r1.getLocalName() + "\r\n");	
-															
+			OntResource rclass = null;
+			EntityVO evorange = ent.get(ExpressReader.formatClassName(entlist.get(i).getName()));	
+			if(evorange==null){
+				TypeVO typerange = typ.get(ExpressReader.formatClassName(entlist.get(i).getName()));
+				rclass = ontModel.getOntResource(ontNS + typerange.getName());
+				Resource r1 = getResource(baseURI + typerange.getName() + "_" + entlist.get(i).getLine_num(),rclass);
+				ttl_writer.triple(new Triple(r.asNode(), listp.asNode(), r1.asNode()));
+				if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("created property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r1.getLocalName() + "\r\n");	
+			}
+			else{
+				rclass = ontModel.getOntResource(ontNS + evorange.getName());
+				Resource r1 = getResource(baseURI + evorange.getName() + "_" + entlist.get(i).getLine_num(),rclass);
+				ttl_writer.triple(new Triple(r.asNode(), listp.asNode(), r1.asNode()));
+				if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("created property: " + r.getLocalName() + " - " + listp.getLocalName() + " - " + r1.getLocalName() + "\r\n");	
+			}
+												
 			if(i<reslist.size()-1){								
 				ttl_writer.triple(new Triple(r.asNode(), isfollowed.asNode(), reslist.get(i+1).asNode()));
 				if(myIfcReaderStream.logToFile) myIfcReaderStream.bw.write("created property: " + r.getLocalName() + " - " + isfollowed.getLocalName() + " - " + reslist.get(i+1).getLocalName() + "\r\n");
@@ -933,4 +1068,5 @@ public class IfcConvertorStream {
 		}
 		return r;
 	}
+	
 }
