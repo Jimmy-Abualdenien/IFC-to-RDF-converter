@@ -111,7 +111,9 @@ public class IfcConvertorStream {
 		
 	// Taking care of avoiding duplicate resources
 	private Map<String,Resource> property_resource_map=new HashMap<String,Resource>();  
-	private Map<String,Resource> resource_map=new HashMap<String,Resource>();  
+	private Map<String,Resource> resource_map=new HashMap<String,Resource>();
+	
+	private boolean removeDuplicates = true;
 	
 	public IfcConvertorStream(OntModel ontModel, OntModel expressModel, OntModel listModel, InputStream inputStream, String baseURI, Map<String, EntityVO> ent, Map<String, TypeVO> typ, String ontURI){
 		this.ontModel = ontModel;
@@ -124,6 +126,14 @@ public class IfcConvertorStream {
 		this.ontNS = ontURI + "#";
 	}
 	
+	public boolean isRemoveDuplicates() {
+		return removeDuplicates;
+	}
+
+	public void setRemoveDuplicates(boolean removeDuplicates) {
+		this.removeDuplicates = removeDuplicates;
+	}
+
 	public void setIfcReader(IfcReaderStream r){
 		this.myIfcReaderStream = r;
 	}
@@ -148,7 +158,9 @@ public class IfcConvertorStream {
 
 		System.out.println("model parsed");
 
-		resolveDuplicates();
+		if (removeDuplicates) {
+			resolveDuplicates();
+		}
 
 		//map entries of the linemap Map object to the ontology Model and make new instances in the model	
 		mapEntries();
